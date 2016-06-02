@@ -282,13 +282,13 @@ const form = {
       let client = conxData[0];
       let done = conxData[1];
       id = "'"+id+"'";
-      if (coutRes == 1) {
-        var query = 'UPDATE forms SET status ='+status+' WHERE "id" = '+id;
+      if (status == 'trashed' && coutRes == 0) {
+        let formDel = yield client.queryPromise('DELETE FROM questions WHERE formid = '+id);
+        var query = 'DELETE FROM forms WHERE id = '+id;
       }
       else
       {
-        let formDel = yield client.queryPromise('DELETE FROM questions WHERE formid = '+id);
-        var query = 'DELETE FROM forms WHERE id = '+id;
+        var query = 'UPDATE forms SET status ='+status+' WHERE "id" = '+id;
       }
       let result = yield client.queryPromise(query);
       done();
