@@ -8,6 +8,7 @@ angular
     $scope.formstatus = 'published';
     $emailSelectedResponseID = 0;
     $emailSelectedFormID = 0;
+    $scope.textareaText = "";
 
     $scope.changeFormStatus = function(status){
 
@@ -126,9 +127,12 @@ angular
                 if(response.data)
                 {
                    $scope.Yelp_Google = response.data.data;
-                    if(response.data.data.yelp=="" || response.data.data.google_plus==""){
+                    if(response.data.data.yelp=="" || response.data.data.google_plus=="")
+                    {
                         $('#YelpGoogle').show();
-                                    }
+                    }
+                    else
+                        $('#YelpGoogle').hide();
                     $('textarea#rescomments').val(response.data.email);
                     $('#emailModal').modal() ///  
                 }
@@ -230,5 +234,26 @@ $scope.SaveYG = function(data) {
     }
    
     
-})
+}).directive('myMaxlength', ['$compile', '$log', function($compile, $log) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ctrl) {
+                attrs.$set("ngTrim", "false");
+                var maxlength = parseInt(attrs.myMaxlength, 10);
+                ctrl.$parsers.push(function (value) {
+                    $log.info("In parser function value = [" + value + "].");
+                    if (value.length > maxlength)
+                    {
+                        $log.info("The value [" + value + "] is too long!");
+                        value = value.substr(0, maxlength);
+                        ctrl.$setViewValue(value);
+                        ctrl.$render();
+                        $log.info("The value is now truncated as [" + value + "].");
+                    }
+                    return value;
+                });
+            }
+        };
+    }]);
 
