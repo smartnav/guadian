@@ -267,6 +267,7 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify) {
         var startSecond = new Date().getSeconds();
         vm.beforeAfterSave('before',id)
         console.log(id);
+        console.log($("#"+id+" select[name = 'types']").val());
         var postData = {'question':$("#"+id+" input[type='text']").val(),'orderid':vm.questions[id]['orderid'],'formId':vm.formId,'qtype':$("#"+id+" select[name = 'types']").val(),'is_hide':$("#"+id+" select[name='is_hide']").val()};
         var promise = qss.create(postData);
         promise.then(function(response){

@@ -237,18 +237,41 @@ function *createForm(){
     return;
   }
 
-   yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,error:""});
+   yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,message:""});
 }
 function *saveForm(){
  var data = this.request.body;
-  //if(data.facility == "" | data.yelp == "" | data.google_plus == "")
-  //{
-  //  yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,error:"Please Fill in all the required Fields"});
-  //  return;
-  //}
-  //else{
+ var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+
+  if(data.facility == "")
+  {
+   yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,message:"Please Fill in all the required Fields"});
+   return;
+  }
+  if(data.yelp!="" && !re.test(data.yelp))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,message:"Please enter a valid Yelp Url"});
+   return;
+  }
+  if(data.google_plus!="" && !re.test(data.google_plus))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,message:"Please enter a valid Google Plus Url"});
+   return;
+  }
+  if(data.redirect_url!="" && !re.test(data.redirect_url))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,message:"Please enter a valid Redirect Url"});
+   return;
+  }
+  if(data.allowed_origins!="" && !re.test(data.allowed_origins))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,message:"Please enter a valid Form Location Url"});
+   return;
+  }
+  else{
     var lastInsertedId = yield _form.create(this.session.id, this.request.body);
     this.redirect("/formbuilder/"+lastInsertedId);
+}
 }
 function *shareForm(){
   if(! (yield (user.isLoggedIn.bind(this)))) {
@@ -266,12 +289,42 @@ function *editFacility(id) {
     return;
   }
   console.log(data);
-  yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:data});
+  yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:data, message:""});
 }
 
 function *saveFacilityEdits(id) {
   console.log("this.request.body",this.request.body);
-  var data = this.request.body.data;
+  var data = this.request.body;
+  let datas = yield _form.get(id);
+  datas.yelp = data.yelp;
+  datas.google_plus = data.google_plus;
+  var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+
+  if(data.facility == "")
+  {
+   yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please Fill in all the required Fields"});
+   return;
+  }
+  if(data.yelp!="" && !re.test(data.yelp))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please enter a valid Yelp Url"});
+   return;
+  }
+  if(data.google_plus!="" && !re.test(data.google_plus))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please enter a valid Google Plus Url"});
+   return;
+  }
+  if(data.redirect_url!="" && !re.test(data.redirect_url))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please enter a valid Redirect Url"});
+   return;
+  }
+  if(data.allowed_origins!="" && !re.test(data.allowed_origins))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please enter a valid Form Location Url"});
+   return;
+  }
   var success = yield _form.saveFacilityData(this.session.id, id, data);
   //TODO alert for failure
   console.log("We had a :", success);
@@ -311,7 +364,8 @@ function *form(id) {
     url: URL,
     postback: `${URL}/form/${id}`,
     layout: false,
-    session: {}
+    session: {},
+    error: ""
   });
 }
 
@@ -319,63 +373,128 @@ function *form(id) {
 
 function *formSubmit(id) {
   let data = this.request.body;
-  data.ip = this.request.ip;
-  let result;
-  let fdata = yield _form.get(id) || {};
-  if(fdata.status=="unpublished")   
-    {   
-      yield this.render('unpublished',{layout: false});   
-      this.status = 400;    
-      return;   
-    }
-  console.log("We got fdata", fdata);
-  let redirect = fdata.redirect_url || '/thanks';
-  this.session = {
-  	facilityName : fdata.facility
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  var illegalChars = /^[a-zA-Z\s]+$/;
+  var stripped = data.phone.replace(/[\(\)\.\-\ ]/g, '');
+  var flag;
+  console.log("data",data);
+  var message = "";
+  if(data.name == "" || data.email == "" || data.phone == "")
+  {
+  	flag=1;
+  	message="Please Fill in the Required Fields"; 
   }
-
-
-  if(fdata.status == 'published') {
-    try {
-      result = yield _form.receive(id, data.nonce, data);
-    }catch(e) {
-      if(e instanceof _form.nonce.InvalidNonce) {
-        // silently fail.
-        this.redirect(redirect);
-        return;
-      }
-      else
-      {
-        yield this.render('400', {layout:false});
-        this.status = 400;
-        console.error(e);
-        return;
-      }
-    }
-  } else { //form is not published, send 403 error.
-    yield this.render('403', {layout:false});
-    this.status = 403;
-    return;
+  else if( data.name.length<4 )
+  {
+  	flag=1;
+  	message="Name Length should be greater than 4 Characters.";
   }
-  if(!result) {
-    yield this.render('400', {layout:false});
-    this.status = 400;
-    return;
+  else if( !illegalChars.test(data.name) )
+  {
+  	flag=1;
+  	message="Illegal Characters in Name. Only letters allowed.";
+  }
+  else if( !re.test(data.email) )
+  {
+  	flag=1;
+  	message="Please enter a Valid Email.";
+  }
+  else if( isNaN(parseInt(stripped)) )
+  {
+  	flag=1;
+  	message="Please enter a valid Phone Number.";
+  }
+  else if( stripped.length != 10 )
+  {
+  	flag=1;
+  	message="Phone Number Length should be 10 numbers.";
   }
   else
   {
-  	 if(redirect=='/thanks'){
-
-  	 	yield this.render(redirect, {
-	    layout: false,
-	    facility : fdata.facility,
-	  });
-
-  	 }
-     else{
-     	this.redirect(redirect)
-     }
+  	flag=0;
   }
+  if(flag==1)
+  {
+  	let data = yield _form.get(id);
+  	let  questions = yield _formbuilder.getQuestions(id);
+  	this.set('Access-Control-Allow-Origin','*');
+  	var template = this.request.query.hasOwnProperty('m') ? 'form' : 'form-full';
+  	yield this.render(template, {
+    type: data.type,
+    status: data.status,
+    questions : questions,
+    nonce: yield _form.nonce.create(data.id, false),
+    isPartial: this.request.query.hasOwnProperty('m'),
+    // TODO—doesn't account for non-SSL traffic and relies entirely on client
+    // to generate URL
+    url: URL,
+    postback: `${URL}/form/${id}`,
+    layout: false,
+    session: {},
+    error: message
+  });
+  return;
+  }
+  else{
+  	data.ip = this.request.ip;
+    let result;
+    data.phone = stripped;
+    let fdata = yield _form.get(id) || {};
+    if(fdata.status=="unpublished")   
+      {   
+        yield this.render('unpublished',{layout: false});   
+        this.status = 400;    
+        return;   
+      }
+    console.log("We got fdata", fdata);
+    let redirect = fdata.redirect_url || '/thanks';
+    this.session = {
+    	facilityName : fdata.facility
+    }
+  
+  
+    if(fdata.status == 'published') {
+      try {
+        result = yield _form.receive(id, data.nonce, data);
+      }catch(e) {
+        if(e instanceof _form.nonce.InvalidNonce) {
+          // silently fail.
+          this.redirect(redirect);
+          return;
+        }
+        else
+        {
+          yield this.render('400', {layout:false});
+          this.status = 400;
+          console.error(e);
+          return;
+        }
+      }
+    } else { //form is not published, send 403 error.
+      yield this.render('403', {layout:false});
+      this.status = 403;
+      return;
+    }
+    if(!result) {
+      yield this.render('400', {layout:false});
+      this.status = 400;
+      return;
+    }
+    else
+    {
+    	 if(redirect=='/thanks'){
+  
+    	 	yield this.render(redirect, {
+  	    layout: false,
+  	    facility : fdata.facility,
+  	  });
+  
+    	 }
+       else{
+       	this.redirect(redirect)
+       }
+    }
+}
 }
 
 

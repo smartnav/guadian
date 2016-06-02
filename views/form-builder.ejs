@@ -31,13 +31,13 @@
      <td  width="5%" class="align-center bold" style="padding:15px">{{$index+1}}</td>
      <td style="padding:15px"><input type="text" class="form-control" value="{{quest.question}}"></td>
      <td style="padding:15px" width="15%">
-     <select class="form-control" ng-model="types">
+     <select class="form-control" ng-model="types" name = 'types'>
      <option value="">Select Type</option>
      <option value="range" ng-selected="quest.type=='range'" >Rate</option>
      <option value="text" ng-selected="quest.type=='text'" >Text</option>
      </select></td>
      <td style="padding:15px" class="align-center" width="12%">
-     <select class="form-control" name="is_hide" disabled>
+     <select class="form-control" name="is_hide" >
      <option value="false" ng-selected="quest.is_hide==false" >Show</option>
      <option value="true" ng-selected="quest.is_hide==true" >Hide</option>
      </select>

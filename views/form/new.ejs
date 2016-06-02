@@ -34,16 +34,56 @@ if(newForm == false) {
  <script type="text/javascript">
  function validate()
       {
+         var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+          var yelp = document.getElementById('inputYelp').value;
+          var google = document.getElementById('inputGooglePlus').value;
+          var page_form = document.getElementById('inputPageWithForm').value;
+          var redirect = document.getElementById('inputRedirectURL').value;
          if( document.myForm.facility.value == "" )
          {
             document.getElementById('error_facility').innerHTML = "Please enter Facility.";
             document.myForm.facility.focus() ;
-
             return false;
          }
          else
          {
           document.getElementById('error_facility').innerHTML = "";
+         }
+         if(yelp != "" && !re.test(yelp))
+         {
+          document.getElementById('error_yelp').innerHTML = "Please enter a valid Url.";
+          return false;
+         }
+         else
+         {
+          document.getElementById('error_yelp').innerHTML = "";
+         }
+         if(google != "" && !re.test(google))
+         {
+          document.getElementById('error_google').innerHTML = "Please enter a valid Url.";
+          return false;
+         }
+         else
+         {
+          document.getElementById('error_google').innerHTML = "";
+         }
+         if(page_form != "" && !re.test(page_form))
+         {
+          document.getElementById('error_form').innerHTML = "Please enter a valid Url.";
+          return false;
+         }
+         else
+         {
+          document.getElementById('error_form').innerHTML = "";
+         }
+         if(redirect != "" && !re.test(redirect))
+         {
+          document.getElementById('error_redirect').innerHTML = "Please enter a valid Url.";
+          return false;
+         }
+         else
+         {
+          document.getElementById('error_redirect').innerHTML = "";
          }
          return( true );
        }
@@ -59,10 +99,16 @@ if(newForm == false) {
       <div class="panel-heading h2 blue">New Form</div>
       <div class="panel-body">
       <% if(button == "proceed") { %>
+
        <form class="form-horizontal" action="/form/new" name="myForm" method="post" onsubmit="return validate()" novalidate >
       <% } else { %>
         <form class="form-horizontal" method="post" onsubmit="return validate()" novalidate >
       <% } %>
+      <% if (message.length > 0) { %>
+        <div class="alert alert-danger">
+          <%= message %>
+        </div>
+        <% } %>
           <div class="form-group">
             <label for="inputFacility" class="col-sm-2 control-label">Facility</label>
             <div class="col-sm-10">
@@ -76,6 +122,7 @@ if(newForm == false) {
               <span class="input-group-addon"><i class="fa fa-yelp"></i></span>
               <input type="text" class="form-control" id="inputYelp" name="yelp" placeholder="Yelp URL" value="<%= yelpURL %>">
             </div>
+           <label class="col-sm-2 control-label"></label><div class="input-group col-sm-10">  <div id=error_yelp name=error style="color:red"></div></div>
           </div>
           <div class="form-group">
             <label for="inputGooglePlus" class="col-sm-2 control-label">Google Plus</label>
@@ -83,18 +130,21 @@ if(newForm == false) {
               <span class="input-group-addon"><i class="fa fa-google-plus"></i></span>
               <input type="text" class="form-control" id="inputGooglePlus" name="google_plus" placeholder="Google Plus URL" value="<%= googleURL %>">
             </div>
+            <label class="col-sm-2 control-label"></label><div class="input-group col-sm-10">  <div id=error_google name=error style="color:red"></div></div>
           </div>
           <div id="advanced-section" class="collapse">
             <div class="form-group">
               <label for="inputPageWithForm" class="col-sm-2 control-label">Form Location</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="inputPageWithForm" name="allowed_origins[]" placeholder="http://www.example.com/feedback" value="<%= allowed_origins %>">
+                <div id=error_form name=error style="color:red"></div>
               </div>
             </div>
             <div class="form-group">
               <label for="inputRedirectURL" class="col-sm-2 control-label">Redirect URL</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="inputRedirectURL" name="redirect_url" placeholder="http://www.example.com/thanks" value="<%= redirect_url %>">
+              <div id=error_redirect name=error style="color:red"></div>
               </div>
             </div>
             <div class="form-group">

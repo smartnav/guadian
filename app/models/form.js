@@ -165,7 +165,7 @@ const form = {
        let done = conxData[1];
        
        //TODO: Allow allowed_origins
-       console.log(data);
+       console.log('data',data+' id ',owner_id+ ' formid ',form_id);
        console.log( `UPDATE "forms" SET type=$3,
                                         facility=$4,
                                         yelp=$5,
