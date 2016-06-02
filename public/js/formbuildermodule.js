@@ -2,7 +2,7 @@
     'use strict';
 
 angular
-.module('formbuilder',['ngAlertify'])
+.module('formbuilder',['ngAlertify','ngAnimate','toaster'])
 .service('QuestionsListService',QuestionsListService)
 .service('QuestionsSaveService',QuestionsSaveService)
 .service('QuestionsRemoveService',QuestionsRemoveService)

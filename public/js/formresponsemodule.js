@@ -1,5 +1,5 @@
 angular
-.module('response',['ngTable','ngAlertify'])
+.module('response',['ngTable','ngAlertify','ngAnimate','toaster'])
 .controller('FormResponse',function($scope,$http,NgTableParams,$timeout,$compile,alertify){
 	$scope.argu = {};
 	$scope.responses = {};

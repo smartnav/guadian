@@ -283,7 +283,7 @@ const form = {
       let done = conxData[1];
       id = "'"+id+"'";
       if (status == 'trashed' && coutRes == 0) {
-        let formDel = yield client.queryPromise('DELETE FROM questions WHERE formid = '+id);
+        let formDel = yield client.queryPromise(`DELETE FROM "questions" WHERE formid = $1`, [id]);
         var query = 'DELETE FROM forms WHERE id = '+id;
       }
       else

@@ -13,15 +13,22 @@
     <!-- <script src="/js/bootstrap.js" crossorigin="anonymous"></script> -->
     <link rel="stylesheet" href="<%= process.env.CDN %>/css/style.css"> <!-- load fontawesome -->
     <link rel="stylesheet" src="<%= process.env.CDN %>/css/alertify.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.1.0/toaster.min.css" rel="stylesheet" />
+
+    
 
     <style>
         body        { padding-top:20px; }
     </style>
 </head>
 <body>
+    
   <div class="container">
+    
     <%- include('./nav/header.ejs') %>
     <%- body %>
   </div>
+  <script src="https://code.angularjs.org/1.2.0/angular-animate.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.1.0/toaster.min.js"></script>
 </body>
 </html>

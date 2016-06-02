@@ -1,6 +1,6 @@
 angular
-.module('dashboard',['ngTable','ngAlertify'])
-.controller('Response',function($scope,$http,NgTableParams,$timeout,$compile,alertify){
+.module('dashboard',['ngTable','ngAlertify','toaster', 'ngAnimate'])
+.controller('Response',function($scope,$http,NgTableParams,$timeout,$compile,alertify,toaster){
 	
 	$scope.responses = {};
 	$scope.total = 0;
@@ -57,7 +57,7 @@ angular
 
     			if(response.data.changed)
     			{
-                    alertify.delay(2000).success(status+' Successfully');
+                    toaster.pop('success', "Success", status+' Successfully');
                     if(status=='unapproved')
                     {
                         var chstatus = "'approved'" 
@@ -87,7 +87,7 @@ angular
     		},function(err){
 
     			if(err) {
-    				alertify.delay(2000).error('Woops! There was an error updating the response.');
+    				toaster.pop('error', "Error", 'Woops! There was an error updating the response.');
     			}
     		})
     }
@@ -108,7 +108,8 @@ angular
 
                 if(response.data.updated)
                 {
-                    alertify.delay(2000).success('Response Updated Successfully');
+                    //alertify.delay(2000).success('Response Updated Successfully');
+		    toaster.pop('success', "Success", 'Response Updated Successfully');
                     $('#erModal').modal('toggle');
                     $scope.responsesCount();
                     $scope.getResponses.reload();
@@ -120,7 +121,7 @@ angular
             },function(err){
 
                 if(err) {
-                    alertify.delay(2000).error('Woops! There was an error updating the response.');
+                    toaster.pop('error', "Error", 'Woops! There was an error updating the response.');
                 }
             })
     }
@@ -130,7 +131,7 @@ angular
 
 })
 
-.controller('ActiveForms',function($scope,$http,NgTableParams,$timeout,$compile,alertify){
+.controller('ActiveForms',function($scope,$http,NgTableParams,$timeout,$compile,alertify,toaster){
 
     $scope.activeforms = {};
     $scope.total = 0;
@@ -170,7 +171,6 @@ angular
 
     
      $scope.toggleStatus = function(model,id,status,AppRes,UnAppRes) {
-
         var coutRes = 0;
     if (UnAppRes > 0 || AppRes > 0) {
         coutRes = 1;
@@ -178,6 +178,7 @@ angular
     }
         if(status=='trashed')
         {
+	    
             var conf = confirm('Are You Sure Want to Delete This?');
             if(conf===false)
                 return;
@@ -188,7 +189,8 @@ angular
 
                 if(response.data.changed)
                 {
-                    alertify.delay(2000).success(status+' Successfully');
+                    //alertify.delay(2000).success(status+' Successfully');
+		    toaster.pop('success', "Success", status+' Successfully');
                     if(status=='unpublished')
                     {
                         var chstatus = "'published'" 
@@ -220,7 +222,8 @@ angular
             },function(err){
 
                 if(err) {
-                    alertify.delay(2000).error('Woops! There was an error updating the response.');
+		    toaster.pop('error', "Error", 'Woops! There was an error updating the response.');
+                    //alertify.delay(2000).error('Woops! There was an error updating the response.');
                 }
             })
     }
