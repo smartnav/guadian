@@ -2,20 +2,77 @@
   window.console = window.console || {};
   window.console.log = window.console.log || function(){};
   window.console.warn = window.console.warn || function(){};
-  window.validate = function(){
+function maxLength(el) {    
+    if (!('maxLength' in el)) {
+        var max = el.attributes.maxLength.value;
+        el.onkeypress = function () {
+            if (this.value.length >= max) return false;
+        };
+    }
+}
 
+maxLength(document.getElementById("osrev-comments"));
+  window.validate = function(){
+    console.log("in validate");
     var name = document.getElementById("osrev-name").value;
     var email = document.getElementById("osrev-email").value;
     var phone = document.getElementById("osrev-tel").value;
-    if(name=='' || email=='' || phone=='') {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; 
+    var illegalChars = /^[a-zA-Z\s]+$/;
+    var stripped = phone.replace(/[\(\)\.\-\ ]/g, '');
+    console.log("Stripped Value",stripped);
+    if(name=='' && email=='' && phone=='') {
       alert('Please fill in all fields.')
+      document.getElementById('error_name').innerHTML = "Please enter Name.";
+      document.getElementById('error_email').innerHTML = "Please enter Email Address.";
+      document.getElementById('error_phone').innerHTML = "Please enter Phone Number.";
+      return false;
     }
-    else {
-      document.getElementById("ratingsForm").submit();
+    if(name=="")
+    {
+      document.getElementById('error_name').innerHTML = "Please enter Name.";
+      return false;
+    }
+    else if(name.length<4)
+    {
+    document.getElementById('error_name').innerHTML = "Name Length should be greater than 4 Characters.";
+      return false;
+    }
+    else if(!illegalChars.test(name))
+    {
+    document.getElementById('error_name').innerHTML = "Illegal Characters in Name. Only letters allowed.";
+      return false;
 
     }
-
-
+    else
+    {
+      document.getElementById('error_name').innerHTML = "";
+    }
+    if(email=="" || !re.test(email))
+    {
+      document.getElementById('error_email').innerHTML = "Please enter a Valid Email.";
+      return false;
+    }
+    else
+    {
+      document.getElementById('error_email').innerHTML = "";
+    }
+    if(phone=="" || isNaN(parseInt(stripped)))
+    {
+      document.getElementById('error_phone').innerHTML = "Please enter a valid Phone Number.";
+      return false;
+    }
+    else if((stripped.length != 10))
+    {
+      document.getElementById('error_phone').innerHTML = "Phone Number Length should be 10 numbers.";
+      return false;
+    }
+    else
+    {
+      document.getElementById('error_phone').innerHTML = "";
+    }
+    document.getElementById("osrev-tel").value = stripped;
+    return true;
   }
   window.ReviewForm = function(form_id, element_id) {
     var el = document.getElementById(element_id);
