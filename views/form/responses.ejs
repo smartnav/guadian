@@ -160,7 +160,8 @@
              <!-- {{textQuestions}}-->    
               <div ng-repeat="rep in textQuestions">    
                     <div class="response-body-question">{{rep.text}}</div>    
-                    <textarea  class="form-control" ng-model="rep.response_text" style="width:450px;height:50px" required></textarea><br />       
+                    <textarea  class="form-control" my-maxlength="5000" ng-model="rep.response_text" style="width:450px;height:50px" required></textarea><div id=char_limit style:""><i>Maximum limit 5000 characters.</i></div> <br />
+                          
               </div> 
              Comments : <textarea id="rescomments" style="width:400px;height:100px" my-maxlength="2000" ng-model="textareaText" ></textarea>
              <div id=char_limit style:""><i>Maximum limit 2000 characters.</i></div>

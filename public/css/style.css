@@ -468,7 +468,6 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
 {
   display: none;
 }
-
 /*form builder css*/
 
 /*smardata*/
@@ -476,3 +475,4 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
       font-weight: bold;    
       background: yellow none repeat scroll 0 0;    
   }  
+
