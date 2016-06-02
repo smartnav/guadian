@@ -34,7 +34,7 @@ if(newForm == false) {
  <script type="text/javascript">
  function validate()
       {
-         var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+        var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
           var yelp = document.getElementById('inputYelp').value;
           var google = document.getElementById('inputGooglePlus').value;
           var page_form = document.getElementById('inputPageWithForm').value;
@@ -102,7 +102,7 @@ if(newForm == false) {
 
        <form class="form-horizontal" action="/form/new" name="myForm" method="post" onsubmit="return validate()" novalidate >
       <% } else { %>
-        <form class="form-horizontal" method="post" onsubmit="return validate()" novalidate >
+        <form class="form-horizontal" method="post" name="myForm" onsubmit="return validate()" novalidate >
       <% } %>
       <% if (message.length > 0) { %>
         <div class="alert alert-danger">

@@ -45,7 +45,8 @@ CREATE TABLE "questions" (
   "formid" UUID NOT NULL REFERENCES "forms"("id"),
   "orderid" int NULL,
   "type" E_TYPE NULL DEFAULT 'text',
-  "question" TEXT NULL DEFAULT 'question'
+  "question" TEXT NULL DEFAULT 'question',
+  "is_hide" BOOLEAN NULL DEFAULT false
 );
 
 CREATE TABLE "responders" (
