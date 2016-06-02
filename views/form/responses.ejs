@@ -1,0 +1,237 @@
+<style>   
+      .boldClass {    
+          font-weight: bold;    
+          background: yellow none repeat scroll 0 0;    
+      }   
+          
+  </style>
+<div ng-app="response">    
+    <div class="row"  ng-controller="FormResponse">
+      
+     <div class="container" id="tab-body" ng-init="formid='<%= formid %>'">
+  <h2>View All Responses For <span class="label label-default">{{facility}}</span></h2>
+  <div class="outer" ng-init="changeFormStatus('approved')">
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home" ng-click="changeFormStatus('approved')">Approved</a></li>
+    <li><a data-toggle="tab" href="#menu1" ng-click="changeFormStatus('unapproved')">Unapproved</a></li>
+    <li><a data-toggle="tab" href="#menu2" ng-click="changeFormStatus('trashed')">Trashed</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>Published</h3>
+      <table class="table table-hover" ng-table="getFormResponses" id="responses">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th class="col-md-8">Review</th>
+              <!--<th class="text-center">Recommendation</th>
+              <th class="text-center">Staff</th>
+              <th class="text-center">Care</th>
+              <th class="text-center">Discharge</th>-->
+              <th>Actions</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody ng-hide="total==0">
+           <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
+            <td>{{$index+1}}</td>
+
+
+            <td  data-title="'comments'">
+              <div class="response-body">
+                <div ng-repeat="rep in row.questions">
+<div class="response-body-question" ng-class="rep.is_hide == true? 'boldClass' : ''">{{rep.text}}</div>
+                  <div  class="response-body-response">{{rep.response_text}}</div>
+                  <div class="response-body-response">{{rep.response_rating}}</div>
+                </div>
+              </div>
+              <div class="response-footer">
+                <div class="response-body-responder"><em>By</em> {{row.responder_name}} <em>on</em> {{row.date | date:"MM/dd/yyyy"}}</div>
+              </div>
+            </td>
+
+
+            <td ng-if="row.status=='approved'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved')">Unapprove</button></td>
+            <td ng-if="row.status=='approved' && row.contacted_status == 1" id="{{row.responderid}}"><button class="btn btn-cancel" disabled >Send an Email</button></td>
+            <td ng-if="row.status=='approved' && row.contacted_status == 0" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="generateEmailToResponder('responses',row.formid, row.responderid,'approved')">Send an Email</button></td>
+            <td ng-if="row.status=='unapproved'" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
+            <td ng-if="row.status===null" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
+            <td ng-if="row.status!='trashed'">
+            <span ng-click="editFormResponse(row.responderid,row.comments)" class="glyphicon glyphicon-pencil"></span>
+            <a href="#" ng-click="formResponseToggleStatus('responses',row.responderid,'trashed')"><i class="fa fa-trash-o"></i> Trash</a></td>
+          </tr>
+          </tbody>
+          </table>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <h3>Unpublished</h3>
+      <table class="table table-hover" ng-table="getFormResponses" id="responses">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th class="col-md-8">Review</th>
+              <!--<th class="text-center">Recommendation</th>
+              <th class="text-center">Staff</th>
+              <th class="text-center">Care</th>
+              <th class="text-center">Discharge</th>-->
+              <th>Actions</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody ng-hide="total==0">
+           <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
+            <td>{{$index+1}}</td>
+
+
+            <td  data-title="'comments'">
+              <div class="response-body">
+                <div ng-repeat="rep in row.questions">
+                  <div class="response-body-question">{{rep.text}}</div>
+                  <div  class="response-body-response">{{rep.response_text}}</div>
+                  <div class="response-body-response">{{rep.response_rating}}</div>
+                </div>
+              </div>
+              <div class="response-footer">
+                <div class="response-body-responder"><em>By</em> {{row.responder_name}} <em>on</em> {{row.date | date:"MM/dd/yyyy"}}</div>
+              </div>
+            </td>
+            <!--<td class="text-center" data-title="'recommend'">{{row .recommend}}/5</td>
+            <td class="text-center" data-title="'staff'">{{row.staff}}/5</td>
+            <td class="text-center" data-title="'care'"> {{row.care}}/5</td>
+            <td class="text-center" data-title="'discharge'"> <span ng-if="row.discharge==null">N/A</span> {{row.discharge}}/5</td>-->
+
+            <td ng-if="row.status=='approved'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved')">Unapprove</button></td>
+            <td ng-if="row.status=='unapproved'" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
+            <td ng-if="row.status===null" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
+            <td ng-if="row.status!='trashed'">
+<span style="cursor:pointer;" ng-click="editFormResponse(row.responderid,row.comments,row.questions)" class="glyphicon glyphicon-pencil"></span>
+            <a href="#" ng-click="formResponseToggleStatus('responses',row.responderid,'trashed')"><i class="fa fa-trash-o"></i> Trash</a></td>
+          </tr>
+          </tbody>
+          </table>
+    </div>
+    <div id="menu2" class="tab-pane fade">
+      <h3>Trashed</h3>
+      <table class="table table-hover" ng-table="getFormResponses" id="responses">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th class="col-md-8">Review</th>
+              <!--<th class="text-center">Recommendation</th>
+              <th class="text-center">Staff</th>
+              <th class="text-center">Care</th>
+              <th class="text-center">Discharge</th>-->
+              <th>Actions</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody ng-hide="total==0">
+           <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
+            <td>{{$index+1}}</td>
+
+
+            <td  data-title="'comments'">
+              <div class="response-body">
+                <div ng-repeat="rep in row.questions">
+                  <div class="response-body-question">{{rep.text}}</div>
+                  <div  class="response-body-response">{{rep.response_text}}</div>
+                  <div class="response-body-response">{{rep.response_rating}}</div>
+                  
+                </div>
+              </div>
+              <div class="response-footer">
+                <div class="response-body-responder"><em>By</em> {{row.responder_name}} <em>on</em> {{row.date | date:"MM/dd/yyyy"}}</div>
+              </div>
+            </td>
+              <td ng-if="row.status=='trashed'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved')">Unapprove</button></td>
+              <td ng-if="row.status=='trashed'"><span ng-click="editFormResponse(row.responderid,row.comments)" class="glyphicon glyphicon-pencil"></span></td>
+          </tr>
+          </tbody>
+          </table>
+      </div>
+    </div>
+    </div>
+  </div>
+        
+       
+        <!-- Modal for editing -->
+        <div class="modal fade" id="erModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Edit Response</h4>
+            </div>
+            <div class="modal-body">
+             <!-- {{textQuestions}}-->    
+              <div ng-repeat="rep in textQuestions">    
+                    <div class="response-body-question">{{rep.text}}</div>    
+                    <textarea  class="form-control" ng-model="rep.response_text" style="width:450px;height:50px" required></textarea><br />       
+              </div> 
+             Comments : <textarea id="rescomments" style="width:400px;height:100px"  ></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+<button type="button" class="btn btn-primary" ng-click="updateFormResponse(textQuestions)">Save changes</button>            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Modal for emailing -->
+    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Contact Responder</h4>
+            </div>
+            <div class="modal-body">
+            <div id="YelpGoogle" style="display:none">
+              Yelp:<input type="text" ng-model="Yelp_Google.yelp">
+              Google Plus:<input type="text" ng-model="Yelp_Google.google_plus">
+              <button type="button" class="btn btn-primary" ng-click="SaveYG(Yelp_Google)">Save</button>
+              </div>
+             To: <input type="text" value="xxx@gmail.com">
+             From: <input type="text" value="xxx@gmail.com">
+             Body: <textarea id="rescomments" style="width:400px;height:400px"  ></textarea>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="pull-left">Rather do it from your own email? Click here</a>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" ng-click="sendEmailToResponder()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="<%= process.env.CDN %>/css/ng-table.min.css"></script>
+    <script src="<%= process.env.CDN %>/js/angular.min.js"></script>
+    <script src="<%= process.env.CDN %>/js/ngAlertify.js"></script>
+    <script src="<%= process.env.CDN %>/js/ng-table.min.js"></script>
+    <script src="<%= process.env.CDN %>/js/formresponsemodule.js"></script>
+    
+
+    </div>
+
+</div>
+
+
+
+
+    

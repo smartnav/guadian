@@ -1,0 +1,85 @@
+<div ng-app="admin">
+    <div class="page-header">
+      <h1>Admin</h1>
+    </div>
+    <div class="row">
+
+        <!-- GOOGLE INFORMATION -->
+        <div class="col-xs-12 col-sm-4 col-lg-4">
+            <div class="well">
+                <h3 class="text-center">Total Users</h3>
+                <p>To Be added</p>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-lg-4">
+            <div class="well">
+                <h3 class="text-center">Total Reviews</h3>
+                <p>To Be added</p>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-lg-4">
+            <div class="well">
+                <h3 class="text-center">Total Forms</h3>
+                <p>To Be added</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-lg-12">
+          <h2>Site Status</h2>
+        </div>
+
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Service</th> <th>Status</th>  <th>Notes</th> <th></th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+
+
+            <tr>
+              <th>TODO</th>
+              <td>NA</td>
+              <td>NA</td>
+            </tr>
+
+      </table>
+
+
+    </div>
+
+
+    <div>
+
+    <div ng-controller="Log">
+    <table  class="table table-striped table-hover" ng-table="getLogs">
+          <thead>
+            <tr>
+              <th>ID</th> <th>Table</th>  <th>Operation</th> <th>User</th><th>Action</th><th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+
+
+            <tr ng-repeat="row in $data" >
+              <th scope="row">{{$index+1}}</th>
+              <td>{{row.model}}</td>  
+              <td>{{row.operation}}</td> 
+              <td>{{row.name}}</td> 
+              <td>{{row.details}}</td> 
+              <td>{{row.log_time}}</td> 
+            </tr>
+
+      </table>
+    </div>  
+    </div>
+
+</div>
+    <script src="/css/ng-table.min.css"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/ng-table.min.js"></script>
+    <script src="/js/adminmodule.js"></script>
+

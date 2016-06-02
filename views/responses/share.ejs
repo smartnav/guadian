@@ -1,0 +1,70 @@
+<div class="page-header">
+  <h1>Share Responses</h1>
+</div>
+
+<div class="row" ng-app="share" ng-controller="ShareLink">
+  <div class="col-xs-12 col-sm-12 col-lg-12">
+    <h3>Select a Form</h3>
+  </div>
+  <div class="col-xs-4 col-sm-4 col-lg-4" >
+    <select class="form-control col-sm-4" ng-change="makeLink()" ng-model="formid">
+      <option value="0">Select Form</option>
+      <option ng-repeat="form in forms" value="{{form.id}}">{{form.facility}}</option>
+    </select>
+  </div>
+  <br>
+  
+  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable">
+    <h3>Embed Response Code <input type="checkbox" ng-model="embedshow" ng-show="formid!=0"></h3>
+    <div ng-show="embedshow" ng-show="formid!=0">
+      <p>Use this code if you want to embed the form on your website but don't want to hassle with styling it yourself.</p>
+      <label for=iframe>Pre-Styled Form</label> - <a  class="primary clipboard-btn" data-clipboard-target="#iframe" data-toggle="tooltip" title="Copied!">copy to clipboard</a>
+      <br>
+      <input type=text id=iframe readonly onclick=this.select() value="<%= "<iframe src='{{link}}'></iframe>" %>">
+      <div class="preview-embed">
+        <div class="preview-embed-title" style="clear:both"><label>Pre-Styled Response Preview: </label></div>
+        <iframe src='{{link}}'></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable">
+    <h3>Embed Response Code with Custom Styling <input type="checkbox" ng-model="embedCustomshow" ng-show="formid!=0"></h3>
+    <div ng-show="embedCustomshow" ng-show="formid!=0">
+      <p>To use your site's custom styling, embed this code on your website.</p>
+      <label for=custom>Custom Styling</label> - <a  class="primary clipboard-btn" data-clipboard-target="#custom" data-toggle="tooltip" title="Copied!">copy to clipboard</a>
+    <textarea id=custom readonly onclick=this.select()><%= `<noscript id='guardianreview-response-container'>
+          <iframe src='{{link}}'></iframe>
+        </noscript>
+        <script src='{{jsurl}}'></script>
+        <script>new window.FormResponse('{{formid}}','guardianreview-response-container');</script>
+        `.replace(/[ |\r|\n]{2,}/g,''); %>
+      </textarea>
+    </div>
+  </div>
+
+</div>
+<script src="/js/angular.min.js"></script>
+<script src="/js/sharemodule.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.5/clipboard.min.js"></script>
+<script>
+  window.onload = function() {
+    var tooltipSelector = '.clipboard-btn';
+    var clipboard = new Clipboard(tooltipSelector);
+    var options = { trigger:"manual" };
+    $(tooltipSelector).tooltip(options);
+    $(tooltipSelector).on('shown.bs.tooltip', function() {
+      window.setTimeout(hideToolTip, 3000);
+    });
+    function hideToolTip() {
+      $(tooltipSelector).tooltip('hide')
+    }
+    clipboard.on('success', function(e) {
+      console.info('Action:', e.action);
+      console.info('Text:', e.text);
+      console.info('Trigger:', e.trigger);
+      $(e.trigger).tooltip('show')
+      e.clearSelection();
+    });
+  };
+</script>

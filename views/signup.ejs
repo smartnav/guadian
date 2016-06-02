@@ -1,0 +1,60 @@
+
+<script type="text/javascript">
+console.log("in js");
+function validate()
+      {
+         if( document.myForm.name.value == "" )
+         {
+            document.getElementById('error_name').innerHTML = "Please enter Name.";
+            document.myForm.name.focus() ;
+
+            return false;
+         }
+         if( document.myForm.name.value.length < 4)
+         {
+          document.getElementById('error_name').innerHTML = "Name Should be 4 Characters Long";
+          document.myForm.name.focus();
+          return false;
+         }
+         return true;
+         }
+</script>
+  <div class="page-header">
+    <h1>Sign Up!</h1>
+
+  </div>
+  <div class="row">
+
+    <div class="col-xs-12 col-sm-6 col-lg-6">
+
+
+      <!-- show any messages that come back with authentication -->
+      <% if (message.length > 0) { %>
+        <div class="alert alert-danger">
+          <%= message %>
+        </div>
+        <% } %>
+
+          <form action="/signup" method="post" name="myForm" novalidate onsubmit="return validate()">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" required class="form-control" name="name" placeholder="John Doe">
+               <div id=error_name name=error style="color:red"></div>
+                          </div>
+            <button type="submit" class="btn btn-primary btn-lg"><span class="fa fa-google-plus"></span> Signup using Google</button>
+          </form>
+
+
+    </div>
+    <div class="col-xs-12 col-sm-6 col-lg-6">
+      <p>
+        Guardian Review Software is run by Osmond Marketing, a company based in San Clemente, CA.
+      </p>
+      <p>
+        We use Google's OpenID Connect to verify that this is really you. We do not store passwords in any form, making our service secure and safe.
+      </p>
+    </div>
+
+
+  </div>
+<hr>

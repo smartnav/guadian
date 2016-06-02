@@ -1,0 +1,115 @@
+<%
+if(newForm == false) {
+  facilityName = existingForm.facility;
+  yelpURL = existingForm.yelp;
+  googleURL = existingForm.google_plus;
+  allowed_origins = existingForm.allowed_origins;
+  locations = existingForm.locations;
+  redirect_url = existingForm.redirect_url;
+  type = existingForm.type;
+  button = "save"
+
+  if(allowed_origins.length > 0){
+    if(allowed_origins[0].indexOf("null//null") != -1) {
+      allowed_origins = "";
+    }
+    console.log(typeof allowed_origins);
+    allowed_origins = allowed_origins.replace("[",'').replace("]",''); //remove brackets
+  }
+  else {
+    allowed_origins = "";
+  }
+
+}else {
+  facilityName = "";
+  yelpURL = "";
+  googleURL = "";
+  allowed_origins = "";;
+  redirect_url = "";
+  type = "";
+  button = "proceed";
+}
+%>
+
+
+
+<div class="page-header">
+  <h1>Create a New Form</h1>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-lg-12">
+    <div class="panel">
+      <div class="panel-heading h2 blue">New Form</div>
+      <div class="panel-body">
+      <% if(button == "proceed") { %>
+       <form class="form-horizontal" action="/form/new" method="post">
+      <% } else { %>
+        <form class="form-horizontal" method="post">
+      <% } %>
+          <div class="form-group">
+            <label for="inputFacility" class="col-sm-2 control-label">Facility</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputFacility" name="facility" placeholder="Example Inc." required value="<%= facilityName %>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputYelp" class="col-sm-2 control-label">Yelp</label>
+            <div class="input-group col-sm-10">
+              <span class="input-group-addon"><i class="fa fa-yelp"></i></span>
+              <input type="text" class="form-control" id="inputYelp" name="yelp" placeholder="Yelp URL" value="<%= yelpURL %>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputGooglePlus" class="col-sm-2 control-label">Google Plus</label>
+            <div class="input-group col-sm-10">
+              <span class="input-group-addon"><i class="fa fa-google-plus"></i></span>
+              <input type="text" class="form-control" id="inputGooglePlus" name="google_plus" placeholder="Google Plus URL" value="<%= googleURL %>">
+            </div>
+          </div>
+          <div id="advanced-section" class="collapse">
+            <div class="form-group">
+              <label for="inputPageWithForm" class="col-sm-2 control-label">Form Location</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputPageWithForm" name="allowed_origins[]" placeholder="http://www.example.com/feedback" value="<%= allowed_origins %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputRedirectURL" class="col-sm-2 control-label">Redirect URL</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputRedirectURL" name="redirect_url" placeholder="http://www.example.com/thanks" value="<%= redirect_url %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <label class="radio-inline">
+                  <input type="radio" name="type" id="inputShortStay" value="shortStay" <%- (type=="shortStay" || type=="") ? "checked" : "" %>> Short-term patient
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="type" id="inputShortStay" value="standard" <%- type=="standard" ? "checked" : "" %>> Long-term resident
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <div class="col-sm-3">
+              <% if(button == "proceed") { %>
+                <button type="submit" class="btn btn-primary btn-lg">Proceed to Form Builder</button>
+              <% } else if(button == "save") { %>
+                <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+              <% } %>
+              </div>
+              <div class="col-sm-4">
+                <a type="button" href="/dashboard" class="btn btn-cancel btn-lg">Cancel</a>
+              </div>
+              <div class="col-sm-2">
+                <button onclick="return false;" data-toggle="collapse" data-target="#advanced-section" class="btn btn-second-primary btn-lg pull-right">Advanced Settings</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

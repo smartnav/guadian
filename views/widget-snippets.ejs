@@ -1,0 +1,62 @@
+<div class="page-header">
+  <h1>Widgets and Links</h1>
+
+</div>
+<div class="row">
+  <h2>Facility: <%= facility %></h2>
+</div>
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable">
+    <h3>Direct Link</h3>
+    <p>Just need a link to share with your patients? Use this.</p>
+    <label for=shareable>Link</label> - <a  class="primary clipboard-btn" data-clipboard-target="#direct" data-toggle="tooltip" title="Copied!">copy to clipboard</a>
+    <input id="direct" type=text readonly value="<%= url %>/form/<%= formid %>" style="width:100%;" onclick=this.select()>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable">
+    <h3>Embed Form Code</h3>
+    <p>Use this code if you want to embed the form on your website but don't want to hassle with styling it yourself.</p>
+    <label for=iframe>Pre-Styled Form</label> - <a  class="primary clipboard-btn" data-clipboard-target="#iframe" data-toggle="tooltip" title="Copied!">copy to clipboard</a>
+    <input type=text id=iframe readonly onclick=this.select() value="<%= "<iframe src='" + url %>/form/<%= formid + "'></iframe>" %>">
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable">
+    <h3>Embed Form Code with Custom Styling</h3>
+    <p>To use your site's custom styling, embed this code on your website.</p>
+    <label for=custom>Custom Styling</label> - <a  class="primary clipboard-btn" data-clipboard-target="#custom" data-toggle="tooltip" title="Copied!">copy to clipboard</a>
+    <textarea id=custom readonly onclick=this.select()><%= `<noscript id=osrev-container>
+          <iframe src='${url}/form/${formid}'></iframe>
+        </noscript>
+        <script src='${url}/js/form.js'></script>
+        <script>new window.ReviewForm('${formid}','guardianreview-form-container');</script>
+        `.replace(/[ |\r|\n]{2,}/g,''); %>
+      </textarea>
+  </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.5/clipboard.min.js"></script>
+<script>
+window.onload = function() {
+  var tooltipSelector = '.clipboard-btn';
+var clipboard = new Clipboard(tooltipSelector);
+var options = { trigger:"manual" };
+$(tooltipSelector).tooltip(options);
+$(tooltipSelector).on('shown.bs.tooltip', function() {
+  window.setTimeout(hideToolTip, 3000);
+});
+function hideToolTip() {
+  $(tooltipSelector).tooltip('hide')
+}
+clipboard.on('success', function(e) {
+    console.info('Action:', e.action);
+    console.info('Text:', e.text);
+    console.info('Trigger:', e.trigger);
+    $(e.trigger).tooltip('show')
+    e.clearSelection();
+});
+};
+</script>

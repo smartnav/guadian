@@ -1,0 +1,10 @@
+#osrev-form {
+  max-width: 750px;
+}
+label[class|=osrev] {
+  display: block;
+  margin-top: 2em;
+}
+.submit {
+  text-align: right;
+}

@@ -1,0 +1,95 @@
+<div ng-app="formbuilder">    
+    <div class="row"  ng-controller="FormBuilderController as fb">
+      
+     <div class="container" id="tab-body" ng-init="fb.formId='<%= formid %>'">
+     <div class="p_section">
+     <div class="row">
+        <div class="col-sm-9">
+                <div class="left-align">
+                <button type="button" class="btn btn-primary"  ng-click="formbuilder=1;preview=0">Form Builder</button>
+                <button type="button" id="btnPreview" class="btn btn-success" ng-click="formbuilder=0;preview=1;fb.init()">Preview</button>
+                </div>
+
+        </div>
+        <div class="col-sm-3">
+    
+        </div>
+
+    </div>  
+    <br>  
+    <div class="alert alert-info fade in col-md-7" id="lockMessageContainer" >
+    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+    <strong><span id="lockMessage"></span></strong>
+    </div>
+    </div>
+     <table class="table table-striped table-bordered table-condensed" ng-init="formbuilder=1" ng-show="formbuilder==1" >
+     <tr>
+     <th class="align-center">#</th><th class="align-center">Question</th><th class="align-center">Type</th><th class="align-center">Show Qus </th>
+     <th class="align-center">Actions </th>
+     </tr>
+     <tr ng-repeat="quest in fb.questions" id="{{$index}}">
+     <td  width="5%" class="align-center bold" style="padding:15px">{{$index+1}}</td>
+     <td style="padding:15px"><input type="text" class="form-control" value="{{quest.question}}"></td>
+     <td style="padding:15px" width="15%">
+     <select class="form-control" ng-model="types" name="types" disabled>
+     <option value="">Select Type</option>
+     <option value="range" ng-selected="quest.type=='range'" >Rate</option>
+     <option value="text" ng-selected="quest.type=='text'" >Text</option>
+     </select></td>
+     <td style="padding:15px" class="align-center" width="12%">
+     <select class="form-control" name="is_hide" >
+     <option value="false" ng-selected="quest.is_hide==false" >Show</option>
+     <option value="true" ng-selected="quest.is_hide==true" >Hide</option>
+     </select>
+     <!-- <select class="form-control" name="is_hide">
+     <option value="show" ng-selected="quest.is_hide=='show'" >Show</option>
+     <option value="hide" ng-selected="quest.is_hide=='hide'" >Hide</option>
+     </select> -->
+     </td>
+     <td style="padding:15px" class="align-center" width="12%">
+     <i class="fa fa-refresh fa-spin fa-2x fa-fw"></i><i class="fa fa-floppy-o fa-2x" title="Click to Save Question"  ng-click="fb.saveQuestion($index)"></i>&nbsp;<i ng-show="fb.haveResponse===false"  title="Click to Remove Question" ng-click="fb.removeQuestion($index)" class="fa fa-trash-o fa-2x"></i></td>
+     </tr>
+     </table>
+
+
+
+
+     <table id="previewtable" class="table table-striped table-bordered table-condensed preview" ng-show="preview==1" >
+     <th class="align-center title">Preview</th>
+     <tr ng-repeat="quest in fb.questions">
+     <td class="spacing">{{quest.question}} <br> <form name="form1" method="POST"><span ng-if="quest.type=='range'"> 
+    
+    <label class="radio-inline">
+      <i class="fa fa-star"></i>
+    </label>
+    <label class="radio-inline">
+      <i class="fa fa-star"></i>
+    </label>
+    <label class="radio-inline">
+      <i class="fa fa-star"></i>
+    </label>
+     <label class="radio-inline">
+      <i class="fa fa-star"></i>
+    </label>
+     <label class="radio-inline">
+      <i class="fa fa-star"></i>
+    </label>
+  </span> <span ng-if="quest.type=='text'"> <textarea class="form-control" style="margin: 0px; width: 350px; height: 60px;"></textarea> </span></form> </td>
+     </tr>
+     </table>
+  
+
+  <div class="panel-footer" ng-hide="fb.editable===false">
+  <button  title="Click here to add questions" ng-show="fb.haveResponse===false" class="tooltip btn btn-success"  ng-show="fb.questions.length<15" ng-click="fb.addQuestion()">Add Question</button>
+  </div>
+    </div>
+
+    </div><script src="<%= process.env.CDN %>/js/angular.min.js"></script>
+    <script src="<%= process.env.CDN %>/js/ngAlertify.js"></script>
+    <script src="<%= process.env.CDN %>/js/formbuildermodule.js"></script>
+</div>
+
+<div id="loadingdiv"></div>
+
+
+    

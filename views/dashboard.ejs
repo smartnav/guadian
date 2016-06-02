@@ -1,0 +1,178 @@
+<div ng-app="dashboard">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+  </div>
+  <div class="row row-eq-height">
+
+    <!-- GOOGLE INFORMATION -->
+    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">Step 1:</div>
+        <div class="panel-body">
+          <h3 class="text-center">Create new Form</h3>
+          <p>Fill in information about your facility and create a form that customers can fill out.</p>
+          <a href="/form/new">
+            <span class="link-spanner"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">Step 2:</div>
+        <div class="panel-body">
+          <h3 class="text-center">Form to your website</h3>
+          <p>Share a link to the form with your customers or embed the form on your website.</p>
+          <a href="/form/share">
+            <span class="link-spanner"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">Step 3:</div>
+        <div class="panel-body">
+          <h3 class="text-center">Approve and Display</h3>
+          <p>Approve the reviews as they roll in and display them in a widget on your website.</p>
+          <a href="/responses/share">
+            <span class="link-spanner"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">Step 4:</div>
+        <div class="panel-body">
+          <h3 class="text-center">Contact Responders</h3>
+          <p>Ask those who reviewed your service to do the same on services like Yelp! and Google Plus.</p>
+          <a href="/responses/all">
+            <span class="link-spanner"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="row" ng-controller="ActiveForms">
+  <div class="col-xs-12 col-sm-12 col-lg-12">
+      <div class="panel">
+        <div class="panel-heading h2 green">Active Forms</div>
+        <div class="panel-body-no-padding">
+          <table id="activeForms" class="table table-hover" ng-table="getActiveForms">
+            <thead>
+              <tr>
+                <th class="">ID</th>
+                <th class="col-md-3">Facility</th>
+                <th class="col-md-1">Responses</th>
+                <th class="col-md-2 text-center">Responses Received</th>
+                <th class="col-md-2 text-center">Responses Awaiting Approval</th>
+                <th class="col-md-1 text-center">Edit Form</th>
+                <th class="col-md-2">Actions</th>
+                <th class="col-md-1"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="row in $data | orderBy: '-created'" id="forms-{{row.id}}">
+                <th scope="row">{{$index+1}}</th>
+                <td><a href='/form/{{row.id}}/facility'>{{row.facility}}</a>  </td>
+                <td><a href="/form/{{row.id}}/responses"><i class="fa fa-eye"></i> <em>View All</em></a></td>
+                <td class="text-center">{{row.approved_count}} </td>
+                <td class="text-center">{{row.unapproved_count}}</td>
+                <td class="text-center"><a ng-href="formbuilder/{{row.id}}" >Edit Form</a></td>
+                <td ng-if="row.status=='published'" id="{{row.id}}"><button class="btn btn-cancel" ng-click="toggleStatus('forms',row.id,'unpublished')">Unpublish</button></td>
+                <td ng-if="row.status=='unpublished'" id="{{row.id}}"><button ng-click="toggleStatus('forms',row.id,'published')"  class="approve btn btn-small btn-primary">Publish</button></td>
+                <td ng-if="row.status===null" id="{{row.id}}"><button ng-click="toggleStatus('forms',row.id,'published')"  class="approve btn btn-small btn-primary">Publish</button></td>
+                <td ng-if="row.status!='trash'"><a href="#" ng-click="toggleStatus('forms',row.id,'trashed',row.approved_count,row.unapproved_count)"><i class="fa fa-trash-o"></i> Trash</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div ng-if="total===0" class="panel-footer">As soon as you create your forms, they will appear here. Get started by <a href="/form/new">creating a form</a>. </div>
+        <div ng-if="total!==0" class="panel-footer">Need more? <a href="/form/new">Create another form</a>!</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row"  ng-app="dashboard" ng-controller="Response">
+    <div class="col-xs-12 col-sm-12 col-lg-12">
+    <!--<div class="panel steps">
+      <div class="panel-heading h2 blue">Latest Responses</div>
+        <div class="panel-body-no-padding">
+          TODO!!! Waiting for new schema and decisions on how we are going to display this
+      </div>
+    </div>
+
+
+
+
+
+    
+      <h2 class="card-header blue">Latest Responses</h2>
+      <p ng-if="total==0">No responses have been submitted yet! When you receive a response, they will appear here.</p>
+      <table class="table table-hover" ng-table="getResponses" id="responses">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th class="col-md-2">Form</th>
+            <th class="col-md-4">Review</th>
+            <th class="text-center">Recommendation</th>
+            <th class="text-center">Staff</th>
+            <th class="text-center">Care</th>
+            <th class="text-center">Discharge</th>
+            <th>Actions</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody ng-hide="total==0">
+         <tr ng-repeat="row in $data track by $index" id="responses-{{row.response_id}}">
+          <td>{{$index+1}}</td>
+          <td data-title="'facility'">{{row.facility}}</td>
+          <td data-title="'comments'">{{row.comments}}</td>
+          <td class="text-center" data-title="'recommend'">{{row.recommend}}/5</td>
+          <td class="text-center" data-title="'staff'">{{row.staff}}/5</td>
+          <td class="text-center" data-title="'care'"> {{row.care}}/5</td>
+          <td class="text-center" data-title="'discharge'"> <span ng-if="row.discharge==null">N/A</span> {{row.discharge}}/5</td>
+          <td ng-if="row.status=='approved'" id="{{row.response_id}}"><button class="btn btn-cancel" ng-click="toggleStatus('responders',row.response_id,'unapproved')">Unapprove</button></td>
+          <td ng-if="row.status=='unapproved'" id="{{row.response_id}}"><button ng-click="toggleStatus('responders',row.response_id,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
+          <td ng-if="row.status===null" id="{{row.response_id}}"><button ng-click="toggleStatus('responders',row.response_id,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
+          <td ng-if="row.status!='trash'">
+            <span ng-click="editResponse(row.response_id,row.comments)" class="glyphicon glyphicon-pencil"></span>
+            <a href="#" ng-click="toggleStatus('responders',row.response_id,'trashed')"><i class="fa fa-trash-o"></i> Trash</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal fade" id="erModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Edit Response</h4>
+          </div>
+          <div class="modal-body">
+           Comments : <textarea id="rescomments" style="width:400px;height:100px"  ></textarea>
+         </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" ng-click="updateResponse()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <script src="<%= process.env.CDN %>/css/ng-table.min.css"></script>
+  <script src="<%= process.env.CDN %>/js/angular.min.js"></script>
+  <script src="<%= process.env.CDN %>/js/ngAlertify.js"></script>
+  <script src="<%= process.env.CDN %>/js/ng-table.min.js"></script>
+  <script src="<%= process.env.CDN %>/js/dashboardmodule.js"></script>
+
+
+</div>
+
+</div>
+

@@ -1,0 +1,47 @@
+;(function(host) {
+  window.console = window.console || {};
+  window.console.log = window.console.log || function(){};
+  window.console.warn = window.console.warn || function(){};
+
+  window.FormResponse = function(form_id, element_id) {
+    var el = document.getElementById(element_id);
+
+    if(!el) {
+      throw "Could not find any element with ID " + element_id;
+    }
+    var defaultDisplay = el.style.display;
+    el.style.display = 'none';
+
+    var formURI = host + '/responses/' + form_id;
+
+    if(el.tagName !== "iframe" || el.src !==  formURI) {
+      window.console.warn("WARNING: Replacing any element EXCEPT for an " +
+          "iframe with the src attribute set to " + formURI + " is not "  +
+          "recommended, as your form will not be visible to users with "  +
+          "JavaScript disabled."
+      );
+    }
+
+    formURI += "?m"; // (m)inimal: don't give us CSS, JS, etc.
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+    console.log("We got a stateready", xhr);
+      if(xhr.readyState === 4) {
+        el.style.display = defaultDisplay;
+        if(xhr.status !== 200) {
+          throw "There was an error accessing the remote form: " +
+            xhr.responseText + " (code " + xhr.status + ")";
+        }
+        var div = document.createElement('div');
+        div.innerHTML = xhr.responseText;
+        console.log("The response text", xhr.responseText.length, el, el.parentNode, div);
+        el.parentNode.replaceChild(div, el);
+      }
+    };
+    console.log("what is the uri", formURI);
+    xhr.open('GET', formURI);
+    xhr.send();
+  }
+}('<%= url %>'));
+

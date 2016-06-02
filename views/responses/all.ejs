@@ -1,0 +1,161 @@
+<div ng-app="responsedashboard">
+  <div class="page-header">
+    <h1>All Approved Responses</h1>
+  </div>
+
+
+  <div class="row row-eq-height">
+
+    <!-- GOOGLE INFORMATION -->
+    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">Step 1:</div>
+        <div class="panel-body">
+          <h3 class="text-center">Approve a Response</h3>
+          <p>Approve responses that you like so you can send the reviewer an email. Only approved responders are able to be contacted.</p>
+          <a href="/form/new">
+            <span class="link-spanner"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">Step 2:</div>
+        <div class="panel-body">
+          <h3 class="text-center">Double Check!</h3>
+          <p>Verify that your information is correct and add any personal touches to the email!</p>
+          <a href="/form/share">
+            <span class="link-spanner"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">Step 3:</div>
+        <div class="panel-body">
+          <h3 class="text-center">Send the Email</h3>
+          <p>Ask the reviewer to do the same on services like Yelp! and Google Plus.</p>
+          <a href="/responses/share">
+            <span class="link-spanner"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">Step 4:</div>
+        <div class="panel-body">
+          <h3 class="text-center">Return frequently</h3>
+          <p>If you receive many reviews, check back often and approve more so you can increase your exposure and improve your reputation.</p>
+          <a href="">
+            <span class="link-spanner"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="row" ng-controller="ActiveForms">
+  <div class="col-xs-12 col-sm-12 col-lg-12">
+      <div class="panel">
+        <div class="panel-heading h2 green">Approved Responses</div>
+        <div class="panel-body-no-padding">
+          <table id="approvedResponses" class="table table-hover" ng-table="getApprovedResponses">
+            <thead>
+              <tr>
+                <th>Form</th>
+                <th class="col-md-8">Review</th>
+                <!--<th class="text-center">Recommendation</th>
+                <th class="text-center">Staff</th>
+                <th class="text-center">Care</th>
+                <th class="text-center">Discharge</th>-->
+                <th>Actions</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody ng-hide="total==0">
+             <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
+              <td>{{row.facility}}</td>
+
+
+              <td  data-title="'comments'">
+                <div class="response-body">
+                  <div ng-repeat="rep in row.questions">
+                    <div class="response-body-question">{{rep.text}}</div>
+                    <div  class="response-body-response">{{rep.response_text}}</div>
+                    <div class="response-body-response">{{rep.response_rating}}</div>
+                  </div>
+                </div>
+                <div class="response-footer">
+                  <div class="response-body-responder"><em>By</em> {{row.responder_name}} <em>on</em> {{row.date | date:"MM/dd/yyyy"}}</div>
+                </div>
+              </td>
+
+
+              
+              <td ng-if="row.status=='approved'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="generateEmailToResponder('responses',row.formid, row.responderid,'approved')">Send an Email</button></td>
+              
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div ng-if="total===0" class="panel-footer">As soon as you approve responses, they will appear here.</div>
+      </div>
+
+    </div>
+
+
+
+
+
+     <!-- Modal for emailing -->
+    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Contact Responder</h4>
+            </div>
+            <div class="modal-body">
+            <div id="YelpGoogle" style="display:none">
+              Yelp:<input type="text" ng-model="Yelp_Google.yelp">
+              Google Plus:<input type="text" ng-model="Yelp_Google.google_plus">
+              <button type="button" class="btn btn-primary" ng-click="SaveYG(Yelp_Google)">Save</button>
+              </div>
+             To: <input type="text" value="xxx@gmail.com">
+             From: <input type="text" value="xxx@gmail.com">
+             Body: <textarea id="rescomments" style="width:400px;height:400px"  ></textarea>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="pull-left">Rather do it from your own email? Click here</a>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" ng-click="sendEmailToResponder()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+    
+  </div>
+
+
+  
+
+  <script src="<%= process.env.CDN %>/css/ng-table.min.css"></script>
+  <script src="<%= process.env.CDN %>/js/angular.min.js"></script>
+  <script src="<%= process.env.CDN %>/js/ngAlertify.js"></script>
+  <script src="<%= process.env.CDN %>/js/ng-table.min.js"></script>
+  <script src="<%= process.env.CDN %>/js/responsedashboardmodule.js"></script>
+
+
+</div>
+

@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title><%= typeof pageTitle !== 'undefined' ?
+      pageTitle + ' | ' : ''%> Guardian Review Software</title>
+      <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,600,800">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <!--<link rel="stylesheet" href="/css/bootstrap.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
+    <script></script>
+    <!-- <script src="/js/bootstrap.js" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="<%= process.env.CDN %>/css/style.css"> <!-- load fontawesome -->
+    <link rel="stylesheet" src="<%= process.env.CDN %>/css/alertify.css">
+
+    <style>
+        body        { padding-top:20px; }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <%- include('./nav/header.ejs') %>
+    <%- body %>
+  </div>
+</body>
+</html>
