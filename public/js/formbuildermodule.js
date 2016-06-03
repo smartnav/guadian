@@ -14,7 +14,6 @@ angular
 function QuestionsListService($http) {
 
     var ref = this;
-
     this.questions = [{'question':'In recommending this facility to your friends and family, how would you rate it overall?','qtype':'range','orderid':0,'is_hide':false},
                       {'question':'Overall, how would you rate the staff?','qtype':'range','orderid':1,'is_hide':false},
                       {'question':'How would you rate the care you received?','qtype':'range','orderid':2,'is_hide':false},
@@ -136,12 +135,12 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster) {
 
 
     function init() {
-
         $timeout(function(){qss.isQuestionExist(vm.formId);},500)
         $('#loadingdiv').addClass('loading') 
         $timeout(function(){
             isResponseReceived(vm.formId);
             listQuestions(vm.formId);
+            console.log(vm.owner_id);
             alertify.logPosition('bottom-right').delay(2000);
             $('#loadingdiv').removeClass('loading')
         },1000) 
@@ -270,7 +269,7 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster) {
         vm.beforeAfterSave('before',id)
         console.log(id);
         console.log($("#"+id+" select[name = 'types']").val());
-        var postData = {'question':$("#"+id+" input[type='text']").val(),'orderid':vm.questions[id]['orderid'],'formId':vm.formId,'qtype':$("#"+id+" select[name = 'types']").val(),'is_hide':$("#"+id+" select[name='is_hide']").val()};
+        var postData = {'question':$("#"+id+" input[type='text']").val(),'orderid':vm.questions[id]['orderid'],'formId':vm.formId,'qtype':$("#"+id+" select[name = 'types']").val(),'is_hide':$("#"+id+" select[name='is_hide']").val(),'owner_id':vm.owner_id};
         var promise = qss.create(postData);
         promise.then(function(response){
 
@@ -325,7 +324,7 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster) {
             return;
         }
         vm.preloaderStart()
-        var postData = {'orderid':vm.questions[id]['orderid'],'formId':vm.formId}
+        var postData = {'orderid':vm.questions[id]['orderid'],'formId':vm.formId,'owner_id':vm.owner_id}
         var promise = qrs.remove(postData);
         var startSecond = new Date().getSeconds();
         promise.then(function(response){

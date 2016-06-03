@@ -288,7 +288,6 @@ function *editFacility(id) {
     this.status = 404;
     return;
   }
-  console.log(data);
   yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:data, message:""});
 }
 
@@ -296,6 +295,11 @@ function *saveFacilityEdits(id) {
   console.log("this.request.body",this.request.body);
   var data = this.request.body;
   let datas = yield _form.get(id);
+  if(datas.owner_id==this.session.id)
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"You have No Permission to edit this form."});
+   return;
+  }
   datas.yelp = data.yelp;
   datas.google_plus = data.google_plus;
   var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
@@ -596,29 +600,30 @@ function *getActiveFormsCount()
 /* Rahul Response Toggle Status */
 function *toggleStatus() {
 
+
   if (this.request.body.owner_id != this.session.id) {
      this.status = 400;
     this.render('400');
   }
   else{
-  var model = this.request.body.model;
-  var status = "'"+this.request.body.status+"'";
-  let val = '';
-  if(model=='forms')
-    val =  yield _form.toggleStatus(this.session.id,this.request.body.id,status,this.request.body.coutRes);
-  else
-    val = yield _response.toggleStatus(this.session.id,this.request.body.id,status);
-
-  if(val) {
-    this.status = 200;
-    this.body = JSON.stringify({changed:this.request.body.id});
-    this.set({'Content-Type': 'application/json'});
-  }
-  else
-  {
-    this.status = 400;
-    this.render('400');
-  }
+    var model = this.request.body.model;
+    var status = "'"+this.request.body.status+"'";
+    let val = '';
+    if(model=='forms')
+      val =  yield _form.toggleStatus(this.session.id,this.request.body.id,status,this.request.body.coutRes);
+    else
+      val = yield _response.toggleStatus(this.session.id,this.request.body.id,status);
+  
+    if(val) {
+      this.status = 200;
+      this.body = JSON.stringify({changed:this.request.body.id});
+      this.set({'Content-Type': 'application/json'});
+    }
+    else
+    {
+      this.status = 400;
+      this.render('400');
+    }
   }
 }
 /* Rahul Response Toggle Status */
@@ -626,7 +631,7 @@ function *toggleStatus() {
 /* Rahul for Update Response  */
 function *updateResponse() {
   var data = this.request.body.data;    
-    console.log(data);    
+    console.log("data",data);    
     if(data[0].owner_id!=this.session.id)   
     {   
       this.status = 400;    
@@ -773,37 +778,45 @@ function *buildForm(formid){
     return;
   }
 
+  let result = yield _form.get(formid);
+  console.log("result",result.owner_id);
   
   yield this.render('form-builder', {
     pageTitle: 'Build Form for Responses',
     formid   : formid,
+    owner_id : result.owner_id,
     session:this.session || {},
   });
 }
 
 function *saveBuild() {
-
-    var param = {};
-    param.formid = this.request.body.formId;
-    param.question = this.request.body.question;
-    param.orderid = this.request.body.orderid;
-    param.qtype = this.request.body.qtype;
-    if(this.request.body.is_hide=="true")   
+    if(this.request.body.owner_id!=this.session.id)
+    {
+    this.status = 400;
+    this.render('400');
+    }
+      else{
+      var param = {};
+      param.formid = this.request.body.formId;
+      param.question = this.request.body.question;
+      param.orderid = this.request.body.orderid;
+      param.qtype = this.request.body.qtype;
+      if(this.request.body.is_hide=="true")   
       param.is_hide=true;     
       else    
         param.is_hide=false;    
-    let  val = yield _formbuilder.saveQuestion(param);
+      let  val = yield _formbuilder.saveQuestion(param);
 
-    if(val) {
-    this.status = 200;
-    this.body = JSON.stringify(val);
-    this.set({'Content-Type': 'application/json'});
-  }
-  else
-  {
-    this.status = 400;
-    this.render('400');
-  }
+      if(val) {
+      this.status = 200;
+      this.body = JSON.stringify(val);
+      this.set({'Content-Type': 'application/json'});
+      }
+      else
+      {
+      this.status = 400;
+      this.render('400');
+      }}
 
 }
 
@@ -828,21 +841,29 @@ function *listBuild() {
 
 function *removeQuestion() {
 
-    var formid  = this.request.body.formId;
-    var orderid = this.request.body.orderid;       
-    var param   = {formid:formid,orderid:orderid}; 
-    let  val = yield _formbuilder.removeQuestion(param);
-
-    if(val) {
-    this.status = 200;
-    this.body = JSON.stringify(val);
-    this.set({'Content-Type': 'application/json'});
-  }
-  else
-  {
+if(this.request.body.owner_id!=this.session.id)
+    {
     this.status = 400;
     this.render('400');
-  }
+    }
+    else
+      {
+            var formid  = this.request.body.formId;
+            var orderid = this.request.body.orderid;       
+            var param   = {formid:formid,orderid:orderid}; 
+            let  val = yield _formbuilder.removeQuestion(param);
+      
+            if(val) {
+            this.status = 200;
+            this.body = JSON.stringify(val);
+            this.set({'Content-Type': 'application/json'});
+          }
+          else
+          {
+            this.status = 400;
+            this.render('400');
+          }
+        }
 
 }
 

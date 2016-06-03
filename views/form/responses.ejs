@@ -1,7 +1,7 @@
 <div ng-app="response">
  <toaster-container></toaster-container>
     <div class="row"  ng-controller="FormResponse">
-      
+      <toaster-container></toaster-container>
      <div class="container" id="tab-body" ng-init="formid='<%= formid %>'">
   <h2>View All Responses For <span class="label label-default">{{facility}}</span></h2>
   <div class="outer" ng-init="changeFormStatus('approved')">
@@ -46,14 +46,14 @@
             </td>
 
 
-            <td ng-if="row.status=='approved'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved')">Unapprove</button></td>
+            <td ng-if="row.status=='approved'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved',row.owners_id)">Unapprove</button></td>
             <td ng-if="row.status=='approved' && row.contacted_status == 1" id="{{row.responderid}}"><button class="btn btn-cancel" disabled >Send an Email</button></td>
             <td ng-if="row.status=='approved' && row.contacted_status == 0" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="generateEmailToResponder('responses',row.formid, row.responderid,'approved')">Send an Email</button></td>
-            <td ng-if="row.status=='unapproved'" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
-            <td ng-if="row.status===null" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
+            <td ng-if="row.status=='unapproved'" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved',row.owners_id)"  class="approve btn btn-small btn-primary">Approve</button></td>
+            <td ng-if="row.status===null" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved',row.owners_id)"  class="approve btn btn-small btn-primary">Approve</button></td>
             <td ng-if="row.status!='trashed'">
             <span ng-click="editFormResponse(row.responderid,row.comments)" class="glyphicon glyphicon-pencil"></span>
-            <a href="#" ng-click="formResponseToggleStatus('responses',row.responderid,'trashed')"><i class="fa fa-trash-o"></i> Trash</a></td>
+            <a href="#" ng-click="formResponseToggleStatus('responses',row.responderid,'trashed',row.owners_id)"><i class="fa fa-trash-o"></i> Trash</a></td>
           </tr>
           </tbody>
           </table>
@@ -95,12 +95,12 @@
             <td class="text-center" data-title="'care'"> {{row.care}}/5</td>
             <td class="text-center" data-title="'discharge'"> <span ng-if="row.discharge==null">N/A</span> {{row.discharge}}/5</td>-->
 
-            <td ng-if="row.status=='approved'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved')">Unapprove</button></td>
-            <td ng-if="row.status=='unapproved'" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
-            <td ng-if="row.status===null" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved')"  class="approve btn btn-small btn-primary">Approve</button></td>
+            <td ng-if="row.status=='approved'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved',row.owners_id)">Unapprove</button></td>
+            <td ng-if="row.status=='unapproved'" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved',row.owners_id)"  class="approve btn btn-small btn-primary">Approve</button></td>
+            <td ng-if="row.status===null" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved',row.owners_id)"  class="approve btn btn-small btn-primary">Approve</button></td>
             <td ng-if="row.status!='trashed'">
 <span style="cursor:pointer;" ng-click="editFormResponse(row.responderid,row.comments,row.questions)" class="glyphicon glyphicon-pencil"></span>
-            <a href="#" ng-click="formResponseToggleStatus('responses',row.responderid,'trashed')"><i class="fa fa-trash-o"></i> Trash</a></td>
+            <a href="#" ng-click="formResponseToggleStatus('responses',row.responderid,'trashed',row.owners_id)"><i class="fa fa-trash-o"></i> Trash</a></td>
           </tr>
           </tbody>
           </table>
@@ -138,7 +138,7 @@
                 <div class="response-body-responder"><em>By</em> {{row.responder_name}} <em>on</em> {{row.date | date:"MM/dd/yyyy"}}</div>
               </div>
             </td>
-              <td ng-if="row.status=='trashed'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved')">Unapprove</button></td>
+              <td ng-if="row.status=='trashed'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved',row.owners_id)">Unapprove</button></td>
               <td ng-if="row.status=='trashed'"><span ng-click="editFormResponse(row.responderid,row.comments)" class="glyphicon glyphicon-pencil"></span></td>
           </tr>
           </tbody>

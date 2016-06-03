@@ -1,6 +1,6 @@
 angular
-.module('response',['ngTable','ngAlertify','ngAnimate','toaster'])
-.controller('FormResponse',function($scope,$http,NgTableParams,$timeout,$compile,alertify){
+.module('response',['ngTable','ngAlertify','toaster','ngAnimate'])
+.controller('FormResponse',function($scope,$http,NgTableParams,$timeout,$compile,alertify,toaster){
 	$scope.argu = {};
 	$scope.responses = {};
 	$scope.total = 0;
@@ -64,6 +64,7 @@ angular
                 obj.status = data[i].responder_status;
                 obj.contacted_status = data[i].contacted_status;
                 obj.date = data[i].created;
+                obj.owners_id = data[i].owner_id;
                 newlyFormatedResponses[data[i].responderid] = obj; //create a new object there
             }
 
@@ -75,7 +76,7 @@ angular
         console.log("newly",newlyFormatedResponses);
         return newlyFormatedResponses;
     }
-    $scope.formResponseToggleStatus = function(model,id,status) {
+    $scope.formResponseToggleStatus = function(model,id,status,owner_id) {
 
 
         if(status=='trashed')
@@ -85,11 +86,12 @@ angular
                 return;
         }
 
-        $http.post('/review/togglestatus',{model:model,id: id,status:status}).then(function(response){
+        $http.post('/review/togglestatus',{model:model,id: id,status:status,owner_id}).then(function(response){
 
                 if(response.data.changed)
                 {
-                    alertify.delay(2000).success(status+' Successfully');
+                    //alertify.delay(2000).success(status+' Successfully');
+                    toaster.pop('success', "Success", status+' Successfully');
                     $scope.formResponsesCount();
                     $scope.getFormResponses.reload();
                     $timeout(function(){
@@ -101,7 +103,8 @@ angular
             },function(err){
 
                 if(err) {
-                    alertify.delay(2000).error('Woops! There was an error updating the response.');
+                    //alertify.delay(2000).error('Woops! There was an error updating the response.');
+                    toaster.pop('error', "Error", 'Woops! There was an error updating the response.');
                 }
             })
     }
@@ -115,7 +118,9 @@ angular
 
         /* Early Exit for unapproved responses */
         if(status != "approved") {
-            alertify.delay(2000).error('You cannot send an email to an unapproved response.');
+            //alertify.delay(2000).error('You cannot send an email to an unapproved response.');
+            toaster.pop('error', "Error", 'You cannot send an email to an unapproved response.');
+
             return;
         }
         $emailSelectedResponseID = responseid;
@@ -140,7 +145,8 @@ angular
             },function(err){
 
                 if(err) {
-                    alertify.delay(2000).error('There was an error preparing the email.');
+                  //  alertify.delay(2000).error('There was an error preparing the email.');
+                    toaster.pop('error', "Error", 'There was an error preparing the email.');
                 }
             })
         //$('#rescomments').val(comments);
@@ -153,14 +159,16 @@ $scope.SaveYG = function(data) {
         $http.post('/form/'+data.id+'/facility/', {data:data}).then(function(response){
             if(response)
             {
-                alertify.delay(2000).success('Success!');
+                //alertify.delay(2000).success('Success!');
+                toaster.pop('success', "Success", 'Success!');
                 $scope.generateEmailToResponder($scope.argu.model,$scope.argu.id,$scope.argu.responseid,$scope.argu.status);
             }
         
         },function(err){
 
             if(err) {
-                alertify.delay(2000).error('There was an error updating Facility.');
+               // alertify.delay(2000).error('There was an error updating Facility.');
+                toaster.pop('error', "Error", 'There was an error updating Facility.');
             }
         });
     }
@@ -170,25 +178,29 @@ $scope.SaveYG = function(data) {
         var contents = $('textarea#rescomments').val();
         //sanitify check
         if(contents.length < 50) {
-            alertify.delay(2000).error('The message was malformed. Did you send everything that you wanted to?');
+          //  alertify.delay(2000).error('The message was malformed. Did you send everything that you wanted to?');
+            toaster.pop('error', "Error", 'The message was malformed. Did you send everything that you wanted to?');
             return;
         }
         if(contents.length > 5000) {
-            alertify.delay(2000).error('The message was malformed. Try shortening your message.');
+          //  alertify.delay(2000).error('The message was malformed. Try shortening your message.');
+            toaster.pop('error', "Error", 'The message was malformed. Try shortening your message.');
             return;
         }
 
         $http.post('/form/' + $emailSelectedFormID + '/email/' + $emailSelectedResponseID, {email:contents}).then(function(response){
             if(response.data)
             {
-                alertify.delay(2000).success('Message sent!');
+                //alertify.delay(2000).success('Message sent!');
+                toaster.pop('success', "Success", 'Message sent!');
 
             }
         
         },function(err){
 
             if(err) {
-                alertify.delay(2000).error('There was an error sending the email.');
+                //alertify.delay(2000).error('There was an error sending the email.');
+                toaster.pop('error', "Error", 'There was an error sending the email.');
             }
         });
         
@@ -216,7 +228,8 @@ $scope.SaveYG = function(data) {
 
                 if(response.data.updated)
                 {
-                    alertify.delay(2000).success('Response Updated Successfully');
+                   // alertify.delay(2000).success('Response Updated Successfully');
+                    toaster.pop('success', "Success", 'Response Updated Successfully');
                     $('#erModal').modal('toggle');
                     $scope.formResponsesCount();
                     $scope.getFormResponses.reload();
@@ -228,7 +241,8 @@ $scope.SaveYG = function(data) {
             },function(err){
 
                 if(err) {
-                    alertify.delay(2000).error('Oops! There was an error updating the response.');
+                  //  alertify.delay(2000).error('Oops! There was an error updating the response.');
+                    toaster.pop('error', "Error", 'Oops! There was an error updating the response.');
                 }
             })
     }
