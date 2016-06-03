@@ -790,11 +790,17 @@ function *buildForm(formid){
 }
 
 function *saveBuild() {
-    if(this.request.body.owner_id!=this.session.id)
-    {
+  var ownerFlag = 0;
+  if (this.request.body.owner_id) {
+      if(this.request.body.owner_id!=this.session.id)
+      {
+        ownerFlag = 1;
+      }
+  }
+  if (ownerFlag == 1) {
     this.status = 400;
     this.render('400');
-    }
+  }
       else{
       var param = {};
       param.formid = this.request.body.formId;
@@ -816,7 +822,8 @@ function *saveBuild() {
       {
       this.status = 400;
       this.render('400');
-      }}
+      }
+    }
 
 }
 
