@@ -484,7 +484,7 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
       let client = conxData[0];
       let done = conxData[1];
 
-      let result = yield client.queryPromise('UPDATE responders SET status ='+status+' WHERE "id" = $1', [id]);
+      let result = yield client.queryPromise(`UPDATE responders SET status = ${status} WHERE "id" = $1`, [id]);
       done();
       if(result.rowCount===1) {
         let logging = yield _auditlog.writelog({model:"responders",operation:"STATUS_CHANGED",user_id:owner_id,pkey:id,details:status});
