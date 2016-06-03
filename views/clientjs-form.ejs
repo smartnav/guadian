@@ -2,16 +2,6 @@
   window.console = window.console || {};
   window.console.log = window.console.log || function(){};
   window.console.warn = window.console.warn || function(){};
-function maxLength(el) {    
-    if (!('maxLength' in el)) {
-        var max = el.attributes.maxLength.value;
-        el.onkeypress = function () {
-            if (this.value.length >= max) return false;
-        };
-    }
-}
-
-maxLength(document.getElementById("osrev-comments"));
   window.validate = function(){
     console.log("in validate");
     var name = document.getElementById("osrev-name").value;
@@ -22,7 +12,6 @@ maxLength(document.getElementById("osrev-comments"));
     var stripped = phone.replace(/[\(\)\.\-\ ]/g, '');
     console.log("Stripped Value",stripped);
     if(name=='' && email=='' && phone=='') {
-      alert('Please fill in all fields.')
       document.getElementById('error_name').innerHTML = "Please enter Name.";
       document.getElementById('error_email').innerHTML = "Please enter Email Address.";
       document.getElementById('error_phone').innerHTML = "Please enter Phone Number.";
@@ -71,7 +60,6 @@ maxLength(document.getElementById("osrev-comments"));
     {
       document.getElementById('error_phone').innerHTML = "";
     }
-    document.getElementById("osrev-tel").value = stripped;
     return true;
   }
   window.ReviewForm = function(form_id, element_id) {

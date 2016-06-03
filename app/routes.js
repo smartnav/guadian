@@ -376,10 +376,17 @@ function *formSubmit(id) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   var illegalChars = /^[a-zA-Z\s]+$/;
   var stripped = data.phone.replace(/[\(\)\.\-\ ]/g, '');
-  var flag;
-  console.log("data",data);
+  var flag=0;
   var message = "";
-  if(data.name == "" || data.email == "" || data.phone == "")
+  for(var i in data){
+    if(data[i].length > 5000)
+    {
+      flag=1;
+      message="Questions cannot exceed 5000 Characters.";
+      console.log("in here");
+    }
+  }
+  if((data.name == "" || data.email == "" || data.phone == "") && flag!=1)
   {
   	flag=1;
   	message="Please Fill in the Required Fields"; 
@@ -411,7 +418,6 @@ function *formSubmit(id) {
   }
   else
   {
-  	flag=0;
   }
   if(flag==1)
   {
