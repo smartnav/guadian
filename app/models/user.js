@@ -79,7 +79,7 @@ function *isLoggedIn(){
 
 function *login (email, authToken) {
 
-  var rows = (yield (this.pg.db.client.query_("SELECT * FROM users WHERE email = '" + email + "'"))).rows;
+  var rows = (yield (this.pg.db.client.query_(`SELECT * FROM "users" WHERE email = $1`, [email]))).rows;
   //TODO: Handle other cases, 0, 2, etc
 
   if(rows.length == 1) {
@@ -102,7 +102,7 @@ function *logout() {
 }
 
 function *checkUser(name){    
-  var rows = (yield (this.pg.db.client.query_("SELECT * FROM users where name = '"+ name + "'"))).rows;   
+  var rows = (yield (this.pg.db.client.query_(`SELECT * FROM "users" where name = $1`, [name]))).rows;   
       console.log("rows",rows)    
       return rows;    
   }   
@@ -110,7 +110,7 @@ function *checkUser(name){
 
 function *signup(name, email, access_token) {
   //Check if it exists first.
-  var rows = (yield (this.pg.db.client.query_("SELECT * FROM users WHERE email = '" + email + "'"))).rows;
+  var rows = (yield (this.pg.db.client.query_(`SELECT * FROM "users" WHERE email = $1`, [email]))).rows;
   if(rows.length == 1) {
     return false;
   }

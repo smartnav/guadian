@@ -596,6 +596,11 @@ function *getActiveFormsCount()
 /* Rahul Response Toggle Status */
 function *toggleStatus() {
 
+  if (this.request.body.owner_id != this.session.id) {
+     this.status = 400;
+    this.render('400');
+  }
+  else{
   var model = this.request.body.model;
   var status = "'"+this.request.body.status+"'";
   let val = '';
@@ -614,7 +619,7 @@ function *toggleStatus() {
     this.status = 400;
     this.render('400');
   }
-
+  }
 }
 /* Rahul Response Toggle Status */
 

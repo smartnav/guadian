@@ -198,7 +198,7 @@ const form = {
        let client = conxData[0];
        let done = conxData[1];
 
-       let result = yield client.queryPromise("SELECT * FROM forms WHERE status='published'");
+       let result = yield client.queryPromise(`SELECT * FROM "forms" WHERE status=$1`, ['published']);
        done();
        if(result.rows.length) {
          return yield Promise.resolve(result.rows);
@@ -284,11 +284,11 @@ const form = {
       id = "'"+id+"'";
       if (status == 'trashed' && coutRes == 0) {
         let formDel = yield client.queryPromise(`DELETE FROM "questions" WHERE formid = $1`, [id]);
-        var query = 'DELETE FROM forms WHERE id = '+id;
+        var query = `DELETE FROM forms WHERE id = ${id}`;
       }
       else
       {
-        var query = 'UPDATE forms SET status ='+status+' WHERE "id" = '+id;
+        var query = `UPDATE forms SET status =${status} WHERE id = ${id}`;
       }
       let result = yield client.queryPromise(query);
       done();

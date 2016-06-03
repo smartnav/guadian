@@ -116,7 +116,7 @@ function QuestionsRemoveService($http) {
 QuestionsRemoveService.$inject = ['$http'];
 
 
-function FormBuilderController($timeout,qls,qss,qrs,alertify) {
+function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster) {
 
     var vm                  = this;
     vm.questions            = [];
@@ -246,11 +246,13 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify) {
     function validateQuestions(id) {
 
         if($("#"+id+" input").val()=='') {
-        alertify.error('Question Should not be Empty');
+        //alertify.error('Question Should not be Empty');
+        toaster.pop('error', "Error", 'Question Should not be Empty');
         return false;
         }
         if($("#"+id+" select").val()=='') {
-        alertify.error('Type Should not be Empty');
+        //alertify.error('Type Should not be Empty');
+        toaster.pop('error', "Error", 'Type Should not be Empty');
         return false;
         }
         if($("#"+id+" input").val()!='' && $("#"+id+" select").val()!=''){
@@ -276,8 +278,9 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify) {
             if(endSecond-startSecond>=5)
                 alert('Ooops, something went wrong')
             else
-                alertify.success('Question Saved Successfully');
-
+                //alertify.success('Question Saved Successfully');
+                toaster.pop('success', "Success", 'Question Saved Successfully');
+                
             vm.beforeAfterSave('after',id)
             vm.init();
 
@@ -331,8 +334,8 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify) {
                 if(endSecond-startSecond>=5)
                     alert('Ooops, something went wrong')
                 else
-                    alertify.success('Question Removed Successfully');
-
+                    //alertify.success('Question Removed Successfully');
+                    toaster.pop('success', "Success", 'Question Removed Successfully');
             var orderid = response.data.orderid;
             vm.preloaderStop();
             if(orderid) {
@@ -353,8 +356,8 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify) {
             if(endSecond-startSecond>=5)
                 alert('Ooops, something went wrong')
             else
-                alertify.success('Question Removed Successfully');
-
+                //alertify.success('Question Removed Successfully');
+                toaster.pop('success', "Success", 'Question Removed Successfully');
             var orderid = err.config.data.orderid;
             $('#'+orderid).remove();
             vm.preloaderStop()
@@ -370,6 +373,6 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify) {
 
 }
 
-FormBuilderController.$inject = ['$timeout','QuestionsListService','QuestionsSaveService','QuestionsRemoveService','alertify'];
+FormBuilderController.$inject = ['$timeout','QuestionsListService','QuestionsSaveService','QuestionsRemoveService','alertify','toaster'];
 
 })();

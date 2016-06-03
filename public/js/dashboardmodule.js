@@ -170,7 +170,7 @@ angular
     $scope.activeformsCount();
 
     
-     $scope.toggleStatus = function(model,id,status,AppRes,UnAppRes) {
+     $scope.toggleStatus = function(model,id,status,AppRes,UnAppRes,formOwnerId) {
         var coutRes = 0;
     if (UnAppRes > 0 || AppRes > 0) {
         coutRes = 1;
@@ -185,7 +185,7 @@ angular
         }
     
 
-        $http.post('/review/togglestatus',{model:model,id: id,status:status,coutRes:coutRes}).then(function(response){
+        $http.post('/review/togglestatus',{model:model,id: id,status:status,coutRes:coutRes,owner_id:formOwnerId}).then(function(response){
 
                 if(response.data.changed)
                 {
@@ -208,7 +208,7 @@ angular
                         var dbid = "'"+id+"'"
                         $("#activeForms #"+id).html(
                           $compile(
-                            '<button class="'+cssclass+'" ng-click="toggleStatus(\'forms\','+dbid+','+chstatus+')">'+chstatustxt+'</button>'
+                            '<button class="'+cssclass+'" ng-click="toggleStatus(\'forms\','+dbid+','+chstatus+','+AppRes+','+UnAppRes+','+formOwnerId+')">'+chstatustxt+'</button>'
                           )($scope)
                         );
 

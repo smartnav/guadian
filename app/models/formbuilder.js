@@ -30,21 +30,26 @@ saveQuestion: co.wrap(function* (param) {
       
      if(isNew=='0'){
         uniuqeid = uuid.v4();
-        let values = "'"+uniuqeid+"','"+param.formid+"','"+param.orderid+"','"+param.qtype+"','"+param.question+"','"+param.is_hide+"'";
-        stmt = 'INSERT INTO "questions" ("id","formid","orderid","type","question","is_hide") VALUES ('+values+')';
-
+        //let values = "'"+uniuqeid+"','"+param.formid+"','"+param.orderid+"','"+param.qtype+"','"+param.question+"','"+param.is_hide+"'";
+        stmt = `INSERT INTO "questions" ("id","formid","orderid","type","question","is_hide") VALUES ($4,$5,$6,$1,$2,$3)`;
+        let result = yield client.queryPromise(stmt,[param.qtype,param.question,param.is_hide,uniuqeid,param.formid,param.orderid]);
+                     done();
+                     if(result.rowCount===1) {
+                       return yield Promise.resolve(uniuqeid);
+                     }
+                     return yield Promise.resolve(null);
       }
       else {
         uniuqeid = isNew;
-        stmt = 'UPDATE "questions" SET  type = '+"'"+param.qtype+"'"+', question ='+"'"+param.question+"'"+', is_hide ='+"'"+param.is_hide+"'  where id="+"'"+uniuqeid+"'";
+        stmt = `UPDATE "questions" SET  type=$1, question=$2, is_hide=$3  where id=$4`;
+        let result = yield client.queryPromise(stmt,[param.qtype,param.question,param.is_hide,uniuqeid]);
+         done();
+         if(result.rowCount===1) {
+           return yield Promise.resolve(uniuqeid);
+         }
+         return yield Promise.resolve(null);
       }
-      
-      let result = yield client.queryPromise(stmt);
-      done();
-      if(result.rowCount===1) {
-        return yield Promise.resolve(uniuqeid);
-      }
-      return yield Promise.resolve(null);
+   
     }catch(err){
       return yield Promise.reject(err);
     }
@@ -61,9 +66,10 @@ isNew: co.wrap(function* (param) {
       if(param.qtype=='range')
         param.title = '';
       
-      let stmt = "select id from \"questions\" where formid='"+param.formid+"' AND orderid="+param.orderid+" limit 1";
+      //let stmt = "select id from \"questions\" where formid='"+param.formid+"' AND orderid="+param.orderid+" limit 1";
+      let stmt = `select id from "questions" where formid=$1 AND orderid=$2 limit 1`;
       console.log(stmt)
-      let result = yield client.queryPromise(stmt);
+      let result = yield client.queryPromise(stmt,[param.formid,param.orderid]);
       done();
       if(result.rows.length) {
         return yield Promise.resolve(result.rows[0]['id']);
