@@ -64,6 +64,7 @@ angular
                 obj.status = data[i].responder_status;
                 obj.contacted_status = data[i].contacted_status;
                 obj.date = data[i].created;
+                obj.owners_id = data[i].owner_id;
                 newlyFormatedResponses[data[i].responderid] = obj; //create a new object there
             }
 
@@ -75,7 +76,7 @@ angular
         console.log("newly",newlyFormatedResponses);
         return newlyFormatedResponses;
     }
-    $scope.formResponseToggleStatus = function(model,id,status) {
+    $scope.formResponseToggleStatus = function(model,id,status,owner_id) {
 
 
         if(status=='trashed')
@@ -85,7 +86,7 @@ angular
                 return;
         }
 
-        $http.post('/review/togglestatus',{model:model,id: id,status:status}).then(function(response){
+        $http.post('/review/togglestatus',{model:model,id: id,status:status,owner_id}).then(function(response){
 
                 if(response.data.changed)
                 {
