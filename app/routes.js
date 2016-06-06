@@ -295,7 +295,7 @@ function *saveFacilityEdits(id) {
   console.log("this.request.body",this.request.body);
   var data = this.request.body;
   let datas = yield _form.get(id);
-  if(datas.owner_id==this.session.id)
+  if(datas.owner_id!=this.session.id)
   {
     yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"You have No Permission to edit this form."});
    return;
@@ -322,11 +322,6 @@ function *saveFacilityEdits(id) {
   if(data.redirect_url!="" && !re.test(data.redirect_url))
   {
     yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please enter a valid Redirect Url"});
-   return;
-  }
-  if(data.allowed_origins!="" && !re.test(data.allowed_origins))
-  {
-    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please enter a valid Form Location Url"});
    return;
   }
   var success = yield _form.saveFacilityData(this.session.id, id, data);
@@ -399,6 +394,11 @@ function *formSubmit(id) {
   {
   	flag=1;
   	message="Name Length should be greater than 4 Characters.";
+  }
+  else if( data.name.length>50 )
+  {
+    flag=1;
+    message="Name Length should be less than 50 Characters.";
   }
   else if( !illegalChars.test(data.name) )
   {
@@ -631,7 +631,16 @@ function *toggleStatus() {
 /* Rahul for Update Response  */
 function *updateResponse() {
   var data = this.request.body.data;    
-    console.log("data",data);    
+    console.log("data",data);
+    for(var i in data)
+    {
+      if(data[i].response_text.length>5000)
+      {
+        this.status = 400;
+      this.render('400');
+      return; 
+      }
+    }   
     if(data[0].owner_id!=this.session.id)   
     {   
       this.status = 400;    
@@ -930,7 +939,8 @@ function *sendGeneratedEmailText(formid,responseid) {
   else {
     this.status = 400;
     this.render('400'); 
-  }}
+  }
+}
   else
   {
     this.status =400;
