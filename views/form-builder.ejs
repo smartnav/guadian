@@ -34,11 +34,11 @@
      <td style="padding:15px" width="15%">
      <select class="form-control" ng-model="types" name = 'types'>
      <option value="">Select Type</option>
-     <option value="range" ng-selected="quest.type=='range'" >Rate</option>
+     <option value="range" ng-selected="quest.type=='range'"  ng-click="is_hide.val = 'false'">Rate</option>
      <option value="text" ng-selected="quest.type=='text'" >Text</option>
      </select></td>
      <td style="padding:15px" class="align-center" width="12%">
-     <select class="form-control" name="is_hide" >
+     <select class="form-control" name="is_hide" ng-disabled = "types == 'range'" ng-model="is_hide.val">
      <option value="false" ng-selected="quest.is_hide==false" >Show</option>
      <option value="true" ng-selected="quest.is_hide==true" >Hide</option>
      </select>
