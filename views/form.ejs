@@ -85,6 +85,11 @@
     document.getElementById('error_name').innerHTML = "Name Length should be greater than 4 Characters.";
       return false;
     }
+    else if(name.length>50)
+    {
+    document.getElementById('error_name').innerHTML = "Name Length should be less than 50 Characters.";
+      return false;
+    }
     else if(!illegalChars.test(name))
     {
     document.getElementById('error_name').innerHTML = "Illegal Characters in Name. Only letters allowed.";

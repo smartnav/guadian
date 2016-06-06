@@ -395,6 +395,11 @@ function *formSubmit(id) {
   	flag=1;
   	message="Name Length should be greater than 4 Characters.";
   }
+  else if( data.name.length>50 )
+  {
+    flag=1;
+    message="Name Length should be less than 50 Characters.";
+  }
   else if( !illegalChars.test(data.name) )
   {
   	flag=1;
@@ -626,7 +631,16 @@ function *toggleStatus() {
 /* Rahul for Update Response  */
 function *updateResponse() {
   var data = this.request.body.data;    
-    console.log("data",data);    
+    console.log("data",data);
+    for(var i in data)
+    {
+      if(data[i].response_text.length>5000)
+      {
+        this.status = 400;
+      this.render('400');
+      return; 
+      }
+    }   
     if(data[0].owner_id!=this.session.id)   
     {   
       this.status = 400;    
