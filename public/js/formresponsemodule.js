@@ -156,7 +156,7 @@ angular
     }
 
 $scope.SaveYG = function(data) {
-        $http.post('/form/'+data.id+'/facility/', {data:data}).then(function(response){
+        $http.post('/form/'+data.id+'/facility/', data).then(function(response){
             if(response)
             {
                 //alertify.delay(2000).success('Success!');

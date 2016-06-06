@@ -1,6 +1,6 @@
 angular
-.module('responsedashboard',['ngTable','ngAlertify'])
-.controller('ActiveForms',function($scope,$http,NgTableParams,$timeout,$compile,alertify){
+.module('responsedashboard',['ngTable','ngAlertify','toaster','ngAnimate'])
+.controller('ActiveForms',function($scope,$http,NgTableParams,$timeout,$compile,alertify,toaster){
     $scope.argu = {};
     $scope.activeforms = {};
     $scope.total = 0;
@@ -35,7 +35,8 @@ angular
 
         /* Early Exit for unapproved responses */
         if(status != "approved") {
-            alertify.delay(2000).error('You cannot send an email to an unapproved response.');
+            //alertify.delay(2000).error('You cannot send an email to an unapproved response.');
+            toaster.pop('error', "Error", 'You cannot send an email to an unapproved response.');
             return;
         }
         $emailSelectedResponseID = responseid;
@@ -49,7 +50,9 @@ angular
                     $scope.Yelp_Google = response.data.data;
                     if(response.data.data.yelp=="" || response.data.data.google_plus==""){
                         $('#YelpGoogle').show();
-                                    }
+                }
+                    else
+                        $('#YelpGoogle').hide();
                     $('textarea#rescomments').val(response.data.email);
                     $('#emailModal').modal() ///           /review/:id/email/:responseid
 
@@ -58,23 +61,26 @@ angular
             },function(err){
 
                 if(err) {
-                    alertify.delay(2000).error('There was an error preparing the email.');
+                    //alertify.delay(2000).error('There was an error preparing the email.');
+                    toaster.pop('error', "Error", 'There was an error preparing the email.');
                 }
             })
     };
 
     $scope.SaveYG = function(data) {
-        $http.post('/form/'+data.id+'/facility/', {data:data}).then(function(response){
+        $http.post('/form/'+data.id+'/facility/', data).then(function(response){
             if(response)
             {
-                alertify.delay(2000).success('Success!');
+                //alertify.delay(2000).success('Success!');
+                toaster.pop('success', "Success", 'Success!');
                 $scope.generateEmailToResponder($scope.argu.model,$scope.argu.id,$scope.argu.responseid,$scope.argu.status);
             }
         
         },function(err){
 
             if(err) {
-                alertify.delay(2000).error('There was an error updating Facility.');
+                //alertify.delay(2000).error('There was an error updating Facility.');
+                toaster.pop('error', "Error", 'There was an error updating Facility.');
             }
         });
     }
@@ -84,25 +90,29 @@ angular
         var contents = $('textarea#rescomments').val();
         //sanitify check
         if(contents.length < 50) {
-            alertify.delay(2000).error('The message was malformed. Did you send everything that you wanted to?');
+            //alertify.delay(2000).error('The message was malformed. Did you send everything that you wanted to?');
+            toaster.pop('error', "The message was malformed. Did you send everything that you wanted to?");
             return;
         }
         if(contents.length > 5000) {
-            alertify.delay(2000).error('The message was malformed. Try shortening your message.');
+            //alertify.delay(2000).error('The message was malformed. Try shortening your message.');
+            toaster.pop('error', "The message was malformed. Try shortening your message.");
             return;
         }
 
         $http.post('/form/' + $emailSelectedFormID + '/email/' + $emailSelectedResponseID, {email:contents}).then(function(response){
             if(response.data)
                         {
-                alertify.delay(2000).success('Message sent!');
+                //alertify.delay(2000).success('Message sent!');
+                toaster.pop('success', "Success", 'Message sent!');
 
             }
         
         },function(err){
 
             if(err) {
-                alertify.delay(2000).error('There was an error sending the email.');
+               // alertify.delay(2000).error('There was an error sending the email.');
+               toaster.pop('error', "There was an error sending the email.");
             }
         });
         
@@ -181,7 +191,8 @@ angular
 
                 if(response.data.changed)
                 {
-                    alertify.delay(2000).success(status+' Successfully');
+                    //alertify.delay(2000).success(status+' Successfully');
+                    toaster.pop('success', "Success", status+' Successfully');
                     if(status=='unpublished')
                     {
                         var chstatus = "'published'" 
@@ -213,7 +224,8 @@ angular
             },function(err){
 
                 if(err) {
-                    alertify.delay(2000).error('Woops! There was an error updating the response.');
+                    //alertify.delay(2000).error('Woops! There was an error updating the response.');
+                toaster.pop('error', "Woops! There was an error updating the response.");
                 }
             })
     }
