@@ -61,7 +61,7 @@ function *signupNewUser() {
 
    if(this.request.body.name.length<4) {
 
-   yield this.render('signup', {message: "Name Should be 4 Characters Long.", pageTitle: "Sign Up",session:this.session || {},});
+   yield this.render('signup', {message: "Please enter a longer name.", pageTitle: "Sign Up",session:this.session || {},});
     return;
    }
    var check = user.checkUser.bind(this);
@@ -297,7 +297,7 @@ function *saveFacilityEdits(id) {
   let datas = yield _form.get(id);
   if(datas.owner_id!=this.session.id)
   {
-    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"You have No Permission to edit this form."});
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"You do not have permission to edit this form."});
    return;
   }
   datas.yelp = data.yelp;
@@ -381,7 +381,7 @@ function *formSubmit(id) {
     if(data[i].length > 5000)
     {
       flag=1;
-      message="Questions cannot exceed 5000 Characters.";
+      message="Questions cannot exceed 5000 characters.";
       console.log("in here");
     }
   }
@@ -393,12 +393,12 @@ function *formSubmit(id) {
   else if( data.name.length<4 )
   {
   	flag=1;
-  	message="Name Length should be greater than 4 Characters.";
+  	message="Please enter a longer name for the form.";
   }
   else if( data.name.length>50 )
   {
     flag=1;
-    message="Name Length should be less than 50 Characters.";
+    message="Please enter a shorter name for the form.";
   }
   else if( !illegalChars.test(data.name) )
   {
