@@ -37,7 +37,8 @@ CREATE TABLE "forms" (
   "allowed_origins" TEXT[] NULL DEFAULT NULL,
   "redirect_url" TEXT NULL DEFAULT NULL,
   "owner_id" INTEGER NOT NULL REFERENCES "users"("id"),
-  "status" E_STATUS_FORMS DEFAULT 'published'
+  "status" E_STATUS_FORMS DEFAULT 'published',
+  "created" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "questions" (
