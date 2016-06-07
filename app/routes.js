@@ -403,7 +403,7 @@ function *formSubmit(id) {
   else if( !illegalChars.test(data.name) )
   {
   	flag=1;
-  	message="Illegal Characters in Name. Only letters allowed.";
+  	message="Only letters are permitted here.";
   }
   else if( !re.test(data.email) )
   {
