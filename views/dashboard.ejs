@@ -86,7 +86,8 @@
                 <td ng-if="row.status=='published'" id="{{row.id}}"><button class="btn btn-cancel" ng-click="toggleStatus('forms',row.id,'unpublished',row.approved_count,row.unapproved_count,row.owner_id)">Unpublish</button></td>
                 <td ng-if="row.status=='unpublished'" id="{{row.id}}"><button ng-click="toggleStatus('forms',row.id,'published',row.approved_count,row.unapproved_count,row.owner_id)"  class="approve btn btn-small btn-primary">Publish</button></td>
                 <td ng-if="row.status===null" id="{{row.id}}"><button ng-click="toggleStatus('forms',row.id,'published',row.approved_count,row.unapproved_count,row.owner_id)"  class="approve btn btn-small btn-primary">Publish</button></td>
-                <td ng-if="row.status!='trash'"><a href="#" ng-click="toggleStatus('forms',row.id,'trashed',row.approved_count,row.unapproved_count,row.owner_id)"><i class="fa fa-trash-o"></i> Trash</a></td>
+                <td ng-if="row.status!='trash' && (row.approved_count == '0' && row.unapproved_count == '0')"><a href="#" ng-click="toggleStatus('forms',row.id,'trashed',row.approved_count,row.unapproved_count,row.owner_id)"><i class="fa fa-trash-o"></i> Trash</a></td>
+                <td ng-if="row.unapproved_count!='0' || row.approved_count!='0'"></td>
               </tr>
             </tbody>
           </table>
@@ -175,5 +176,6 @@
 
 </div>
 
+</div>
 </div>
 

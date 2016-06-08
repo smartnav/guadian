@@ -73,7 +73,6 @@ angular
             obj.questions.push({"id":data[i].questionid, "type":data[i].type, "text":data[i].question, "response_text":data[i].textval, "response_rating":data[i].rateval,"owner_id":data[i].owner_id, "is_hide":data[i].is_hide});
 
         }
-        console.log("newly",newlyFormatedResponses);
         return newlyFormatedResponses;
     }
     $scope.formResponseToggleStatus = function(model,id,status,owner_id) {

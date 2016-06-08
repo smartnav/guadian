@@ -18,6 +18,11 @@
   resize: none;
 	/* end Bootstrap copy */
 }
+
+html,body {
+  height:100%;
+}
+
 .clipboard-btn {
   cursor: pointer;
 }
@@ -65,7 +70,6 @@ img.logo-giant {
   left: 0;
   z-index: 1;
 }
-
 
 
 /* Flat UI */
@@ -476,3 +480,13 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
       background: yellow none repeat scroll 0 0;    
   }  
 
+.footer {
+
+    background-color: #9EA7B3;
+    height: 60px;
+    width: 100%;
+    bottom:0;
+    border-radius:4px;
+    position: relative;
+    clear:both;
+}

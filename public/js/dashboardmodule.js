@@ -162,7 +162,7 @@ angular
 
             $http.get('/getActiveFormsCount').then(function(response){
 
-            $scope.total = response.data.total
+            $scope.total = response.data.total;
             })
         
     }
@@ -200,7 +200,7 @@ angular
                     if(status=='published'){
                             var chstatus = "'unpublished'" 
                             var chstatustxt = 'Unpublish'
-                            var cssclass = 'btn btn-danger'
+                            var cssclass = 'btn btn-cancel'
                     }
                      
                    if(status!='trashed') {

@@ -260,7 +260,7 @@ const form = {
       let done = conxData[1];
 
 
-      let queryStatement = `SELECT count(*) as total FROM "forms" f WHERE f.owner_id = ${owner_id} AND f.status IS NULL OR f.status!='trashed' `;
+      let queryStatement = `SELECT count(*) as total FROM "forms" f WHERE f.owner_id = ${owner_id} AND f.status!='trashed' `;
       let result = yield client.queryPromise(queryStatement);
       done();
       if(result.rows.length) {

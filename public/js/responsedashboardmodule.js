@@ -36,7 +36,7 @@ angular
         /* Early Exit for unapproved responses */
         if(status != "approved") {
             //alertify.delay(2000).error('You cannot send an email to an unapproved response.');
-            toaster.pop('error', "Error", 'You cannot send an email to an unapproved response.');
+            toaster.pop('error', "Error", 'You need to approve the response before you can send an email.');
             return;
         }
         $emailSelectedResponseID = responseid;
