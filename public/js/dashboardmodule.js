@@ -162,7 +162,7 @@ angular
 
             $http.get('/getActiveFormsCount').then(function(response){
 
-            $scope.total = response.data.total
+            $scope.total = response.data.total;
             })
         
     }
