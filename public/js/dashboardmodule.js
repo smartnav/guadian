@@ -200,7 +200,7 @@ angular
                     if(status=='published'){
                             var chstatus = "'unpublished'" 
                             var chstatustxt = 'Unpublish'
-                            var cssclass = 'btn btn-danger'
+                            var cssclass = 'btn btn-cancel'
                     }
                      
                    if(status!='trashed') {

@@ -24,9 +24,16 @@
               <th class="text-center">Discharge</th>-->
               <th>Actions</th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
+          <tbody ng-show="total==0">
+          <tr>
+            <td><b>No responses have been approved yet.</b></td>
+            </tr>
+            </tbody>
           <tbody ng-hide="total==0">
+
            <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
             <td>{{$index+1}}</td>
 
@@ -72,7 +79,12 @@
               <th></th>
             </tr>
           </thead>
-          <tbody ng-hide="total==0">
+          <tbody ng-show="total==0">
+          <tr>
+            <td><b>No responses have been submitted.</b></td>
+            </tr>
+            </tbody>
+            <tbody ng-hide="total==0">
            <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
             <td>{{$index+1}}</td>
 
@@ -119,6 +131,11 @@
               <th></th>
             </tr>
           </thead>
+          <tbody ng-show="total==0">
+          <tr>
+            <td><b>There are no trashed responses.</b></td>
+            </tr>
+            </tbody>
           <tbody ng-hide="total==0">
            <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
             <td>{{$index+1}}</td>
