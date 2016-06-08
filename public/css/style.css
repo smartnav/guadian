@@ -479,7 +479,8 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
       font-weight: bold;    
       background: yellow none repeat scroll 0 0;    
   }  
-
+.hight-cal{min-height:400px;}
+#tab-body{margin-bottom: 20px;}
 .footer {
 
     background-color: #9EA7B3;
@@ -489,4 +490,5 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
     border-radius:4px;
     position: relative;
     clear:both;
+    margin-bottom: 100px;
 }
