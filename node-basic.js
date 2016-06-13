@@ -36,7 +36,7 @@ app.use(function *(next) {
     this.body = err.message;
     transporter.sendMail({
             from: `<no-reply@${URL}>`,
-            to: "shiven.juneja@gmail.com",
+            to: "smartdata.nav@gmail.com",
             subject: 'Error '+this.status,
             text: err.stack
           }, function(error, info) {

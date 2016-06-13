@@ -196,6 +196,7 @@ img.featured-icons {
   margin-left:15px;
   margin-right:15px;
   margin-bottom:20px;
+  min-height: 110px;
 }
 
 .panel-footer{

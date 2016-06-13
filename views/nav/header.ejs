@@ -12,6 +12,7 @@
       <ul class="nav navbar-nav">
         <% if(typeof session.user !== 'undefined') {%>
         <li class=""><a href="/dashboard">Dashboard <span class="sr-only">(current)</span></a></li>
+        <li class=""><a href="/groups">Group <span class="sr-only">(current)</span></a></li>
         <% }
          if(typeof session.user_type !== 'undefined' && session.user_type === 'admin') { %>
           <li class=""><a href="/admin">Admin <span class="sr-only">(current)</span></a></li>
