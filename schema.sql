@@ -37,6 +37,7 @@ CREATE TABLE "forms" (
   "allowed_origins" TEXT[] NULL DEFAULT NULL,
   "redirect_url" TEXT NULL DEFAULT NULL,
   "owner_id" INTEGER NOT NULL REFERENCES "users"("id"),
+  "owner_group_id" INTEGER NOT NULL REFERENCES "user_groups"("id"),
   "status" E_STATUS_FORMS DEFAULT 'published',
   "created" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
@@ -90,6 +91,13 @@ CREATE TABLE "audit_log" (
 "user_id" int NULL,
 "details" varchar(500) NULL,
 "log_time" TIMESTAMP without time zone default now()
+);
+
+CREATE TABLE "user_groups" (
+"id" UUID NOT NULL PRIMARY KEY,
+"group_name" varchar(255) NULL,
+"user_id" varchar(100) NULL,
+"created" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 
