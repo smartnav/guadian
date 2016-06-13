@@ -67,10 +67,10 @@
               <tr>
                 <th class="">ID</th>
                 <th class="col-md-3">Facility</th>
+                <th class="col-md-1 text-center">Edit Form</th>
                 <th class="col-md-1">Responses</th>
                 <th class="col-md-2 text-center">Responses Received</th>
                 <th class="col-md-2 text-center">Responses Awaiting Approval</th>
-                <th class="col-md-1 text-center">Edit Form</th>
                 <th class="col-md-2">Actions</th>
                 <th class="col-md-1"></th>
               </tr>
@@ -79,10 +79,10 @@
               <tr ng-repeat="row in $data | orderBy: '-created'" id="forms-{{row.id}}">
                 <th scope="row">{{$index+1}}</th>
                 <td><a href='/form/{{row.id}}/facility'>{{row.facility}}</a>  </td>
+                <td class="text-center"><a ng-href="formbuilder/{{row.id}}" >Edit Form</a></td>
                 <td><a href="/form/{{row.id}}/responses"><i class="fa fa-eye"></i> <em>View All</em></a></td>
                 <td class="text-center">{{row.approved_count}} </td>
                 <td class="text-center">{{row.unapproved_count}}</td>
-                <td class="text-center"><a ng-href="formbuilder/{{row.id}}" >Edit Form</a></td>
                 <td ng-if="row.status=='published'" id="{{row.id}}"><button class="btn btn-cancel" ng-click="toggleStatus('forms',row.id,'unpublished',row.approved_count,row.unapproved_count,row.owner_id)">Unpublish</button></td>
                 <td ng-if="row.status=='unpublished'" id="{{row.id}}"><button ng-click="toggleStatus('forms',row.id,'published',row.approved_count,row.unapproved_count,row.owner_id)"  class="approve btn btn-small btn-primary">Publish</button></td>
                 <td ng-if="row.status===null" id="{{row.id}}"><button ng-click="toggleStatus('forms',row.id,'published',row.approved_count,row.unapproved_count,row.owner_id)"  class="approve btn btn-small btn-primary">Publish</button></td>

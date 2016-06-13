@@ -4,12 +4,12 @@
   </div>
 
 <toaster-container></toaster-container>
-  <div class="row row-eq-height hight-cal">
+  <div class="row row-eq-height">
 
     <!-- GOOGLE INFORMATION -->
     <div class="col-xs-12 col-sm-3 col-lg-3 steps">
       <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">Step 1:</div>
+        <div class="panel-heading h2 blue text-center">Step 1:</div>
         <div class="panel-body">
           <h3 class="text-center">Approve a Response</h3>
           <p>Approve responses that you like so you can send the reviewer an email. Only approved responders are able to be contacted.</p>
@@ -21,7 +21,7 @@
     </div>
     <div class="col-xs-12 col-sm-3 col-lg-3 steps">
       <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">Step 2:</div>
+        <div class="panel-heading h2 blue text-center">Step 2:</div>
         <div class="panel-body">
           <h3 class="text-center">Double Check!</h3>
           <p>Verify that your information is correct and add any personal touches to the email!</p>
@@ -33,7 +33,7 @@
     </div>
     <div class="col-xs-12 col-sm-3 col-lg-3 steps">
       <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">Step 3:</div>
+        <div class="panel-heading h2 blue text-center">Step 3:</div>
         <div class="panel-body">
           <h3 class="text-center">Send the Email</h3>
           <p>Ask the reviewer to do the same on services like Yelp! and Google Plus.</p>
@@ -45,7 +45,7 @@
     </div>
     <div class="col-xs-12 col-sm-3 col-lg-3 steps">
       <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">Step 4:</div>
+        <div class="panel-heading h2 blue text-center">Step 4:</div>
         <div class="panel-body">
           <h3 class="text-center">Return frequently</h3>
           <p>If you receive many reviews, check back often and approve more so you can increase your exposure and improve your reputation.</p>
@@ -77,7 +77,12 @@
                 <th></th>
               </tr>
             </thead>
-            <tbody ng-hide="total==0">
+            <tbody ng-if="$data==''">
+          <tr>
+            <td><b>No responses have been approved yet.</b></td>
+            </tr>
+            </tbody>
+            <tbody ng-if="$data!=''">
              <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
               <td>{{row.facility}}</td>
 
@@ -103,7 +108,6 @@
             </tbody>
           </table>
         </div>
-        <div ng-if="total===0" class="panel-footer">As soon as you approve responses, they will appear here.</div>
       </div>
 
     </div>

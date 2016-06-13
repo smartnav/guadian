@@ -129,6 +129,7 @@ angular
                
                     
                 return $http.post('/getApprovedResponses',{offset:params.page(),limit:5}).then(function(response){
+                   console.log(typeof(response.data));
                     $scope.responses = response.data;
                     params.total($scope.total);
                     $scope.facility = response.data[0].facility

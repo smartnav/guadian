@@ -198,6 +198,10 @@ img.featured-icons {
   margin-bottom:20px;
 }
 
+.panel-footer{
+  overfow:hidden;
+}
+
 .table {
   margin-bottom:0px;
 }

@@ -115,7 +115,7 @@ function QuestionsRemoveService($http) {
 QuestionsRemoveService.$inject = ['$http'];
 
 
-function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster) {
+function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster,$window) {
 
     var vm                  = this;
     vm.questions            = [];
@@ -132,7 +132,7 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster) {
     vm.preloaderStop        = preloaderStop;
     vm.findNextIndex        = findNextIndex;
     vm.isResponseReceived   = isResponseReceived;
-
+    vm.saveAllQuestions     = saveAllQuestions;
 
     function init() {
         $timeout(function(){qss.isQuestionExist(vm.formId);},500)
@@ -315,7 +315,14 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster) {
 
     }
 
-    
+    function saveAllQuestions(){
+        for(var i in vm.questions)
+        {
+            vm.saveQuestion(i);
+        }
+        $window.location.href = '/form/share'
+    }
+
     function removeQuestion(id) {
 
 
@@ -372,6 +379,6 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster) {
 
 }
 
-FormBuilderController.$inject = ['$timeout','QuestionsListService','QuestionsSaveService','QuestionsRemoveService','alertify','toaster'];
+FormBuilderController.$inject = ['$timeout','QuestionsListService','QuestionsSaveService','QuestionsRemoveService','alertify','toaster','$window'];
 
 })();

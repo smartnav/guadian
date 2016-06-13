@@ -212,7 +212,7 @@ function *googleAuthCallback() {
     }
     else {
       //TODO: Announce something went wrong.
-    yield this.render('signup', {message: "Please Signout from other google account.", pageTitle: "Sign Up",session:this.session || {},});
+      this.redirect('/signup');
     }
   }
 }
