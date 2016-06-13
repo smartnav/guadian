@@ -199,6 +199,10 @@ img.featured-icons {
   min-height: 110px;
 }
 
+.panel-footer{
+  overfow:hidden;
+}
+
 .table {
   margin-bottom:0px;
 }

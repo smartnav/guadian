@@ -53,6 +53,7 @@ function *signup(){
 }
 
 function *signupNewUser() {
+  console.log("this.request.body",this.request.body);
   if(this.request.body.name == "")
   {
     yield this.render('signup', {message: "Name is Required.", pageTitle: "Sign Up",session:this.session || {},});
@@ -89,7 +90,8 @@ function *signupNewUser() {
     }
     else {
       //TODO: Announce something went wrong.
-      this.redirect('/signup');
+      yield this.render('signup', {message: "Email already exists. please try with other email id!", pageTitle: "Sign Up",session:this.session || {},});
+      return;
     }
   }
 }
