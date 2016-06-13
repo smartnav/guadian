@@ -77,12 +77,12 @@
                 <th></th>
               </tr>
             </thead>
-            <tbody ng-if="$data==''">
+            <tbody ng-if="responses=='null'">
           <tr>
             <td><b>No responses have been approved yet.</b></td>
             </tr>
             </tbody>
-            <tbody ng-if="$data!=''">
+            <tbody ng-if="responses!='null'">
              <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
               <td>{{row.facility}}</td>
 
