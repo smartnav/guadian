@@ -34,18 +34,19 @@ app.use(function *(next) {
   } catch (err) {
     this.status = err.status || 500;
     this.body = err.message;
-    transporter.sendMail({
-            from: `<no-reply@${URL}>`,
-            to: "smartdata.nav@gmail.com",
-            subject: 'Error '+this.status,
-            text: err.stack
-          }, function(error, info) {
-            if(error) {
-              return console.error(error);
-            }
-            console.log('Email sent', info);
-          });
-  }
+    console.log(err.stack);
+  //   transporter.sendMail({
+  //           from: `<no-reply@${URL}>`,
+  //           to: "smartdata.nav@gmail.com",
+  //           subject: 'Error '+this.status,
+  //           text: err.stack
+  //         }, function(error, info) {
+  //           if(error) {
+  //             return console.error(error);
+  //           }
+  //           console.log('Email sent', info);
+  //         });
+   }
 });
 
 require('./app/routes.js')(app);

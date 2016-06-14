@@ -232,13 +232,10 @@ const form = {
       let conxData = yield coPg.connectPromise(connectionString);
       let client = conxData[0];
       let done = conxData[1];
-
       //let result = yield client.queryPromise('SELECT * FROM "forms" WHERE ' + '"owner_id" = $1 LIMIT ' + limit, [owner_id]);
-      let queryStatement = 'SELECT f.*,(SELECT count(status) FROM "responders" WHERE formid=f.id AND status=\'approved\') as approved_count,(SELECT count(status) FROM "responders" WHERE formid=f.id AND status=\'unapproved\') as unapproved_count FROM "forms" f WHERE f.owner_id = '+owner_id+' AND f.status IS NULL OR f.owner_id = '+owner_id+' AND f.status!=\'trashed\' order by  CASE WHEN(f.status = \'unpublished\') THEN 0 WHEN(f.status = \'published\') THEN 1 ELSE 2 END    LIMIT '+limit+' OFFSET '+offset;
-      console.log("This is the query:", queryStatement);
+      let queryStatement = 'SELECT f.*,(SELECT count(status) FROM "responders" WHERE formid=f.id AND status=\'approved\') as approved_count,(SELECT count(status) FROM "responders" WHERE formid=f.id AND status=\'unapproved\') as unapproved_count,(SELECT group_name FROM "user_groups" WHERE f.owner_group_id=user_groups.id) as group_name FROM "forms" f WHERE f.owner_id = '+owner_id+' AND f.status IS NULL OR f.owner_id = '+owner_id+' AND f.status!=\'trashed\' order by  CASE WHEN(f.status = \'unpublished\') THEN 0 WHEN(f.status = \'published\') THEN 1 ELSE 2 END    LIMIT '+limit+' OFFSET '+offset;
       let result = yield client.queryPromise(queryStatement);
       done();
-      console.log("Result:", result.rows);
       if(result.rows.length) {
         return yield Promise.resolve(result.rows);
       }
@@ -304,8 +301,22 @@ const form = {
 
   /* Rahul for Publish un Publish and trash */
 
-
-
+updateGroupId: co.wrap(function* (data) {
+   try {
+    console.log("data",data.id);
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+      var result = yield client.queryPromise(`UPDATE forms SET owner_group_id=$2 WHERE id=$1`,[data.id,data.owner_group_id]);
+      done();
+      if(result.rowCount===1) {
+        return yield Promise.resolve(data.id);
+      }
+      return yield Promise.resolve(null);
+      }catch(err){
+      return yield Promise.reject(err);
+    }
+} ),
   /**
    * Consumes form data and stores it in the database.
    *

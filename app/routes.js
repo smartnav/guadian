@@ -6,7 +6,7 @@ const _form = require('./models/form');
 const _response = require('./models/response');
 const uglify = require('uglify-js');
 const URL = require('../config/url');
-
+const _usergroup = require('./models/usergroup');
 var bodyParser = require('koa-bodyparser');
 
 const _auditlog = require('./models/auditlog'); // load audit log model
@@ -950,7 +950,68 @@ function *sendGeneratedEmailText(formid,responseid) {
   }
 }
 
+function *createGroup() {
+  console.log(this.request.body)
+  let result = yield _usergroup.creategroup(this.session.id,this.request.body);
+  if(result){
+    this.body = JSON.stringify({success:"true"});
+    this.set({'Content-Type': 'application/json'});
+  }
+}
 
+function *showGroup() {
+  console.log("in showgroup")
+  let result = yield _usergroup.showgroup();
+  if(result){
+    this.body = JSON.stringify({result});
+    this.set({'Content-Type': 'application/json'});
+  }
+  else
+  {
+    this.status = 400;
+    this.render('400');
+  }
+}
+
+function *updateGroup() {
+  console.log(this.request.body);
+  let result = yield _form.updateGroupId(this.request.body);
+  if(result){
+    this.body = JSON.stringify({result});
+    this.set({'Content-Type': 'application/json'});
+  }
+  else
+  {
+    this.status = 400;
+    this.render('400');
+  }
+}
+
+function *getGroupFormsCount()
+{
+    this.status = 200;
+    var activeForms = yield _usergroup.getCountByGroup();
+    console.log(activeForms,'groupForms')
+    this.body = JSON.stringify(activeForms);
+    this.set({'Content-Type': 'application/json'});
+}
+
+function *getFormByGroupId() {
+  var offset = this.request.body.offset;
+  var limit = this.request.body.limit;
+
+    offset = limit*(offset-1)
+  let result = yield _usergroup.getFormByGroupId(this.session.id,limit,offset);
+  if(result){
+    this.body = JSON.stringify({result});
+    this.set({'Content-Type': 'application/json'});
+  }
+  else
+  {
+    this.status = 400;
+    this.render('400');
+  }
+}
 
 /* Rahul for form builder */
 
@@ -1040,7 +1101,13 @@ module.exports = function(app) {
   app.use(route.post('/formbuilder/isresponsereceived', isResponseReceived));
   /* Rahul for form builder */
 
-
+  /* smartData for user groups */
+  app.use(route.post('/usergroup/add', createGroup));
+  app.use(route.get('/usergroup/show', showGroup));
+  app.use(route.post('/usergroup/update',updateGroup));
+  app.use(route.post('/usergroup/form',getFormByGroupId));
+  app.use(route.get('/getGroupFormsCount',getGroupFormsCount));
+  /* smartData for user groups */
 
   // NOTE: only available in testing suite
   if(process.env.TEST === 'true') {

@@ -10,9 +10,9 @@ defaults.database = process.env.PGDATABASE;
 defaults.password = process.env.PGPASS;
 defaults.host = process.env.PGHOST;
 defaults.port = process.env.PGPORT;
-defaults.poolSize = process.env.PGPOOLSIZE || 10;
-defaults.pool = (process.env.PGPOOLSIZE === "0" ? false : 10);
-
+defaults.poolSize = process.env.PGPOOLSIZE || 20;
+defaults.pool = (process.env.PGPOOLSIZE === "0" ? false : 20);
+console.log(defaults.poolSize);
 var connectionString = process.env.DATABASE_URL || `postgres://${defaults.user}:${defaults.password}@${defaults.host}:${defaults.port}/${defaults.database}`;
 console.log('cont    ++++++',connectionString);
 
