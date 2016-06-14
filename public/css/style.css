@@ -497,3 +497,9 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
     clear:both;
     margin-bottom: 100px;
 }
+
+.radiob {
+   width:50%; 
+   height: 90px; 
+   overflow-y: scroll;
+}

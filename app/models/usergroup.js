@@ -34,7 +34,7 @@ showgroup: co.wrap(function* (){
 		let conxData = yield coPg.connectPromise(connectionString);
         let client = conxData[0];
         let done = conxData[1];
-        let result = yield client.queryPromise("SELECT id,group_name from user_groups");
+        let result = yield client.queryPromise("SELECT id,group_name,created from user_groups");
         done();
         if(result)
         {
@@ -79,7 +79,7 @@ getCountByGroup: co.wrap(function* () {
       }catch(err){
       return yield Promise.reject(err);
     }
-  }),
+  })
 }
 
 module.exports = usergroup;

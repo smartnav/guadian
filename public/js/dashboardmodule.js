@@ -182,20 +182,34 @@ $scope.hover = function(data) {
     $scope.getGroupData = function(){
          $http.get("/usergroup/show").then(function(response){
          $scope.groups = response.data.result;
-                
+         
            })
      }
+
      $scope.getGroupData();
     $scope.SelectGroup = function(data) {
+        $scope.showDiv=false;
+        $scope.gname="";
         $('#erModal').modal();
         $('#formid').val(data.id);
         }
 
     $scope.AddToGroup = function(data) {
         data.id = $('#formid').val();
-        $http.post("/usergroup/ownergroupid",data).then(function(response){
-            console.log("success");
-        })
+        $http.post("/usergroup/update",data).then(function(response){
+            $scope.activeformsCount();
+            $scope.groupformsCount();
+            $scope.getActiveForms.reload();
+            $scope.getGroupForms.reload();
+           toaster.pop('success', "Success", 'Form Update Successfully.');
+           $("#erModal").modal('hide');
+
+        },function(err){
+
+                if(err) {
+                    toaster.pop('error', "Error", 'Woops! There was an error updating the form.');
+                }
+            })
     }
     
 
@@ -286,8 +300,13 @@ $scope.hover = function(data) {
     }
     $scope.createGroup = function(data) {
        $http.post("/usergroup/add",{name:data}).then(function(resp){
-        console.log(resp);
+        toaster.pop('success', "Success", 'Group Created Successfully.');
       $scope.getGroupData();
-       })
+       },function(err){
+
+                if(err) {
+                    toaster.pop('error', "Error", 'Woops! There was an error creating the group.');
+                }
+            })
     }
  })

@@ -95,6 +95,7 @@
             </tbody>
           </table>
         </div>
+        <div ng-if="total!==0" class="panel-footer">Need more? <a href="/form/new">Create another form</a>!</div>
         <div ng-if="total===0" class="panel-footer">As soon as you create your forms, they will appear here. Get started by <a href="/form/new">creating a form</a>. </div>
       </div>
 
@@ -108,14 +109,16 @@
             <h4 class="modal-title" id="myModalLabel">Select Group</h4>
           </div>
           <div class="modal-body">
-          <div ng-repeat="group in groups">
+          <div class="radiob">
+          <div class="radio" ng-repeat="group in groups | orderBy: '-created'">
           <input type="hidden" id="formid" ng-model="gradios.id" />
       <input name="group" type="radio" ng-model="gradios.owner_group_id" ng-value="group.id"/>{{group.group_name}}
       </div>
+      </div>
         <br />
-         <button ng-click="showDiv = !showDiv"><i class="fa fa-plus"></i> Create Group</button>
-         <div ng-show="showDiv">Group Name:<input type=text ng-model="gname"/>
-         <button type="button" ng-click="createGroup(gname)">Save Group</button>
+         <button class="btn btn-primary" ng-click="showDiv = !showDiv"><i class="fa fa-plus"></i> Create Group</button>
+         <div ng-show="showDiv"><label class="control-label">Group Name</label><input type=text class="form-control" ng-model="gname"/>
+         <button class="btn btn-primary" style="margin-top:5px;"type="button" ng-click="createGroup(gname)">Save Group</button>
          </div>
          <div class="modal-footer">
 
@@ -165,7 +168,7 @@
           </table>
         </div>
         <div ng-if="total===0" class="panel-footer">As soon as you create your forms, they will appear here. Get started by <a href="/form/new">creating a form</a>. </div>
-        <div ng-if="total!==0" class="panel-footer">Need more? <a href="/form/new">Create another form</a>!</div>
+        
       </div>
 
 
