@@ -317,6 +317,116 @@ updateGroupId: co.wrap(function* (data) {
       return yield Promise.reject(err);
     }
 } ),
+  /* Smartdata add Group query */
+
+  addGroup: co.wrap(function* (owner_id,group_name) {
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+      
+      let uniuqeid = uuid.v4();
+      let user_id = "{"+owner_id+"}";
+      console.log(`INSERT INTO "user_groups" (id,group_name,user_id) VALUES('${uniuqeid}', '${group_name}', '${user_id}')`);
+  
+      let result = yield client.queryPromise(`INSERT INTO "user_groups" (id,group_name,user_id) VALUES ('${uniuqeid}', '${group_name}', '${user_id}')`);
+      done();
+      if(result.rowCount===1) {
+        let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:uniuqeid,details:"'Add_Group'"});
+        return yield Promise.resolve(result);
+      }
+      return yield Promise.resolve(null);
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
+  
+  
+  
+  getGroup: co.wrap(function* (owner_id) {
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      console.log('*************',conxData);
+      let client = conxData[0];
+      let done = conxData[1];
+      
+      let user_id = owner_id;
+      
+      //let queryStatement = `SELECT * FROM "user_groups" g WHERE ${user_id} = any(user_id)`;
+      
+      
+      
+      let queryStatement = `SELECT g.id,g.group_name, u.id as u_id, u.email FROM "user_groups" g INNER JOIN "users" u ON u.id = any(g.user_id) WHERE ${user_id} = any(g.user_id)`;
+      
+      console.log(queryStatement);
+  
+      let result = yield client.queryPromise(queryStatement);
+      console.log('----------------',result);
+      done();
+      if(result.rowCount>1) {
+        let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:owner_id,details:"'Add_Group'"});
+        return yield Promise.resolve(result.rows);
+      }
+      return yield Promise.resolve(null);
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
+  
+  
+  
+  addUser: co.wrap(function* (owner_id,userEmail,groupID) {
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+      
+      let uniuqeid = uuid.v4();
+      let user_id = "{"+owner_id+"}";
+      let UserExist = 0;
+      
+      let result1 = yield client.queryPromise(`SELECT * FROM "users" WHERE email = $1`, [userEmail]);
+      done();
+      if (result1.rowCount > 0) {
+        var userID = result1.rows[0].id;
+        UserExist = 1;
+        let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = user_id || ${userID} WHERE id = ${groupID}`);
+            if(result.rowCount===1) {
+              let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:uniuqeid,details:"'Add_Group'"});
+              return yield Promise.resolve(result);
+            }
+            return yield Promise.resolve(null);
+      }
+      else
+      {
+              return yield Promise.resolve(UserExist);
+      }
+     
+      
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+/*End of this query*/
   /**
    * Consumes form data and stores it in the database.
    *

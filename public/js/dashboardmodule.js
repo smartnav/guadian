@@ -308,5 +308,11 @@ $scope.hover = function(data) {
                     toaster.pop('error', "Error", 'Woops! There was an error creating the group.');
                 }
             })
+    
+    
+    
+    $scope.addGroup = function()
+    {
+	toaster.pop('error', "Error", 'Woops! There was an error updating the response.');
     }
  })
