@@ -227,4 +227,11 @@ angular
                 }
             })
     }
+    
+    
+    
+    $scope.addGroup = function()
+    {
+	toaster.pop('error', "Error", 'Woops! There was an error updating the response.');
+    }
  })

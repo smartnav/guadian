@@ -1,0 +1,89 @@
+<div ng-app="groups">
+  <div class="page-header">
+    <h1>Groups</h1>
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModalNorm">Add New Group</button>
+  </div>
+  <toaster-container></toaster-container>
+  <div class="row row-eq-height" ng-controller="groupManage">
+    <!-- GOOGLE INFORMATION -->
+    <div class="col-xs-12 col-sm-6 col-lg-6 steps" ng-repeat="(key, gdata) in groupData">
+      <div class="panel steps">
+        <div class="panel-heading h2 orange text-center">{{gdata.group_name}}</div>
+        <div class="panel-body">
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="guser in gdata.users"><span class="badge">Delete</span> {{guser.email}}</li>
+            <li class="list-group-item">
+              <form>
+              <div class="input-group">
+                <input id="email" placeholder="Add User" class="form-control" type="textbox" ng-model="user_email[$index]">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" id="addUser" ng-click="addUser($index, key)">Add</button>
+                </span>
+              </div>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+
+    
+    
+    
+    <!-- Modal -->
+<div class="modal fade" id="myModalNorm" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Create Group
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form role="form">
+                
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Group Name</label>
+                      <input type="text" class="form-control"
+                     placeholder="Enter Group Name" ng-model="group_name" />
+                  </div>
+                  <!--<div class="checkbox">
+                    <label>
+                        <input type="checkbox"/> Check me out
+                    </label>
+                  </div>
+                  <button type="submit" class="btn btn-default">Add</button>-->
+                </form>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Close
+                </button>
+                <button type="button" class="btn btn-primary"  ng-click="addGroup()">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+  </div>
+
+  <script src="<%= process.env.CDN %>/js/angular.min.js"></script>
+  <script src="<%= process.env.CDN %>/js/groupmodule.js"></script>
+
+</div>
+

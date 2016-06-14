@@ -27,26 +27,26 @@ render(app, {
   debug: true
 });
 
-app.use(function *(next) {
-  try {
-    // yield downstream
-    yield next;
-  } catch (err) {
-    this.status = err.status || 500;
-    this.body = err.message;
-    transporter.sendMail({
-            from: `<no-reply@${URL}>`,
-            to: "smartdata.nav@gmail.com",
-            subject: 'Error '+this.status,
-            text: err.stack
-          }, function(error, info) {
-            if(error) {
-              return console.error(error);
-            }
-            console.log('Email sent', info);
-          });
-  }
-});
+//app.use(function *(next) {
+//  try {
+//    // yield downstream
+//    yield next;
+//  } catch (err) {
+//    this.status = err.status || 500;
+//    this.body = err.message;
+//    transporter.sendMail({
+//            from: `<no-reply@${URL}>`,
+//            to: "smartdata.nav@gmail.com",
+//            subject: 'Error '+this.status,
+//            text: err.stack
+//          }, function(error, info) {
+//            if(error) {
+//              return console.error(error);
+//            }
+//            console.log('Email sent', info);
+//          });
+//  }
+//});
 
 require('./app/routes.js')(app);
 //routes

@@ -141,6 +141,20 @@ function *dashboard(){
   });
 }
 
+
+/*created by smartdata(nav)*/
+function *groups(){
+ yield this.render('groups', {
+    session:this.session || {},
+    pageTitle: 'Dashboard',
+    url: URL
+  });
+}
+/*end of this function*/
+
+
+
+
 function *logout() {
   //nullify the session
   user.logout();
@@ -952,6 +966,61 @@ function *sendGeneratedEmailText(formid,responseid) {
 
 
 
+/* Smartdata*/
+function *add_group() {
+    let val =  yield _form.addGroup(this.session.id,this.request.body.group_name);
+    if(val) {
+      this.status = 200;
+      this.body = JSON.stringify({changed:this.request.body.id});
+      this.set({'Content-Type': 'application/json'});
+    }
+    else
+    {
+      this.status = 400;
+      this.render('400');
+    }
+}
+
+
+function *get_group() {
+    let val =  yield _form.getGroup(this.session.id);
+    console.log(val);
+    if(val) {
+      this.status = 200;
+      this.body = JSON.stringify({val});
+      this.set({'Content-Type': 'application/json'});
+    }
+    else
+    {
+      this.status = 400;
+      this.render('400');
+    }
+}
+
+
+function *addUser() {
+    let val =  yield _form.addUser(this.session.id,this.request.body.userEmail,this.request.body.groupID);
+    console.log('+++++++++++++++++++++++++++',val);
+    if(val) {
+      this.status = 200;
+      this.body = JSON.stringify({val});
+      this.set({'Content-Type': 'application/json'});
+    }
+    else
+    {
+      this.status = 400;
+      this.render('400');
+    }
+}
+
+
+/* Rahul Response Toggle Status */
+
+
+
+
+
+
 /* Rahul for form builder */
 
 module.exports = function(app) {
@@ -983,6 +1052,9 @@ module.exports = function(app) {
   app.use(route.get('/auth/google/callback', googleAuthCallback));
 
   app.use(route.get('/dashboard', dashboard));
+  
+  app.use(route.get('/groups', groups));
+  
   app.use(route.get('/admin', adminDashboard));
   
   app.use(route.get('/users', getUsers)); //TODO: remove this.
@@ -1041,7 +1113,9 @@ module.exports = function(app) {
   /* Rahul for form builder */
 
 
-
+  app.use(route.post('/groups/add_group', add_group));
+  app.use(route.post('/groups/get_group', get_group));
+  app.use(route.post('/groups/addUser', addUser));
   // NOTE: only available in testing suite
   if(process.env.TEST === 'true') {
     app.use(route.get('/proxylogin/:userid', function*(id){
