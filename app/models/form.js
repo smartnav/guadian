@@ -388,7 +388,7 @@ updateGroupId: co.wrap(function* (data) {
       let done = conxData[1];
       
       let uniuqeid = uuid.v4();
-      let user_id = "{"+owner_id+"}";
+    //  let user_id = "{"+owner_id+"}";
       let UserExist = 0;
       
       let result1 = yield client.queryPromise(`SELECT * FROM "users" WHERE email = $1`, [userEmail]);
@@ -396,9 +396,9 @@ updateGroupId: co.wrap(function* (data) {
       if (result1.rowCount > 0) {
         var userID = result1.rows[0].id;
         UserExist = 1;
-        let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = user_id || ${userID} WHERE id = ${groupID}`);
+        let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = ${userID} || user_id WHERE id = $1`,[groupID]);
             if(result.rowCount===1) {
-              let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:uniuqeid,details:"'Add_Group'"});
+              let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_USER",user_id:owner_id,pkey:uniuqeid,details:"'Add_USER'"});
               return yield Promise.resolve(result);
             }
             return yield Promise.resolve(null);

@@ -79,7 +79,28 @@ getCountByGroup: co.wrap(function* () {
       }catch(err){
       return yield Promise.reject(err);
     }
-  })
+  }),
+
+delUser: co.wrap(function* (owner_id,userid,groupID) {
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+      let uniuqeid = uuid.v4();
+      let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = array_remove(user_id, ${userid}) WHERE id = $1`,[groupID]);
+      
+            if(result.rowCount===1) {
+              let logging = yield _auditlog.writelog({model:"user_groups",operation:"Delete_User",user_id:owner_id,pkey:uniuqeid,details:"'Delete_User'"});
+              return yield Promise.resolve(result);
+            }
+            return yield Promise.resolve(null);
+     
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
 }
 
 module.exports = usergroup;

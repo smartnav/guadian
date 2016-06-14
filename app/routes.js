@@ -1075,6 +1075,20 @@ function *addUser() {
 }
 
 
+function *delUser() {
+    let val =  yield _usergroup.delUser(this.session.id,this.request.body.userID,this.request.body.groupID);
+    if(val) {
+      this.status = 200;
+      this.body = JSON.stringify({val});
+      this.set({'Content-Type': 'application/json'});
+    }
+    else
+    {
+      this.status = 400;
+      this.render('400');
+    }
+}
+
 /* Rahul Response Toggle Status */
 
 
@@ -1185,6 +1199,7 @@ module.exports = function(app) {
   app.use(route.post('/groups/add_group', add_group));
   app.use(route.post('/groups/get_group', get_group));
   app.use(route.post('/groups/addUser', addUser));
+  app.use(route.post('/groups/delUser', delUser));
   // NOTE: only available in testing suite
   if(process.env.TEST === 'true') {
     app.use(route.get('/proxylogin/:userid', function*(id){

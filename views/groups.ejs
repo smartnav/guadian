@@ -1,17 +1,19 @@
 <div ng-app="groups">
   <div class="page-header">
     <h1>Groups</h1>
-    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModalNorm">Add New Group</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalNorm">Add New Group</button>
   </div>
   <toaster-container></toaster-container>
   <div class="row row-eq-height" ng-controller="groupManage">
     <!-- GOOGLE INFORMATION -->
     <div class="col-xs-12 col-sm-6 col-lg-6 steps" ng-repeat="(key, gdata) in groupData">
       <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">{{gdata.group_name}}</div>
+        <div class="panel-heading h2 orange text-center">{{gdata.group_name}}<button class="close" aria-label="Close" style="font-size:36px" type="button">
+<span aria-hidden="true">×</span>
+</button></div>
         <div class="panel-body">
           <ul class="list-group">
-            <li class="list-group-item" ng-repeat="guser in gdata.users"><span class="badge">Delete</span> {{guser.email}}</li>
+            <li class="list-group-item" ng-repeat="guser in gdata.users"><span style="cursor:pointer;" ng-click="delUser(guser.u_id, key)" class="badge">Delete</span> {{guser.email}}</li>
             <li class="list-group-item">
               <form>
               <div class="input-group">

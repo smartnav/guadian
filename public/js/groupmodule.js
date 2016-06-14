@@ -46,8 +46,19 @@ angular
     {
 	var userEmail = $scope.user_email[index];
 	$http.post('/groups/addUser', {userEmail:userEmail, groupID:groupID}).then(function(response){
-	    console.log(response);
+	    $scope.get_group();
+	    $scope.user_email[index] = "";
 	    toaster.pop('success', "Success", 'User add successfully created.');
 	});
+    }
+
+    $scope.delUser = function (userID, groupID)
+    {
+    	console.log("index",userID);
+    	console.log("groupid",groupID);
+    $http.post('/groups/delUser',{userID:userID, groupID:groupID}).then(function(response){
+    	$scope.get_group();
+    	toaster.pop('success', "Success", 'User Deleted successfully.');
+    })
     }
  })
