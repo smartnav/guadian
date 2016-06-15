@@ -310,4 +310,23 @@ $scope.hover = function(data) {
             })
     
  }
+ $scope.showDivi = function(){
+    $scope.showDiv = true;
+    $scope.showButton = true;
+ }
+ $scope.showBut = function(){
+    $scope.showDiv = false;
+    $scope.showButton = false;
+ }
+ $scope.Leavegroup = function(groupID,formID){
+    $http.post('/usergroup/Leavegroup',{groupID:groupID}).then(function(response){
+        toaster.pop('success',"Success",'Leave Group Successfully.');
+    $scope.getActiveForms.reload();
+    },function(err){
+
+                if(err) {
+                    toaster.pop('error', "Error", 'Woops! There was an error leaving the group.');
+                }
+            })
+ }
 })

@@ -966,7 +966,7 @@ function *sendGeneratedEmailText(formid,responseid) {
 
 function *createGroup() {
   console.log(this.request.body)
-  let result = yield _usergroup.creategroup(this.session.id,this.request.body);
+  let result = yield _usergroup.creategroup(this.session.id,this.request.body,this.session.email);
   if(result){
     this.body = JSON.stringify({success:"true"});
     this.set({'Content-Type': 'application/json'});
@@ -1004,7 +1004,7 @@ function *updateGroup() {
 function *getGroupFormsCount()
 {
     this.status = 200;
-    var activeForms = yield _usergroup.getCountByGroup();
+    var activeForms = yield _usergroup.getCountByGroup(this.session.id);
     console.log(activeForms,'groupForms')
     this.body = JSON.stringify(activeForms);
     this.set({'Content-Type': 'application/json'});
@@ -1061,15 +1061,14 @@ function *get_group() {
 
 function *addUser() {
     let val =  yield _usergroup.addUser(this.session.id,this.request.body.userEmail,this.request.body.groupID);
-    if(val==0) {
-      this.status=204;
-      this.body = JSON.stringify({message:"No User Exists"});
+    if(val)
+    {
+      this.body = JSON.stringify({value:val});
       this.set({'Content-Type': 'application/json'});
     }
-    else if(val)
+    if(val==0)
     {
-      this.status = 200;
-      this.body = JSON.stringify({val});
+      this.body = JSON.stringify({value:val});
       this.set({'Content-Type': 'application/json'});
     }
     else
@@ -1101,6 +1100,20 @@ function *delGroup() {
     if(val) {
       this.status = 200;
       this.body = JSON.stringify({message:"Successfully Deleted Group."});
+      this.set({'Content-Type': 'application/json'});
+    }
+    else
+    {
+      this.status = 400;
+      this.render('400');
+    }
+}
+
+function *leaveGroup() {
+  let val = yield _usergroup.leaveGroup(this.request.body.groupID);
+  if(val) {
+      this.status = 200;
+      this.body = JSON.stringify({message:"Successfully Leaved Group."});
       this.set({'Content-Type': 'application/json'});
     }
     else
@@ -1214,6 +1227,8 @@ module.exports = function(app) {
   app.use(route.post('/usergroup/update',updateGroup));
   app.use(route.post('/usergroup/form',getFormByGroupId));
   app.use(route.get('/getGroupFormsCount',getGroupFormsCount));
+  app.use(route.post('/usergroup/Leavegroup',leaveGroup));
+
   /* smartData for user groups */
 
 

@@ -46,16 +46,20 @@ angular
     {
 	var userEmail = $scope.user_email[index];
 	$http.post('/groups/addUser', {userEmail:userEmail, groupID:groupID}).then(function(response){
-		if(response.status==204)
+		if(response.data.value==0)
 		{
 			toaster.pop('error',"Error", 'No User with the specified Email Id Found.');
 		}
-		else if(response.status==200)
+		else if(response.data.value==1)
 	    {
 	    		$scope.get_group();
 	    	    $scope.user_email[index] = "";
 	    	    toaster.pop('success', "Success", 'User add successfully created.');
-	    	}
+	    }
+	    else if(response.data.value==2)
+	    {
+	    	toaster.pop('error',"Error", 'User already exists.');
+	    }
 	},function(err){
 		    if(err) {
 			    toaster.pop('error', "Error", 'Woops! There was an error adding the user.');
@@ -78,6 +82,9 @@ angular
 
     $scope.delGroup = function (groupID)
     {
+    	var conf = confirm('Are You Sure Want to Delete This?');
+            if(conf===false)
+                return;
     $http.post('/groups/delGroup',{groupID:groupID}).then(function(response){
     	toaster.pop('success', "Success", 'Successfully Deleted.');
     	$scope.get_group();

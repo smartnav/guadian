@@ -498,8 +498,7 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
     margin-bottom: 100px;
 }
 
-.radiob {
-   width:50%; 
+.radiob { 
    height: 90px; 
    overflow-y: scroll;
 }

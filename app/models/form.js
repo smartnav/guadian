@@ -364,7 +364,7 @@ updateGroupId: co.wrap(function* (data) {
   
       let result = yield client.queryPromise(queryStatement);
       done();
-      if(result.rowCount>1) {
+      if(result) {
         let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:owner_id,details:"'Add_Group'"});
         return yield Promise.resolve(result.rows);
       }
@@ -373,44 +373,6 @@ updateGroupId: co.wrap(function* (data) {
       return yield Promise.reject(err);
     }
   }),
-  
-  
-  
-  addUser: co.wrap(function* (owner_id,userEmail,groupID) {
-    try {
-
-
-      let conxData = yield coPg.connectPromise(connectionString);
-      let client = conxData[0];
-      let done = conxData[1];
-      
-      let uniuqeid = uuid.v4();
-    //  let user_id = "{"+owner_id+"}";
-      let UserExist = 0;
-      
-      let result1 = yield client.queryPromise(`SELECT * FROM "users" WHERE email = $1`, [userEmail]);
-      done();
-      if (result1.rowCount > 0) {
-        var userID = result1.rows[0].id;
-        UserExist = 1;
-        let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = ${userID} || user_id WHERE id = $1`,[groupID]);
-            if(result.rowCount===1) {
-              let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_USER",user_id:owner_id,pkey:uniuqeid,details:"'Add_USER'"});
-              return yield Promise.resolve(result);
-            }
-            return yield Promise.resolve(null);
-      }
-      else
-      {
-              return yield Promise.resolve(UserExist);
-      }
-     
-      
-    }catch(err){
-      return yield Promise.reject(err);
-    }
-  }),
-  
   
   
   
