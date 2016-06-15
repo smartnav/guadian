@@ -1029,7 +1029,8 @@ function *getFormByGroupId() {
 
 /* Smartdata*/
 function *add_group() {
-    let val =  yield _form.addGroup(this.session.id,this.request.body.group_name);
+  //console.log('-------------------------------------------',this.session);
+    let val =  yield _form.addGroup(this.session,this.request.body.group_name);
     if(val) {
       this.status = 200;
       this.body = JSON.stringify({changed:this.request.body.id});
@@ -1232,7 +1233,7 @@ module.exports = function(app) {
   /* smartData for user groups */
 
 
-  // app.use(route.post('/groups/add_group', add_group));
+ app.use(route.post('/groups/add_group', add_group));
   app.use(route.post('/groups/get_group', get_group));
   app.use(route.post('/groups/addUser', addUser));
   app.use(route.post('/groups/delUser', delUser));
