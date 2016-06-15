@@ -319,29 +319,29 @@ updateGroupId: co.wrap(function* (data) {
 } ),
   /* Smartdata add Group query */
 
-  addGroup: co.wrap(function* (owner_id,group_name) {
-    try {
+  // addGroup: co.wrap(function* (owner_id,group_name) {
+  //   try {
 
 
-      let conxData = yield coPg.connectPromise(connectionString);
-      let client = conxData[0];
-      let done = conxData[1];
+  //     let conxData = yield coPg.connectPromise(connectionString);
+  //     let client = conxData[0];
+  //     let done = conxData[1];
       
-      let uniuqeid = uuid.v4();
-      let user_id = "{"+owner_id+"}";
-      console.log(`INSERT INTO "user_groups" (id,group_name,user_id) VALUES('${uniuqeid}', '${group_name}', '${user_id}')`);
+  //     let uniuqeid = uuid.v4();
+  //     let user_id = "{"+owner_id+"}";
+  //     console.log(`INSERT INTO "user_groups" (id,group_name,user_id) VALUES('${uniuqeid}', '${group_name}', '${user_id}')`);
   
-      let result = yield client.queryPromise(`INSERT INTO "user_groups" (id,group_name,user_id) VALUES ('${uniuqeid}', '${group_name}', '${user_id}')`);
-      done();
-      if(result.rowCount===1) {
-        let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:uniuqeid,details:"'Add_Group'"});
-        return yield Promise.resolve(result);
-      }
-      return yield Promise.resolve(null);
-    }catch(err){
-      return yield Promise.reject(err);
-    }
-  }),
+  //     let result = yield client.queryPromise(`INSERT INTO "user_groups" (id,group_name,user_id) VALUES ('${uniuqeid}', '${group_name}', '${user_id}')`);
+  //     done();
+  //     if(result.rowCount===1) {
+  //       let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:uniuqeid,details:"'Add_Group'"});
+  //       return yield Promise.resolve(result);
+  //     }
+  //     return yield Promise.resolve(null);
+  //   }catch(err){
+  //     return yield Promise.reject(err);
+  //   }
+  // }),
   
   
   

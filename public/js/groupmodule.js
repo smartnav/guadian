@@ -46,10 +46,21 @@ angular
     {
 	var userEmail = $scope.user_email[index];
 	$http.post('/groups/addUser', {userEmail:userEmail, groupID:groupID}).then(function(response){
-	    $scope.get_group();
-	    $scope.user_email[index] = "";
-	    toaster.pop('success', "Success", 'User add successfully created.');
-	});
+		if(response.status==204)
+		{
+			toaster.pop('error',"Error", 'No User with the specified Email Id Found.');
+		}
+		else if(response.status==200)
+	    {
+	    		$scope.get_group();
+	    	    $scope.user_email[index] = "";
+	    	    toaster.pop('success', "Success", 'User add successfully created.');
+	    }
+	},function(err){
+		    if(err) {
+			    toaster.pop('error', "Error", 'Woops! There was an error adding the user.');
+		    }
+    		})
     }
 
     $scope.delUser = function (userID, groupID)

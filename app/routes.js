@@ -975,7 +975,7 @@ function *createGroup() {
 
 function *showGroup() {
   console.log("in showgroup")
-  let result = yield _usergroup.showgroup();
+  let result = yield _usergroup.showgroup(this.session.id);
   if(result){
     this.body = JSON.stringify({result});
     this.set({'Content-Type': 'application/json'});
@@ -1060,9 +1060,15 @@ function *get_group() {
 
 
 function *addUser() {
-    let val =  yield _form.addUser(this.session.id,this.request.body.userEmail,this.request.body.groupID);
+    let val =  yield _usergroup.addUser(this.session.id,this.request.body.userEmail,this.request.body.groupID);
     console.log('+++++++++++++++++++++++++++',val);
-    if(val) {
+    if(val==0) {
+      this.status=204;
+      this.body = JSON.stringify({message:"No User Exists"});
+      this.set({'Content-Type': 'application/json'});
+    }
+    else if(val)
+    {
       this.status = 200;
       this.body = JSON.stringify({val});
       this.set({'Content-Type': 'application/json'});
@@ -1196,7 +1202,7 @@ module.exports = function(app) {
   /* smartData for user groups */
 
 
-  app.use(route.post('/groups/add_group', add_group));
+  // app.use(route.post('/groups/add_group', add_group));
   app.use(route.post('/groups/get_group', get_group));
   app.use(route.post('/groups/addUser', addUser));
   app.use(route.post('/groups/delUser', delUser));

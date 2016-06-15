@@ -15,9 +15,9 @@
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="guser in gdata.users"><span style="cursor:pointer;" ng-click="delUser(guser.u_id, key)" class="badge">Delete</span> {{guser.email}}</li>
             <li class="list-group-item">
-              <form>
+              <form name="myForm" novalidate>
               <div class="input-group">
-                <input id="email" placeholder="Add User" class="form-control" type="textbox" ng-model="user_email[$index]">
+                <input id="email" name="email" placeholder="Add User" class="form-control" type="textbox" ng-model="user_email[$index]" required>
                 <span class="input-group-btn">
                   <button class="btn btn-default" type="button" id="addUser" ng-click="addUser($index, key)">Add</button>
                 </span>
