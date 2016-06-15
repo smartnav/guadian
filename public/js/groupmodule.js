@@ -6,6 +6,7 @@ angular
     
     $scope.get_group = function()
     {
+    	$('#loadingdiv').addClass('loading')
 	$http.post('/groups/get_group', {}).then(function(response){
 	    //console.log(response);
 	    var a = response.data.val;
@@ -20,6 +21,7 @@ angular
 	    }
 	    console.log(c);
 	    $scope.groupData = c;
+	    $('#loadingdiv').removeClass('loading')
 	});
     }
     
@@ -29,7 +31,7 @@ angular
     {
 	//toaster.pop('error', "Error", $scope.group_name);
 	var group_name = $scope.group_name;
-	$http.post('/groups/add_group',{group_name:group_name}).then(function(response){
+	$http.post('/usergroup/add',{name:group_name}).then(function(response){
 	    //console.log(response);
 	    toaster.pop('success', "Success", 'Group successfully created.');
 	    $scope.get_group();
@@ -44,37 +46,44 @@ angular
     $scope.user_email = {};
     $scope.addUser = function(index, groupID)
     {
+    	$('#loadingdiv').addClass('loading')
 	var userEmail = $scope.user_email[index];
 	$http.post('/groups/addUser', {userEmail:userEmail, groupID:groupID}).then(function(response){
 		if(response.data.value==0)
 		{
 			toaster.pop('error',"Error", 'No User with the specified Email Id Found.');
+			$('#loadingdiv').removeClass('loading')
 		}
 		else if(response.data.value==1)
 	    {
 	    		$scope.get_group();
 	    	    $scope.user_email[index] = "";
 	    	    toaster.pop('success', "Success", 'User add successfully created.');
+	    	    $('#loadingdiv').removeClass('loading')
 	    }
 	    else if(response.data.value==2)
 	    {
 	    	toaster.pop('error',"Error", 'User already exists.');
+	    	$('#loadingdiv').removeClass('loading')
 	    }
 	},function(err){
 		    if(err) {
 			    toaster.pop('error', "Error", 'Woops! There was an error adding the user.');
+			    $('#loadingdiv').removeClass('loading');
 		    }
     		})
     }
 
     $scope.delUser = function (userID, groupID)
     {
-
+    	$('#loadingdiv').addClass('loading')
     $http.post('/groups/delUser',{userID:userID, groupID:groupID}).then(function(response){
     	toaster.pop('success', "Success", 'User Deleted successfully.');
     	$scope.get_group();
+    	$('#loadingdiv').removeClass('loading')
     },function(err){
 		    if(err) {
+		    	$('#loadingdiv').removeClass('loading')
 			    toaster.pop('error', "Error", 'Woops! There was an error deleting the user.');
 		    }
     		})
@@ -82,16 +91,28 @@ angular
 
     $scope.delGroup = function (groupID)
     {
-    	var conf = confirm('Are You Sure Want to Delete This?');
-            if(conf===false)
-                return;
+    $('#loadingdiv').addClass('loading')
     $http.post('/groups/delGroup',{groupID:groupID}).then(function(response){
     	toaster.pop('success', "Success", 'Successfully Deleted.');
     	$scope.get_group();
+    $('#loadingdiv').removeClass('loading')
     },function(err){
 		    if(err) {
 			    toaster.pop('error', "Error", 'Woops! There was an error deleting the group.');
 		    }
     		})
     }
- })
+ }).directive('ngConfirmClick', [
+        function(){
+            return {
+                link: function (scope, element, attr) {
+                    var msg = attr.ngConfirmClick || "Are you sure?";
+                    var clickAction = attr.confirmedClick;
+                    element.bind('click',function (event) {
+                        if ( window.confirm(msg) ) {
+                            scope.$eval(clickAction)
+                        }
+                    });
+                }
+            };
+    }])

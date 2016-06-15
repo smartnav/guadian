@@ -319,14 +319,29 @@ $scope.hover = function(data) {
     $scope.showButton = false;
  }
  $scope.Leavegroup = function(groupID,formID){
-    $http.post('/usergroup/Leavegroup',{groupID:groupID}).then(function(response){
-        toaster.pop('success',"Success",'Leave Group Successfully.');
-    $scope.getActiveForms.reload();
-    },function(err){
 
-                if(err) {
-                    toaster.pop('error', "Error", 'Woops! There was an error leaving the group.');
+        $http.post('/usergroup/Leavegroup',{groupID:groupID}).then(function(response){
+        toaster.pop('success',"Success",'Leave Group Successfully.');
+        $scope.getActiveForms.reload();
+        },function(err){
+        if(err) {
+            toaster.pop('error', "Error", 'Woops! There was an error leaving the group.');
                 }
-            })
+        })
+            
  }
 })
+.directive('ngConfirmClick', [
+        function(){
+            return {
+                link: function (scope, element, attr) {
+                    var msg = attr.ngConfirmClick || "Are you sure?";
+                    var clickAction = attr.confirmedClick;
+                    element.bind('click',function (event) {
+                        if ( window.confirm(msg) ) {
+                            scope.$eval(clickAction)
+                        }
+                    });
+                }
+            };
+    }])

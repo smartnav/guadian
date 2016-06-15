@@ -1061,12 +1061,12 @@ function *get_group() {
 
 function *addUser() {
     let val =  yield _usergroup.addUser(this.session.id,this.request.body.userEmail,this.request.body.groupID);
-    if(val)
+    if(val>0)
     {
       this.body = JSON.stringify({value:val});
       this.set({'Content-Type': 'application/json'});
     }
-    if(val==0)
+    else if(val==0)
     {
       this.body = JSON.stringify({value:val});
       this.set({'Content-Type': 'application/json'});

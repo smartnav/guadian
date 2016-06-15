@@ -19,7 +19,7 @@ creategroup: co.wrap(function* (ownerid,data,email) {
         var uniqueid = uuid.v4();
         let result = yield client.queryPromise("INSERT INTO user_groups (id,group_name,user_id,creator_id,creator_email) VALUES($1,$2,$3,$4,$5)",[uniqueid,data.name,[ownerid],ownerid,email]);
         if(result.rowCount===1) {
-        let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:ownerid,pkey:uniuqeid,details:"'Add_Group'"});
+        let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:ownerid,pkey:uniqueid,details:"'Add_Group'"});
         return yield Promise.resolve(result);
       }
       return yield Promise.resolve(null);
@@ -146,7 +146,7 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
           done();
           if(result.rowCount===1) {
             let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_USER",user_id:owner_id,pkey:uniuqeid,details:"'Add_USER'"});
-            return yield Promise.resolve(result);
+            return yield Promise.resolve(UserExist);
             }
         }
         else
