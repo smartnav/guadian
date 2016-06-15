@@ -1,7 +1,7 @@
 angular
-.module('groups',['toaster', 'ngAnimate'])
+.module('groups',['toaster', 'ngAnimate', "ui.bootstrap" , "angular-confirm"])
 
-.controller('groupManage',function($scope,$http,$timeout,$compile,toaster){
+.controller('groupManage',function($scope, $uibModal, $confirm,$http,$timeout,$compile,toaster){
     
     
     $scope.get_group = function()
@@ -14,6 +14,7 @@ angular
 	    {
 	      c[a[i].id] = c[a[i].id] ? c[a[i].id] : {};
 	      c[a[i].id].group_name = a[i].group_name;
+	      c[a[i].id].creator_email = a[i].creator_email;
 	      c[a[i].id].users = c[a[i].id].users ? c[a[i].id].users  : [];
 	      var data = {'u_id' :a[i].u_id,'email' : a[i].email };
 	      c[a[i].id].users.push(data);
@@ -65,26 +66,32 @@ angular
 
     $scope.delUser = function (userID, groupID)
     {
+    $confirm({text: 'Are you sure you want to delete?'})
+        .then(function() {
+              $http.post('/groups/delUser',{userID:userID, groupID:groupID}).then(function(response){
+		toaster.pop('success', "Success", 'User Deleted successfully.');
+		    $scope.get_group();
+		},function(err){
+				if(err) {
+					toaster.pop('error', "Error", 'Woops! There was an error deleting the user.');
+				}
+			    })
+        });
 
-    $http.post('/groups/delUser',{userID:userID, groupID:groupID}).then(function(response){
-    	toaster.pop('success', "Success", 'User Deleted successfully.');
-    	$scope.get_group();
-    },function(err){
-		    if(err) {
-			    toaster.pop('error', "Error", 'Woops! There was an error deleting the user.');
-		    }
-    		})
     }
 
     $scope.delGroup = function (groupID)
     {
-    $http.post('/groups/delGroup',{groupID:groupID}).then(function(response){
-    	toaster.pop('success', "Success", 'Successfully Deleted.');
-    	$scope.get_group();
-    },function(err){
-		    if(err) {
-			    toaster.pop('error', "Error", 'Woops! There was an error deleting the group.');
-		    }
-    		})
+    $confirm({text: 'Are you sure you want to delete?'})
+        .then(function() {
+	    $http.post('/groups/delGroup',{groupID:groupID}).then(function(response){
+		toaster.pop('success', "Success", 'Successfully Deleted.');
+		$scope.get_group();
+	    },function(err){
+			    if(err) {
+				    toaster.pop('error', "Error", 'Woops! There was an error deleting the group.');
+			    }
+			})
+	    });
     }
  })

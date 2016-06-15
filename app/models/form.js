@@ -319,29 +319,30 @@ updateGroupId: co.wrap(function* (data) {
 } ),
   /* Smartdata add Group query */
 
-  // addGroup: co.wrap(function* (owner_id,group_name) {
-  //   try {
+   addGroup: co.wrap(function* (sessionValues,group_name) {
+     try {
 
-
-  //     let conxData = yield coPg.connectPromise(connectionString);
-  //     let client = conxData[0];
-  //     let done = conxData[1];
+       let owner_id = sessionValues.id;
+       let owner_email = sessionValues.email;
+       let conxData = yield coPg.connectPromise(connectionString);
+       let client = conxData[0];
+       let done = conxData[1];
       
-  //     let uniuqeid = uuid.v4();
-  //     let user_id = "{"+owner_id+"}";
-  //     console.log(`INSERT INTO "user_groups" (id,group_name,user_id) VALUES('${uniuqeid}', '${group_name}', '${user_id}')`);
+       let uniuqeid = uuid.v4();
+       let user_id = "{"+owner_id+"}";
+       console.log(`INSERT INTO "user_groups" (id,group_name,user_id,creator_id,creator_email) VALUES ('${uniuqeid}', '${group_name}', '${user_id}', '${owner_id}', '${owner_email}')`);
   
-  //     let result = yield client.queryPromise(`INSERT INTO "user_groups" (id,group_name,user_id) VALUES ('${uniuqeid}', '${group_name}', '${user_id}')`);
-  //     done();
-  //     if(result.rowCount===1) {
-  //       let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:uniuqeid,details:"'Add_Group'"});
-  //       return yield Promise.resolve(result);
-  //     }
-  //     return yield Promise.resolve(null);
-  //   }catch(err){
-  //     return yield Promise.reject(err);
-  //   }
-  // }),
+       let result = yield client.queryPromise(`INSERT INTO "user_groups" (id,group_name,user_id,creator_id,creator_email) VALUES ('${uniuqeid}', '${group_name}', '${user_id}', '${owner_id}', '${owner_email}')`);
+       done();
+       if(result.rowCount===1) {
+         let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:uniuqeid,details:"'Add_Group'"});
+         return yield Promise.resolve(result);
+       }
+       return yield Promise.resolve(null);
+     }catch(err){
+       return yield Promise.reject(err);
+     }
+   }),
   
   
   
@@ -359,12 +360,13 @@ updateGroupId: co.wrap(function* (data) {
       
       
       
-      let queryStatement = `SELECT g.id,g.group_name, u.id as u_id, u.email FROM "user_groups" g INNER JOIN "users" u ON u.id = any(g.user_id) WHERE ${user_id} = any(g.user_id)`;
+      let queryStatement = `SELECT g.id,g.group_name,g.creator_email, u.id as u_id, u.email FROM "user_groups" g INNER JOIN "users" u ON u.id = any(g.user_id) WHERE ${user_id} = any(g.user_id)`;
       
   
       let result = yield client.queryPromise(queryStatement);
+      console.log(result);
       done();
-      if(result.rowCount>1) {
+      if(result) {
         let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:owner_id,details:"'Add_Group'"});
         return yield Promise.resolve(result.rows);
       }
