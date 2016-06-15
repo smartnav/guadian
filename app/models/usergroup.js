@@ -88,11 +88,32 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
       let client = conxData[0];
       let done = conxData[1];
       let uniuqeid = uuid.v4();
-      let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = array_remove(user_id, ${userid}) WHERE id = $1`,[groupID]);
-      
+      let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = array_remove(user_id, ${userid}) WHERE id = $1`,[groupID]);  
+        console.log("result");
             if(result.rowCount===1) {
+              let length = yield client.queryPromise(`SELECT array_length(user_id, 1) FROM "user_groups" WHERE id=$1`,[groupID]);
+            if(length.rows[0].array_length>0)
+            {  
+              console.log("length greater than 0");
               let logging = yield _auditlog.writelog({model:"user_groups",operation:"Delete_User",user_id:owner_id,pkey:uniuqeid,details:"'Delete_User'"});
-              return yield Promise.resolve(result);
+              done();
+              return yield Promise.resolve(length);
+            }
+            else
+            {
+              console.log("length less than 0");
+              let delgroup = yield client.queryPromise(`DELETE FROM user_groups WHERE id=$1`,[groupID]);
+              if(delgroup.rowCount===1)
+              {
+                console.log("group deleted successfully");
+                let delFormid = yield client.queryPromise(`UPDATE forms SET owner_group_id=null WHERE owner_group_id=$1`,[groupID]);
+                done();
+                if(delFormid) {
+                  console.log("form owner_group_id updated successfully");
+                  return yield Promise.resolve(delFormid);
+                }
+              }
+            }
             }
             return yield Promise.resolve(null);
      
@@ -115,10 +136,11 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
       
       let result1 = yield client.queryPromise(`SELECT * FROM "users" WHERE email = $1`, [userEmail]);
       done();
-      if (result1.rowCount > 0) {
+      if (result1.rowCount===1) {
         var userID = result1.rows[0].id;
         UserExist = 1;
         let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = ${userID} || user_id WHERE id = $1`,[groupID]);
+        done();
             if(result.rowCount===1) {
               let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_USER",user_id:owner_id,pkey:uniuqeid,details:"'Add_USER'"});
               return yield Promise.resolve(result);
@@ -135,6 +157,33 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
       return yield Promise.reject(err);
     }
   }),
+
+  delGroup: co.wrap(function* (groupID) {
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+      let uniuqeid = uuid.v4();
+              let delgroup = yield client.queryPromise(`DELETE FROM user_groups WHERE id=$1`,[groupID]);
+              if(delgroup.rowCount===1)
+              {
+                console.log("group deleted successfully");
+                let delFormid = yield client.queryPromise(`UPDATE forms SET owner_group_id=null WHERE owner_group_id=$1`,[groupID]);
+                done();
+                if(delFormid) {
+                  console.log("form owner_group_id updated successfully");
+                  return yield Promise.resolve(delFormid);
+                }
+              }
+            return yield Promise.resolve(null);
+     
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
+
 }
 
 module.exports = usergroup;

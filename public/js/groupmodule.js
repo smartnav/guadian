@@ -55,7 +55,7 @@ angular
 	    		$scope.get_group();
 	    	    $scope.user_email[index] = "";
 	    	    toaster.pop('success', "Success", 'User add successfully created.');
-	    }
+	    	}
 	},function(err){
 		    if(err) {
 			    toaster.pop('error', "Error", 'Woops! There was an error adding the user.');
@@ -65,11 +65,26 @@ angular
 
     $scope.delUser = function (userID, groupID)
     {
-    	console.log("index",userID);
-    	console.log("groupid",groupID);
+
     $http.post('/groups/delUser',{userID:userID, groupID:groupID}).then(function(response){
-    	$scope.get_group();
     	toaster.pop('success', "Success", 'User Deleted successfully.');
-    })
+    	$scope.get_group();
+    },function(err){
+		    if(err) {
+			    toaster.pop('error', "Error", 'Woops! There was an error deleting the user.');
+		    }
+    		})
+    }
+
+    $scope.delGroup = function (groupID)
+    {
+    $http.post('/groups/delGroup',{groupID:groupID}).then(function(response){
+    	toaster.pop('success', "Success", 'Successfully Deleted.');
+    	$scope.get_group();
+    },function(err){
+		    if(err) {
+			    toaster.pop('error', "Error", 'Woops! There was an error deleting the group.');
+		    }
+    		})
     }
  })

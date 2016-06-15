@@ -350,7 +350,6 @@ updateGroupId: co.wrap(function* (data) {
 
 
       let conxData = yield coPg.connectPromise(connectionString);
-      console.log('*************',conxData);
       let client = conxData[0];
       let done = conxData[1];
       
@@ -362,10 +361,8 @@ updateGroupId: co.wrap(function* (data) {
       
       let queryStatement = `SELECT g.id,g.group_name, u.id as u_id, u.email FROM "user_groups" g INNER JOIN "users" u ON u.id = any(g.user_id) WHERE ${user_id} = any(g.user_id)`;
       
-      console.log(queryStatement);
   
       let result = yield client.queryPromise(queryStatement);
-      console.log('----------------',result);
       done();
       if(result.rowCount>1) {
         let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:owner_id,details:"'Add_Group'"});
