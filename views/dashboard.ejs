@@ -81,7 +81,7 @@
                 <th scope="row">{{$index+1}}</th>
                 <td><a href='/form/{{row.id}}/facility'>{{row.facility}}</a></td>
                 <td ng-if="row.owner_group_id===null"><a ng-show="row.showDelete" style="cursor: pointer" ng-click="SelectGroup(row)"><i class="fa fa-plus"></i> Select Group</a></td>
-                <td ng-if="row.owner_group_id!==null"><span class="badge">{{row.group_name}}</span> <button type="button" class="close" ng-click="Leavegroup(row.owner_group_id)"><span aria-hidden="true">&times;</span></button></td>
+                <td ng-if="row.owner_group_id!==null"><span class="badge">{{row.group_name}}</span> <button type="button" class="close" ng-click="Leavegroup(row.id,row.owner_group_id)"><span aria-hidden="true">&times;</span></button></td>
                 <td class="text-center"><a ng-href="formbuilder/{{row.id}}" >Edit Form</a></td>
                 <td><a href="/form/{{row.id}}/responses"><i class="fa fa-eye"></i> <em>View All</em></a></td>
                 <td class="text-center">{{row.approved_count}} </td>
@@ -182,5 +182,8 @@
   <script src="<%= process.env.CDN %>/js/angular.min.js"></script>
   <script src="<%= process.env.CDN %>/js/ngAlertify.js"></script>
   <script src="<%= process.env.CDN %>/js/ng-table.min.js"></script>
+  <script src="<%= process.env.CDN %>/js/ui-bootstrap-tpls-1.3.3.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-confirm/1.2.5/angular-confirm.min.js"></script>
   <script src="<%= process.env.CDN %>/js/dashboardmodule.js"></script>
 </div>
+<div id="loadingdiv"></div>

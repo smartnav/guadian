@@ -1,5 +1,5 @@
 angular
-.module('dashboard',['ngTable','ngAlertify','toaster', 'ngAnimate'])
+.module('dashboard',['ngTable','ngAlertify','toaster', 'ngAnimate',"ui.bootstrap", "angular-confirm"])
 // .controller('Response',function($scope,$http,NgTableParams,$timeout,$compile,alertify,toaster){
 	
 // 	$scope.responses = {};
@@ -129,7 +129,7 @@ angular
 
 // })
 
-.controller('ActiveForms',function($scope,$http,NgTableParams,$timeout,$compile,alertify,toaster){
+.controller('ActiveForms',function($scope,$http,NgTableParams,$timeout,$compile,alertify,toaster,$confirm,$rootScope){
     $scope.activeforms = {};
     $scope.total = 0;
     $scope.gradios = {};
@@ -192,25 +192,38 @@ $scope.hover = function(data) {
         $scope.gname="";
         $('#erModal').modal();
         $('#formid').val(data.id);
+        $rootScope.id=data.id;
         }
 
     $scope.AddToGroup = function(data) {
-        data.id = $('#formid').val();
-        $http.post("/usergroup/update",data).then(function(response){
-            $scope.activeformsCount();
-            $scope.groupformsCount();
-            $scope.getActiveForms.reload();
-            $scope.getGroupForms.reload();
-           toaster.pop('success', "Success", 'Form Update Successfully.');
-           $("#erModal").modal('hide');
-
-        },function(err){
-
-                if(err) {
-                    toaster.pop('error', "Error", 'Woops! There was an error updating the form.');
-                }
-            })
-    }
+        console.log("dadada",data.owner_group_id);
+        if(!data.owner_group_id)
+        {
+            toaster.pop('error', "Error", 'Please select a group.');
+        }
+        else{
+            $("#erModal").modal('hide');
+            $('#loadingdiv').addClass('loading')
+                data.id = $rootScope.id;
+                $http.post("/usergroup/update",data).then(function(response){
+                    $scope.activeformsCount();
+                    $scope.groupformsCount();
+                    $scope.getActiveForms.reload();
+                    $scope.getGroupForms.reload();
+                   toaster.pop('success', "Success", 'Form Update Successfully.');
+                   $('#loadingdiv').removeClass('loading')
+                   
+        
+                },function(err){
+        
+                        if(err) {
+                            $('#loadingdiv').removeClass('loading')
+                            $("#erModal").modal();
+                            toaster.pop('error', "Error", 'Woops! There was an error updating the form.');
+                        }
+                    })
+            }
+        }
     
 
     $scope.activeformsCount = function() {
@@ -243,10 +256,13 @@ $scope.hover = function(data) {
     }
         if(status=='trashed')
         {
-	    
+	        $confirm({text: 'Are you sure you want to delete?'})
+            .then(function() {
+
+            });
             var conf = confirm('Are You Sure Want to Delete This?');
             if(conf===false)
-                return;
+            return;
         }
     
 
@@ -299,12 +315,18 @@ $scope.hover = function(data) {
             })
     }
     $scope.createGroup = function(data) {
+        $("#erModal").modal('hide');
+        $('#loadingdiv').addClass('loading')
        $http.post("/usergroup/add",{name:data}).then(function(resp){
         toaster.pop('success', "Success", 'Group Created Successfully.');
       $scope.getGroupData();
+      $('#loadingdiv').removeClass('loading')
+      $("#erModal").modal();
        },function(err){
 
                 if(err) {
+                  $('#loadingdiv').removeClass('loading')
+                  $("#erModal").modal();
                     toaster.pop('error', "Error", 'Woops! There was an error creating the group.');
                 }
             })
@@ -318,16 +340,20 @@ $scope.hover = function(data) {
     $scope.showDiv = false;
     $scope.showButton = false;
  }
- $scope.Leavegroup = function(groupID,formID){
-
-        $http.post('/usergroup/Leavegroup',{groupID:groupID}).then(function(response){
+ $scope.Leavegroup = function(formID,groupID){
+    $confirm({text: 'Are you sure you want to delete?'})
+        .then(function() {
+            $('#loadingdiv').addClass('loading')
+        $http.post('/usergroup/Leavegroup',{groupID:groupID,formID:formID}).then(function(response){
         toaster.pop('success',"Success",'Leave Group Successfully.');
         $scope.getActiveForms.reload();
+        $('#loadingdiv').removeClass('loading')
         },function(err){
         if(err) {
             toaster.pop('error', "Error", 'Woops! There was an error leaving the group.');
+                $('#loadingdiv').removeClass('loading')
                 }
         })
-            
+    })        
  }
 })

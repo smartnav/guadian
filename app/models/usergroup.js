@@ -194,16 +194,16 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
     }
   }),
 
-  leaveGroup: co.wrap(function* (groupID) {
+  leaveGroup: co.wrap(function* (data) {
     try {
 
 
       let conxData = yield coPg.connectPromise(connectionString);
       let client = conxData[0];
       let done = conxData[1];
-      let uniuqeid = uuid.v4();
-                let delFormid = yield client.queryPromise(`UPDATE forms SET owner_group_id=null WHERE owner_group_id=$1`,[groupID]);
+                let delFormid = yield client.queryPromise(`UPDATE forms SET owner_group_id=null WHERE owner_group_id=$1 AND id=$2`,[data.groupID,data.formID]);
                 done();
+                console.log(delFormid);
                 if(delFormid.rowCount==1) {
                   console.log("form owner_group_id updated successfully");
                   return yield Promise.resolve(delFormid);

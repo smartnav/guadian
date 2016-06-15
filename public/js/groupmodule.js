@@ -23,23 +23,32 @@ angular
 	    console.log(c);
 	    $scope.groupData = c;
 	    $('#loadingdiv').removeClass('loading')
-	});
+	},function(err){
+		    if(err) {
+			    toaster.pop('error', "Error", 'Woops! There was an error getting the response.');
+			    $('#loadingdiv').removeClass('loading')
+		    }
+    		});
     }
     
     $scope.get_group();
     
     $scope.addGroup = function()
     {
+    	$('#myModalNorm').modal('hide');
+    	$('#loadingdiv').addClass('loading')
 	//toaster.pop('error', "Error", $scope.group_name);
 	var group_name = $scope.group_name;
 	$http.post('/usergroup/add',{name:group_name}).then(function(response){
 	    //console.log(response);
 	    toaster.pop('success', "Success", 'Group successfully created.');
 	    $scope.get_group();
-	    $('myModalNorm').modal('hide');
+	    $('#loadingdiv').removeClass('loading')
 	},function(err){
 		    if(err) {
-			    toaster.pop('error', "Error", 'Woops! There was an error updating the response.');
+			    toaster.pop('error', "Error", 'Woops! There was an error adding group.');
+			    $('#myModalNorm').modal();
+			    $('#loadingdiv').removeClass('loading')
 		    }
     		})
     }
@@ -95,16 +104,6 @@ angular
 
     $scope.delGroup = function (groupID)
     {
-    
-    $http.post('/groups/delGroup',{groupID:groupID}).then(function(response){
-    	toaster.pop('success', "Success", 'Successfully Deleted.');
-    	$scope.get_group();
-    
-    },function(err){
-		    if(err) {
-			    toaster.pop('error', "Error", 'Woops! There was an error deleting the group.');
-		    }
-    		})
     $confirm({text: 'Are you sure you want to delete?'})
         .then(function() {
         	$('#loadingdiv').addClass('loading')

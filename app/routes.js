@@ -1029,7 +1029,6 @@ function *getFormByGroupId() {
 
 /* Smartdata*/
 function *add_group() {
-  //console.log('-------------------------------------------',this.session);
     let val =  yield _form.addGroup(this.session,this.request.body.group_name);
     if(val) {
       this.status = 200;
@@ -1111,7 +1110,7 @@ function *delGroup() {
 }
 
 function *leaveGroup() {
-  let val = yield _usergroup.leaveGroup(this.request.body.groupID);
+  let val = yield _usergroup.leaveGroup(this.request.body);
   if(val) {
       this.status = 200;
       this.body = JSON.stringify({message:"Successfully Leaved Group."});
