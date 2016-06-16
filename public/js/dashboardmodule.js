@@ -318,11 +318,20 @@ $scope.hover = function(data) {
         $("#erModal").modal('hide');
         $('#loadingdiv').addClass('loading')
        $http.post("/usergroup/add",{name:data}).then(function(resp){
-        toaster.pop('success', "Success", 'Group Created Successfully.');
-      $scope.getGroupData();
-      $('#loadingdiv').removeClass('loading')
-      $("#erModal").modal();
-       },function(err){
+        if(resp.data.message)
+        {
+           toaster.pop('error', "Error", 'Group already exists. Please select a different group name.');
+           $('#loadingdiv').removeClass('loading')
+           $("#erModal").modal();
+        }
+        else if(resp.data.success)
+              {      
+                    toaster.pop('success', "Success", 'Group Created Successfully.');
+                     $scope.getGroupData();
+                     $('#loadingdiv').removeClass('loading')
+                     $("#erModal").modal();
+              } 
+          },function(err){
 
                 if(err) {
                   $('#loadingdiv').removeClass('loading')

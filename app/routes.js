@@ -966,6 +966,13 @@ function *sendGeneratedEmailText(formid,responseid) {
 
 function *createGroup() {
   console.log(this.request.body)
+  let check = yield _usergroup.checkname(this.session.id,this.request.body.name);
+  if(check)
+  {
+    this.body = JSON.stringify({message:"name already exists"});
+    this.set({'Content-Type': 'application/json'});
+    return;
+  }
   let result = yield _usergroup.creategroup(this.session.id,this.request.body,this.session.email);
   if(result){
     this.body = JSON.stringify({success:"true"});

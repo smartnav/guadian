@@ -215,6 +215,26 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
     }
   }),
 
+  checkname: co.wrap(function* (ownerid,name) {
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+          let result = yield client.queryPromise(`SELECT count(*) as count FROM user_groups WHERE group_name=$1 AND creator_id=$2`,[name,ownerid]);
+                done();
+                console.log(result);
+                if(result.rows[0].count==1) {
+                  return yield Promise.resolve(result.rows[0]);
+                }
+            return yield Promise.resolve(null);
+     
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
+
 }
 
 module.exports = usergroup;
