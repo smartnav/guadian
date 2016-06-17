@@ -11,15 +11,15 @@ const url = require('url');
 const _auditlog = require('./auditlog'); // load audit log model
 const usergroup = {
 
-creategroup: co.wrap(function* (ownerid,data) {
+creategroup: co.wrap(function* (ownerid,data,email) {
 		try{
 		let conxData = yield coPg.connectPromise(connectionString);
         let client = conxData[0];
         let done = conxData[1];
         var uniqueid = uuid.v4();
-        let result = yield client.queryPromise("INSERT INTO user_groups (id,group_name,user_id) VALUES($1,$2,$3)",[uniqueid,data.name,[ownerid]]);
+        let result = yield client.queryPromise("INSERT INTO user_groups (id,group_name,user_id,creator_id,creator_email) VALUES($1,$2,$3,$4,$5)",[uniqueid,data.name,[ownerid],ownerid,email]);
         if(result.rowCount===1) {
-        let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:owner_id,pkey:uniuqeid,details:"'Add_Group'"});
+        let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_GROUP",user_id:ownerid,pkey:uniqueid,details:"'Add_Group'"});
         return yield Promise.resolve(result);
       }
       return yield Promise.resolve(null);
@@ -33,7 +33,7 @@ showgroup: co.wrap(function* (ownerid){
 		let conxData = yield coPg.connectPromise(connectionString);
         let client = conxData[0];
         let done = conxData[1];
-        let result = yield client.queryPromise("SELECT id,group_name,created from user_groups WHERE $1 = any(user_id)",[ownerid]);
+       let result = yield client.queryPromise("SELECT id,group_name,created,creator_email from user_groups WHERE $1 = any(user_id)",[ownerid]);
         done();
         if(result)
         {
@@ -51,7 +51,7 @@ getFormByGroupId: co.wrap(function* (ownerid,limit,offset) {
 	console.log(ownerid);
     let client = conxData[0];
     let done = conxData[1];
-    let result = yield client.queryPromise("SELECT forms.*,user_groups.group_name,(SELECT count(status) FROM responders WHERE formid=forms.id AND status=\'approved\') as approved_count,(SELECT count(status) FROM responders WHERE formid=forms.id AND status=\'unapproved\') as unapproved_count FROM forms, user_groups WHERE forms.status!=\'trashed\' AND user_groups.id = forms.owner_group_id AND $1 = any (user_groups.user_id) LIMIT "+limit+" OFFSET "+offset ,[ownerid]);
+    let result = yield client.queryPromise("SELECT forms.*,user_groups.group_name,(SELECT count(status) FROM responders WHERE formid=forms.id AND status=\'approved\') as approved_count,(SELECT count(status) FROM responders WHERE formid=forms.id AND status=\'unapproved\') as unapproved_count FROM forms, user_groups WHERE forms.status!=\'trashed\' AND user_groups.id = forms.owner_group_id AND forms.owner_id != $1 AND $1 = any (user_groups.user_id) LIMIT "+limit+" OFFSET "+offset ,[ownerid]);
     done();
     if(result)
         {
@@ -63,13 +63,12 @@ getFormByGroupId: co.wrap(function* (ownerid,limit,offset) {
     }
 	}),
 
-getCountByGroup: co.wrap(function* () {
+getCountByGroup: co.wrap(function* (ownerid) {
 	try{
       let conxData = yield coPg.connectPromise(connectionString);
       let client = conxData[0];
       let done = conxData[1];
-      let queryStatement = `SELECT count(*) as total FROM "forms" f WHERE f.owner_group_id is not null AND f.status!='trashed' `;
-      let result = yield client.queryPromise(queryStatement);
+      let result = yield client.queryPromise(`SELECT count(*) as total FROM "forms" f WHERE f.owner_group_id is not null AND f.owner_id!=$1 AND f.status!='trashed' `,[ownerid]);
       done();
       if(result.rows.length) {
         return yield Promise.resolve(result.rows[0]);
@@ -138,21 +137,26 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
       done();
       if (result1.rowCount===1) {
         var userID = result1.rows[0].id;
-        UserExist = 1;
-        let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = ${userID} || user_id WHERE id = $1`,[groupID]);
+        let res = yield client.queryPromise(`SELECT * FROM "user_groups" WHERE ${userID} = any (user_id) AND id=$1`,[groupID]);
         done();
-            if(result.rowCount===1) {
-              let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_USER",user_id:owner_id,pkey:uniuqeid,details:"'Add_USER'"});
-              return yield Promise.resolve(result);
-            }
-            return yield Promise.resolve(null);
-      }
-      else
-      {
-              return yield Promise.resolve(UserExist);
-      }
-     
-      
+            if(res.rowCount==0)
+        {
+          UserExist = 1;
+          let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = ${userID} || user_id WHERE id = $1`,[groupID]);
+          done();
+          if(result.rowCount===1) {
+            let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_USER",user_id:owner_id,pkey:uniuqeid,details:"'Add_USER'"});
+            return yield Promise.resolve(UserExist);
+ }
+}
+        else
+        {
+          UserExist = 2;
+          return yield Promise.resolve(UserExist);
+        }
+        return yield Promise.resolve(null);
+        console.log("in user doesnot exist");
+}
     }catch(err){
       return yield Promise.reject(err);
     }
@@ -177,6 +181,47 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
                   return yield Promise.resolve(delFormid);
                 }
               }
+            return yield Promise.resolve(null);
+     
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
+
+  leaveGroup: co.wrap(function* (data) {
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+                let delFormid = yield client.queryPromise(`UPDATE forms SET owner_group_id=null WHERE owner_group_id=$1 AND id=$2`,[data.groupID,data.formID]);
+                done();
+                console.log(delFormid);
+                if(delFormid.rowCount==1) {
+                  console.log("form owner_group_id updated successfully");
+                  return yield Promise.resolve(delFormid);
+                }
+            return yield Promise.resolve(null);
+     
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
+
+  checkname: co.wrap(function* (ownerid,name) {
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+          let result = yield client.queryPromise(`SELECT count(*) as count FROM user_groups WHERE group_name=$1 AND creator_id=$2`,[name,ownerid]);
+                done();
+                console.log(result);
+                if(result.rows[0].count==1) {
+                  return yield Promise.resolve(result.rows[0]);
+                }
             return yield Promise.resolve(null);
      
     }catch(err){

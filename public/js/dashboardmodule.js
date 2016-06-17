@@ -356,6 +356,8 @@ $scope.hover = function(data) {
         $http.post('/usergroup/Leavegroup',{groupID:groupID,formID:formID}).then(function(response){
         toaster.pop('success',"Success",'Leave Group Successfully.');
         $scope.getActiveForms.reload();
+        $scope.groupformsCount();
+        $scope.getGroupForms.reload();
         $('#loadingdiv').removeClass('loading')
         },function(err){
         if(err) {

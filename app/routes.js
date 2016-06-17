@@ -299,11 +299,22 @@ function *shareForm(){
 }
 
 function *editFacility(id) {
+
   let data = yield _form.get(id);
+
   if(data === null) {
     this.status = 404;
     return;
   }
+  var ownerCheck = yield _form.chkFromGroup(this.session.id,id);
+    if (ownerCheck == 0) {
+      if(this.session.id!=data.owner_id)
+      {
+      this.redirect('/dashboard');
+      return;
+    }
+  }
+
   yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:data, message:""});
 }
 
@@ -616,13 +627,14 @@ function *getActiveFormsCount()
 
 /* Rahul Response Toggle Status */
 function *toggleStatus() {
-  var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.id);
+var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.id);
     if (ownerCheck == 0) {
+      if(this.session.id!=this.request.body.owner_id)
+      {
       this.status = 400;
       this.render('400');
     }
-    else
-    {
+  }
     var model = this.request.body.model;
     var status = "'"+this.request.body.status+"'";
     let val = '';
@@ -641,7 +653,7 @@ function *toggleStatus() {
       this.status = 400;
       this.render('400');
     }
-  }
+  
 }
 /* Rahul Response Toggle Status */
 
@@ -658,13 +670,15 @@ function *updateResponse() {
       return; 
       }
     }
-    var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.id);
-    console.log('((((((((((((((((((((((((((((((((((  ',ownerCheck)
+    var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
     if (ownerCheck == 0) {
-      this.status = 400;
-      this.render('400');
-      return; 
+      if(this.session.id!=data[0].owner_id)
+      {
+        this.status = 400;
+    this.render('400');
+      return;
     }
+  }
   var id = this.request.body.id;
   var comments = "'"+this.request.body.comments+"'";
 let val =  yield _response.updateResponse(this.session.id,id,comments,data);
@@ -715,8 +729,15 @@ function *formResponses(id){
     this.redirect('/login');
     return;
   }
-
-  
+  let result = yield _form.get(id);
+var ownerCheck = yield _form.chkFromGroup(this.session.id,id);
+    if (ownerCheck == 0) {
+      if(this.session.id!=result.owner_id)
+      {
+      this.redirect('/dashboard');
+      return;
+    }
+  }
   yield this.render('form/responses', {
     session:this.session || {},
     pageTitle: 'Form Specific Responses',
@@ -754,13 +775,15 @@ function *getApprovedResponsesCount()
 
 function *getFormResponses()
 {
-    var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
-    console.log('((((((((((((((((((((((((((((((((((  ',ownerCheck)
+    let result = yield _form.get(this.request.body.formid);
+    var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.formid);
     if (ownerCheck == 0) {
-      this.body = null;
+      if(this.session.id!=result.owner_id)
+      {
+      this.redirect('/dashboard');
+      return;
     }
-    else
-    {
+  }
     var offset = this.request.body.offset;
     var limit = this.request.body.limit;
     var formid = this.request.body.formid;
@@ -771,26 +794,28 @@ function *getFormResponses()
     var latestResponsesForOwner = yield _response.getFormResponsesByOwner(this.session.id,formid,status,limit,offset);
     this.body = JSON.stringify(latestResponsesForOwner);
     
-    }
+    
     this.set({'Content-Type': 'application/json'});
 }
 
 
 function *getFormResponsesCount()
 {
-    var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
-    console.log('((((((((((((((((((((((((((((((((((  ',ownerCheck)
+    let result = yield _form.get(this.request.body.formid);
+var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.formid);
     if (ownerCheck == 0) {
-      this.body = '{"total":"0"}';
+      if(this.session.id!=result.owner_id)
+      {
+      this.redirect('/dashboard');
+      return;
     }
-    else
-    {
+  }
     this.status = 200;
     var formid = this.request.body.formid;
     var status = this.request.body.status;
     var latestResponsesForOwner = yield _response.getFormResponsesCountByOwner(this.session.id,formid,status);
     this.body = JSON.stringify(latestResponsesForOwner);
-    }
+    
     this.set({'Content-Type': 'application/json'});
 }
 
@@ -817,13 +842,20 @@ function *showAllResponses() {
 /* Rahul for form builder */
 
 function *buildForm(formid){
+
   if(! (yield (user.isLoggedIn.bind(this)))) {
     this.redirect('/login');
     return;
   }
-
   let result = yield _form.get(formid);
-  console.log("result",result.owner_id);
+  var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
+    if (ownerCheck == 0) {
+      if(this.session.id!=result.owner_id)
+      {
+      this.redirect('/dashboard');
+      return;
+    }
+  }
   
   yield this.render('form-builder', {
     pageTitle: 'Build Form for Responses',
@@ -987,7 +1019,14 @@ function *sendGeneratedEmailText(formid,responseid) {
 
 function *createGroup() {
   console.log(this.request.body)
-  let result = yield _usergroup.creategroup(this.session.id,this.request.body);
+    let check = yield _usergroup.checkname(this.session.id,this.request.body.name);
+  if(check)
+  {
+    this.body = JSON.stringify({message:"name already exists"});
+    this.set({'Content-Type': 'application/json'});
+    return;
+  }
+  let result = yield _usergroup.creategroup(this.session.id,this.request.body,this.session.email);
   if(result){
     this.body = JSON.stringify({success:"true"});
     this.set({'Content-Type': 'application/json'});
@@ -1025,10 +1064,30 @@ function *updateGroup() {
 function *getGroupFormsCount()
 {
     this.status = 200;
-    var activeForms = yield _usergroup.getCountByGroup();
+    var activeForms = yield _usergroup.getCountByGroup(this.session.id);
     console.log(activeForms,'groupForms')
     this.body = JSON.stringify(activeForms);
     this.set({'Content-Type': 'application/json'});
+}
+
+function *getShareForms() {
+  var offset = this.request.body.offset;
+  var limit = this.request.body.limit;
+  offset = limit*(offset-1)
+  let result = yield _usergroup.getFormByGroupId(this.session.id,limit,offset);
+  var activeForms = yield _form.getByOwner(this.session.id,limit,offset);
+  for(var i in activeForms){
+    result.push(activeForms[i]);
+  }
+  if(result){
+    this.body = JSON.stringify({result});
+    this.set({'Content-Type': 'application/json'});
+  }
+  else
+  {
+    this.status = 400;
+    this.render('400');
+  }
 }
 
 function *getFormByGroupId() {
@@ -1083,17 +1142,16 @@ function *get_group() {
 
 function *addUser() {
     let val =  yield _usergroup.addUser(this.session.id,this.request.body.userEmail,this.request.body.groupID);
-    if(val==0) {
-      this.status=204;
-      this.body = JSON.stringify({message:"No User Exists"});
-      this.set({'Content-Type': 'application/json'});
-    }
-    else if(val)
+        if(val>0)
     {
-      this.status = 200;
-      this.body = JSON.stringify({val});
+      this.body = JSON.stringify({value:val});
       this.set({'Content-Type': 'application/json'});
-    }
+}
+    else if(val==0)
+{
+      this.body = JSON.stringify({value:val});
+ this.set({'Content-Type': 'application/json'});
+     }
     else
     {
       this.status = 400;
@@ -1123,6 +1181,20 @@ function *delGroup() {
     if(val) {
       this.status = 200;
       this.body = JSON.stringify({message:"Successfully Deleted Group."});
+      this.set({'Content-Type': 'application/json'});
+    }
+    else
+    {
+      this.status = 400;
+      this.render('400');
+    }
+}
+
+function *leaveGroup() {
+  let val = yield _usergroup.leaveGroup(this.request.body);
+  if(val) {
+      this.status = 200;
+      this.body = JSON.stringify({message:"Successfully Leaved Group."});
       this.set({'Content-Type': 'application/json'});
     }
     else
@@ -1236,6 +1308,8 @@ module.exports = function(app) {
   app.use(route.post('/usergroup/update',updateGroup));
   app.use(route.post('/usergroup/form',getFormByGroupId));
   app.use(route.get('/getGroupFormsCount',getGroupFormsCount));
+  app.use(route.post('/usergroup/Leavegroup',leaveGroup));
+  app.use(route.post('/usergroup/getgroups',getShareForms));
   /* smartData for user groups */
 
 

@@ -8,9 +8,9 @@ angular
 	$scope.jsurl = window.location.href.replace(/(form|responses)/,'js/$1').replace('/share','.js');
 	$scope.getForms = function() {
 
-    		$http.post('/getActiveForms',{offset:1,limit:10000}).then(function(response){
+    		$http.post('/usergroup/getgroups',{offset:1,limit:10000}).then(function(response){
 
-    		$scope.forms = response.data
+    		$scope.forms = response.data.result
     		})
     	
     }
