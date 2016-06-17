@@ -413,10 +413,10 @@ updateGroupId: co.wrap(function* (data) {
       let client = conxData[0];
       let done = conxData[1];
       
-      let queryStatement = `SELECT g.id FROM "user_groups" g INNER JOIN "forms" f ON f.owner_group_id = g.id WHERE ${owner_id} = any(g.user_id)`;
+      let result = yield client.queryPromise(`SELECT g.id FROM "user_groups" g INNER JOIN "forms" f ON f.owner_group_id = g.id WHERE f.id=$2 and $1 = any(g.user_id)`,[owner_id,form_id]);
       
-      let result = yield client.queryPromise(queryStatement);
-      console.log(result);
+
+      console.log("res check",result);
       done();
       if(result) {
         return yield Promise.resolve(result.rowCount);
