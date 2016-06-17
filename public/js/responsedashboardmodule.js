@@ -126,9 +126,10 @@ angular
               counts:[],
               paginationMaxBlocks: 10,  
               getData: function(params) {
-               
+               $scope.responses = null;
                     
                 return $http.post('/getApprovedResponses',{offset:params.page(),limit:5}).then(function(response){
+                   if (response.data) {
                     $scope.responses = response.data;
                     console.log($scope.responses);
                     params.total($scope.total);
@@ -137,6 +138,8 @@ angular
                     var r = $scope.separateResponses(response.data);
                     window.r = r;
                     return r;
+                   }
+                    
                 })
                 
               }

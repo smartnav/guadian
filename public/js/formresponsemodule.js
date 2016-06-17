@@ -73,7 +73,7 @@ angular
 
             var obj = newlyFormatedResponses[data[i].responderid];
             
-            obj.questions.push({"id":data[i].questionid, "type":data[i].type, "text":data[i].question, "response_text":data[i].textval, "response_rating":data[i].rateval,"owner_id":data[i].owner_id, "is_hide":data[i].is_hide});
+            obj.questions.push({"id":data[i].questionid, "type":data[i].type, "text":data[i].question, "response_text":data[i].textval, "response_rating":data[i].rateval,"owner_id":data[i].owner_id, "is_hide":data[i].is_hide, "formid":data[i].formid});
 
         }
         return newlyFormatedResponses;
@@ -218,7 +218,7 @@ $scope.SaveYG = function(data) {
                         {       
                             if(data[i].type=="text")        
                             {       
-                             $scope.textQuestions.push({"id":data[i].id, "type":data[i].type, "text":data[i].text, "response_text":data[i].response_text, "response_rating":data[i].response_rating, "owner_id":data[i].owner_id});     
+                             $scope.textQuestions.push({"id":data[i].id, "type":data[i].type, "text":data[i].text, "response_text":data[i].response_text, "response_rating":data[i].response_rating, "owner_id":data[i].owner_id, "formid":data[i].formid});     
                             }       
                         }
     }

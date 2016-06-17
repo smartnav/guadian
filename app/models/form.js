@@ -412,8 +412,8 @@ updateGroupId: co.wrap(function* (data) {
       let conxData = yield coPg.connectPromise(connectionString);
       let client = conxData[0];
       let done = conxData[1];
-      
-      let result = yield client.queryPromise(`SELECT g.id FROM "user_groups" g INNER JOIN "forms" f ON f.owner_group_id = g.id WHERE f.id=$2 and $1 = any(g.user_id)`,[owner_id,form_id]);
+      console.log(`SELECT g.id FROM "user_groups" g INNER JOIN "forms" f ON f.owner_group_id = g.id WHERE (f.id=$2 and $1 = any(g.user_id)) OR (f.owner_id = $1 and f.id=$2)`,[owner_id,form_id]);
+      let result = yield client.queryPromise(`SELECT g.id FROM "user_groups" g RIGHT JOIN "forms" f ON f.owner_group_id = g.id WHERE (f.id=$2 and $1 = any(g.user_id)) OR (f.owner_id = $1 and f.id=$2)`,[owner_id,form_id]);
       
 
       console.log("res check",result);

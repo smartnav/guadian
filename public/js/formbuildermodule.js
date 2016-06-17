@@ -268,6 +268,7 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster,$window) {
         var startSecond = new Date().getSeconds();
         vm.beforeAfterSave('before',id)
         console.log(id);
+        var showid = parseInt(id)+1;
         console.log($("#"+id+" select[name = 'types']").val());
         var postData = {'question':$("#"+id+" input[type='text']").val(),'orderid':vm.questions[id]['orderid'],'formId':vm.formId,'qtype':$("#"+id+" select[name = 'types']").val(),'is_hide':$("#"+id+" select[name='is_hide']").val(),'owner_id':vm.owner_id};
         var promise = qss.create(postData);
@@ -278,7 +279,7 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster,$window) {
                 alert('Ooops, something went wrong')
             else
                 //alertify.success('Question Saved Successfully');
-                toaster.pop('success', "Success", 'Question Saved Successfully');
+                toaster.pop('success', "Success", 'Question '+showid+' Saved Successfully');
                 
             vm.beforeAfterSave('after',id)
             vm.init();
@@ -318,9 +319,16 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster,$window) {
     function saveAllQuestions(){
         for(var i in vm.questions)
         {
+            var showi = parseInt(i)+1;
+            if($("#"+i+" select").val()=='') {
+            //alertify.error('Type Should not be Empty');
+            toaster.pop('error', "Error", 'Question '+showi+' Type Should not be Empty');
+            return false;
+            }
             vm.saveQuestion(i);
         }
         $window.location.href = '/form/share'
+        
     }
 
     function removeQuestion(id) {

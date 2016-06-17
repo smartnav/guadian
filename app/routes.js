@@ -659,7 +659,8 @@ var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.id);
 
 /* Rahul for Update Response  */
 function *updateResponse() {
-  var data = this.request.body.data;    
+  var data = this.request.body.data;
+  var formid = data[0].formid;
     console.log("data",data);
     for(var i in data)
     {

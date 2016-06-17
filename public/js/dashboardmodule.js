@@ -210,7 +210,7 @@ $scope.hover = function(data) {
                     $scope.groupformsCount();
                     $scope.getActiveForms.reload();
                     $scope.getGroupForms.reload();
-                   toaster.pop('success', "Success", 'Form Update Successfully.');
+                   toaster.pop('success', "Success", 'Group assigned Successfully.');
                    $('#loadingdiv').removeClass('loading')
                    
         
@@ -219,7 +219,7 @@ $scope.hover = function(data) {
                         if(err) {
                             $('#loadingdiv').removeClass('loading')
                             $("#erModal").modal();
-                            toaster.pop('error', "Error", 'Woops! There was an error updating the form.');
+                            toaster.pop('error', "Error", 'Woops! There was an error assigning the group.');
                         }
                     })
             }
@@ -354,7 +354,7 @@ $scope.hover = function(data) {
         .then(function() {
             $('#loadingdiv').addClass('loading')
         $http.post('/usergroup/Leavegroup',{groupID:groupID,formID:formID}).then(function(response){
-        toaster.pop('success',"Success",'Leave Group Successfully.');
+        toaster.pop('success',"Success",'Group removed Successfully.');
         $scope.getActiveForms.reload();
         $scope.groupformsCount();
         $scope.getGroupForms.reload();
