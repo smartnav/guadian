@@ -158,6 +158,38 @@ const form = {
    *    redirect_url
    * Please see schema for if updates to the data object are not reflected in these comments
    */
+   //saveFacilityData: co.wrap(function* (owner_id, form_id,data) {
+   // try {
+   //    let conxData = yield coPg.connectPromise(connectionString);
+   //    let client = conxData[0];
+   //    let done = conxData[1];
+   //    
+   //    //TODO: Allow allowed_origins
+   //    console.log('data',data+' id ',owner_id+ ' formid ',form_id);
+   //    console.log( `UPDATE "forms" SET type=$3,
+   //                                     facility=$4,
+   //                                     yelp=$5,
+   //                                     google_plus=$6,
+   //                                     redirect_url=$7
+   //                                 WHERE owner_id=$1
+   //                                 AND id=$2, [${owner_id}, ${form_id}, ${data.type}, ${data.facility}, ${data.yelp}, ${data.google_plus}, ${data.redirect_url}]`);
+   //    let result = yield client.queryPromise(`UPDATE "forms" SET type=$3,
+   //                                     facility=$4,
+   //                                     yelp=$5,
+   //                                     google_plus=$6,
+   //                                     redirect_url=$7
+   //                                 WHERE owner_id=$1
+   //                                 AND id=$2`, [owner_id, form_id, data.type, data.facility, data.yelp, data.google_plus, data.redirect_url]);
+   //    let logging = yield _auditlog.writelog({model:"forms",operation:"UPDATE",user_id:owner_id,pkey:form_id,details:"'FORM_EDIT'"});
+   //    done();
+   //    return Promise.resolve(result);
+   //    }catch(err){
+   //    return yield Promise.reject(err);
+   //  }
+   //}),
+   
+   
+   
    saveFacilityData: co.wrap(function* (owner_id, form_id,data) {
     try {
        let conxData = yield coPg.connectPromise(connectionString);
@@ -166,20 +198,18 @@ const form = {
        
        //TODO: Allow allowed_origins
        console.log('data',data+' id ',owner_id+ ' formid ',form_id);
-       console.log( `UPDATE "forms" SET type=$3,
-                                        facility=$4,
-                                        yelp=$5,
-                                        google_plus=$6,
-                                        redirect_url=$7
-                                    WHERE owner_id=$1
-                                    AND id=$2, [${owner_id}, ${form_id}, ${data.type}, ${data.facility}, ${data.yelp}, ${data.google_plus}, ${data.redirect_url}]`);
-       let result = yield client.queryPromise(`UPDATE "forms" SET type=$3,
-                                        facility=$4,
-                                        yelp=$5,
-                                        google_plus=$6,
-                                        redirect_url=$7
-                                    WHERE owner_id=$1
-                                    AND id=$2`, [owner_id, form_id, data.type, data.facility, data.yelp, data.google_plus, data.redirect_url]);
+       console.log( `UPDATE "forms" SET type=$2,
+                                        facility=$3,
+                                        yelp=$4,
+                                        google_plus=$5,
+                                        redirect_url=$6
+                                    WHERE id=$1, [${form_id}, ${data.type}, ${data.facility}, ${data.yelp}, ${data.google_plus}, ${data.redirect_url}]`);
+       let result = yield client.queryPromise(`UPDATE "forms" SET type=$2,
+                                        facility=$3,
+                                        yelp=$4,
+                                        google_plus=$5,
+                                        redirect_url=$6
+                                    WHERE id=$1`, [form_id, data.type, data.facility, data.yelp, data.google_plus, data.redirect_url]);
        let logging = yield _auditlog.writelog({model:"forms",operation:"UPDATE",user_id:owner_id,pkey:form_id,details:"'FORM_EDIT'"});
        done();
        return Promise.resolve(result);
@@ -377,10 +407,25 @@ updateGroupId: co.wrap(function* (data) {
   }),
   
   
-  
-  
-  
-  
+  chkFromGroup: co.wrap(function* (owner_id, form_id) {
+    try {
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+      
+      let queryStatement = `SELECT g.id FROM "user_groups" g INNER JOIN "forms" f ON f.owner_group_id = g.id WHERE ${owner_id} = any(g.user_id)`;
+      
+      let result = yield client.queryPromise(queryStatement);
+      console.log(result);
+      done();
+      if(result) {
+        return yield Promise.resolve(result.rowCount);
+      }
+      return yield Promise.resolve(null);
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+  }),
   
   
   

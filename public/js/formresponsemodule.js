@@ -39,13 +39,16 @@ angular
                     
                 return $http.post('/getFormResponses',{formid:$scope.formid,status:$scope.formstatus,offset:params.page(),limit:5}).then(function(response){
 
-                    $scope.responses = response.data;
-                    params.total($scope.total);
-                    $scope.facility = response.data[0].facility
-                    window.d = response.data;
-                    var r = $scope.separateResponses(response.data);
-                    window.r = r;
-                    return r;
+                    if (response.data) {
+			$scope.responses = response.data;
+			params.total($scope.total);
+			$scope.facility = response.data[0].facility
+			window.d = response.data;
+			var r = $scope.separateResponses(response.data);
+			window.r = r;
+			return r;
+		    }
+		    
                 })
                 
               }
