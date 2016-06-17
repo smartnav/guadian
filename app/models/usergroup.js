@@ -51,7 +51,7 @@ getFormByGroupId: co.wrap(function* (ownerid,limit,offset) {
 	console.log(ownerid);
     let client = conxData[0];
     let done = conxData[1];
-    let result = yield client.queryPromise("SELECT forms.*,user_groups.group_name,(SELECT count(status) FROM responders WHERE formid=forms.id AND status=\'approved\') as approved_count,(SELECT count(status) FROM responders WHERE formid=forms.id AND status=\'unapproved\') as unapproved_count FROM forms, user_groups WHERE forms.status!=\'trashed\' AND user_groups.id = forms.owner_group_id AND $1 = any (user_groups.user_id) LIMIT "+limit+" OFFSET "+offset ,[ownerid]);
+    let result = yield client.queryPromise("SELECT forms.*,user_groups.group_name,(SELECT count(status) FROM responders WHERE formid=forms.id AND status=\'approved\') as approved_count,(SELECT count(status) FROM responders WHERE formid=forms.id AND status=\'unapproved\') as unapproved_count FROM forms, user_groups WHERE forms.status!=\'trashed\' AND user_groups.id = forms.owner_group_id AND forms.owner_id != $1 AND $1 = any (user_groups.user_id) LIMIT "+limit+" OFFSET "+offset ,[ownerid]);
     done();
     if(result)
         {
@@ -63,13 +63,12 @@ getFormByGroupId: co.wrap(function* (ownerid,limit,offset) {
     }
 	}),
 
-getCountByGroup: co.wrap(function* () {
+getCountByGroup: co.wrap(function* (ownerid) {
 	try{
       let conxData = yield coPg.connectPromise(connectionString);
       let client = conxData[0];
       let done = conxData[1];
-      let queryStatement = `SELECT count(*) as total FROM "forms" f WHERE f.owner_group_id is not null AND f.status!='trashed' `;
-      let result = yield client.queryPromise(queryStatement);
+      let result = yield client.queryPromise(`SELECT count(*) as total FROM "forms" f WHERE f.owner_group_id is not null AND f.owner_id!=$1 AND f.status!='trashed' `,[ownerid]);
       done();
       if(result.rows.length) {
         return yield Promise.resolve(result.rows[0]);

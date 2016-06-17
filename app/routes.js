@@ -1025,7 +1025,7 @@ function *updateGroup() {
 function *getGroupFormsCount()
 {
     this.status = 200;
-    var activeForms = yield _usergroup.getCountByGroup();
+    var activeForms = yield _usergroup.getCountByGroup(this.session.id);
     console.log(activeForms,'groupForms')
     this.body = JSON.stringify(activeForms);
     this.set({'Content-Type': 'application/json'});
