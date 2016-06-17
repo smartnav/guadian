@@ -311,7 +311,8 @@ function *saveFacilityEdits(id) {
   console.log("this.request.body",this.request.body);
   var data = this.request.body;
   let datas = yield _form.get(id);
-  if(datas.owner_id!=this.session.id)
+  var ownerCheck = yield _form.chkFromGroup(this.session.id,id);
+  if(ownerCheck==0)
   {
     yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"You do not have permission to edit this form."});
    return;
@@ -615,13 +616,13 @@ function *getActiveFormsCount()
 
 /* Rahul Response Toggle Status */
 function *toggleStatus() {
-
-
-  if (this.request.body.owner_id != this.session.id) {
-     this.status = 400;
-    this.render('400');
-  }
-  else{
+  var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.id);
+    if (ownerCheck == 0) {
+      this.status = 400;
+      this.render('400');
+    }
+    else
+    {
     var model = this.request.body.model;
     var status = "'"+this.request.body.status+"'";
     let val = '';
@@ -656,12 +657,13 @@ function *updateResponse() {
       this.render('400');
       return; 
       }
-    }   
-    if(data[0].owner_id!=this.session.id)   
-    {   
-      this.status = 400;    
-      this.render('400');   
-      return;   
+    }
+    var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.id);
+    console.log('((((((((((((((((((((((((((((((((((  ',ownerCheck)
+    if (ownerCheck == 0) {
+      this.status = 400;
+      this.render('400');
+      return; 
     }
   var id = this.request.body.id;
   var comments = "'"+this.request.body.comments+"'";
@@ -752,6 +754,13 @@ function *getApprovedResponsesCount()
 
 function *getFormResponses()
 {
+    var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
+    console.log('((((((((((((((((((((((((((((((((((  ',ownerCheck)
+    if (ownerCheck == 0) {
+      this.body = null;
+    }
+    else
+    {
     var offset = this.request.body.offset;
     var limit = this.request.body.limit;
     var formid = this.request.body.formid;
@@ -761,17 +770,27 @@ function *getFormResponses()
     this.status = 200;
     var latestResponsesForOwner = yield _response.getFormResponsesByOwner(this.session.id,formid,status,limit,offset);
     this.body = JSON.stringify(latestResponsesForOwner);
+    
+    }
     this.set({'Content-Type': 'application/json'});
 }
 
 
 function *getFormResponsesCount()
 {
+    var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
+    console.log('((((((((((((((((((((((((((((((((((  ',ownerCheck)
+    if (ownerCheck == 0) {
+      this.body = '{"total":"0"}';
+    }
+    else
+    {
     this.status = 200;
     var formid = this.request.body.formid;
     var status = this.request.body.status;
     var latestResponsesForOwner = yield _response.getFormResponsesCountByOwner(this.session.id,formid,status);
     this.body = JSON.stringify(latestResponsesForOwner);
+    }
     this.set({'Content-Type': 'application/json'});
 }
 
@@ -816,12 +835,14 @@ function *buildForm(formid){
 
 function *saveBuild() {
   var ownerFlag = 0;
-  if (this.request.body.owner_id) {
-      if(this.request.body.owner_id!=this.session.id)
+  var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.formId);
+  //if (this.request.body.owner_id) {
+    
+      if(ownerCheck == 0)
       {
         ownerFlag = 1;
       }
-  }
+  //}
   if (ownerFlag == 1) {
     this.status = 400;
     this.render('400');
@@ -966,14 +987,7 @@ function *sendGeneratedEmailText(formid,responseid) {
 
 function *createGroup() {
   console.log(this.request.body)
-  let check = yield _usergroup.checkname(this.session.id,this.request.body.name);
-  if(check)
-  {
-    this.body = JSON.stringify({message:"name already exists"});
-    this.set({'Content-Type': 'application/json'});
-    return;
-  }
-  let result = yield _usergroup.creategroup(this.session.id,this.request.body,this.session.email);
+  let result = yield _usergroup.creategroup(this.session.id,this.request.body);
   if(result){
     this.body = JSON.stringify({success:"true"});
     this.set({'Content-Type': 'application/json'});
@@ -1011,7 +1025,7 @@ function *updateGroup() {
 function *getGroupFormsCount()
 {
     this.status = 200;
-    var activeForms = yield _usergroup.getCountByGroup(this.session.id);
+    var activeForms = yield _usergroup.getCountByGroup();
     console.log(activeForms,'groupForms')
     this.body = JSON.stringify(activeForms);
     this.set({'Content-Type': 'application/json'});
@@ -1036,6 +1050,7 @@ function *getFormByGroupId() {
 
 /* Smartdata*/
 function *add_group() {
+  //console.log('-------------------------------------------',this.session);
     let val =  yield _form.addGroup(this.session,this.request.body.group_name);
     if(val) {
       this.status = 200;
@@ -1068,14 +1083,15 @@ function *get_group() {
 
 function *addUser() {
     let val =  yield _usergroup.addUser(this.session.id,this.request.body.userEmail,this.request.body.groupID);
-    if(val>0)
-    {
-      this.body = JSON.stringify({value:val});
+    if(val==0) {
+      this.status=204;
+      this.body = JSON.stringify({message:"No User Exists"});
       this.set({'Content-Type': 'application/json'});
     }
-    else if(val==0)
+    else if(val)
     {
-      this.body = JSON.stringify({value:val});
+      this.status = 200;
+      this.body = JSON.stringify({val});
       this.set({'Content-Type': 'application/json'});
     }
     else
@@ -1107,20 +1123,6 @@ function *delGroup() {
     if(val) {
       this.status = 200;
       this.body = JSON.stringify({message:"Successfully Deleted Group."});
-      this.set({'Content-Type': 'application/json'});
-    }
-    else
-    {
-      this.status = 400;
-      this.render('400');
-    }
-}
-
-function *leaveGroup() {
-  let val = yield _usergroup.leaveGroup(this.request.body);
-  if(val) {
-      this.status = 200;
-      this.body = JSON.stringify({message:"Successfully Leaved Group."});
       this.set({'Content-Type': 'application/json'});
     }
     else
@@ -1234,8 +1236,6 @@ module.exports = function(app) {
   app.use(route.post('/usergroup/update',updateGroup));
   app.use(route.post('/usergroup/form',getFormByGroupId));
   app.use(route.get('/getGroupFormsCount',getGroupFormsCount));
-  app.use(route.post('/usergroup/Leavegroup',leaveGroup));
-
   /* smartData for user groups */
 
 

@@ -530,7 +530,46 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
 
  /* Rahul For Form Specific Responses */
 
-  getFormResponsesByOwner: co.wrap(function* (owner_id,formid,status,limit,offset) {
+  //getFormResponsesByOwner: co.wrap(function* (owner_id,formid,status,limit,offset) {
+  //  try {
+  //
+  //    if(limit < 0) //TODO: Better test on limit? Does it matter if it is not exposed publicly.
+  //      return yield Promise.resolve(null);
+  //    let conxData = yield coPg.connectPromise(connectionString);
+  //    let client = conxData[0];
+  //    let done = conxData[1];
+  //    /* Sorry. I am truely sorry for this query. */
+  //    let result = yield client.queryPromise( `WITH responders_group AS(
+  //                                               SELECT *
+  //                                               FROM responders
+  //                                               WHERE responders.formid = $2
+  //                                               AND responders.status = $3
+  //                                               LIMIT $4
+  //                                               OFFSET $5
+  //                                             )
+  //                                            SELECT forms.id as formid, forms.owner_id, forms.facility, forms.status as form_status,
+  //                                                   responders_group.name, responders_group.created, responders_group.contacted_status, responders_group.status as responder_status, 
+  //                                                   questions.type, questions.question, questions.is_hide,
+  //                                                   responses.*
+  //                                            FROM forms, responders_group
+  //                                            INNER JOIN responses ON (responses.responderid = responders_group.id)
+  //                                            INNER JOIN questions ON (questions.id = responses.questionid)
+  //                                            WHERE forms.id = $2
+  //                                            AND forms.owner_id = $1`, [owner_id, formid, status, limit, offset]);
+  //    
+  //    done();
+  //    if(result.rows.length) {
+  //      return yield Promise.resolve(result.rows);
+  //    }
+  //    return yield Promise.resolve(null);
+  //  }catch(err){
+  //    return yield Promise.reject(err);
+  //  }
+  //}),
+
+  
+  
+   getFormResponsesByOwner: co.wrap(function* (owner_id,formid,status,limit,offset) {
     try {
 
       if(limit < 0) //TODO: Better test on limit? Does it matter if it is not exposed publicly.
@@ -542,10 +581,10 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
       let result = yield client.queryPromise( `WITH responders_group AS(
                                                  SELECT *
                                                  FROM responders
-                                                 WHERE responders.formid = $2
-                                                 AND responders.status = $3
-                                                 LIMIT $4
-                                                 OFFSET $5
+                                                 WHERE responders.formid = $1
+                                                 AND responders.status = $2
+                                                 LIMIT $3
+                                                 OFFSET $4
                                                )
                                               SELECT forms.id as formid, forms.owner_id, forms.facility, forms.status as form_status,
                                                      responders_group.name, responders_group.created, responders_group.contacted_status, responders_group.status as responder_status, 
@@ -554,8 +593,7 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
                                               FROM forms, responders_group
                                               INNER JOIN responses ON (responses.responderid = responders_group.id)
                                               INNER JOIN questions ON (questions.id = responses.questionid)
-                                              WHERE forms.id = $2
-                                              AND forms.owner_id = $1`, [owner_id, formid, status, limit, offset]);
+                                              WHERE forms.id = $1`, [formid, status, limit, offset]);
       
       done();
       if(result.rows.length) {
@@ -566,7 +604,6 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
       return yield Promise.reject(err);
     }
   }),
-
 
   getFormResponsesCountByOwner: co.wrap(function* (owner_id,formid,status) {
     try {
@@ -580,14 +617,21 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
                                               'FROM "users" u, "forms" f, "responses" r ' +
                                               'WHERE r.formid = $2 AND f.id = $2 AND f.owner_id = u.id AND f.owner_id =$1 AND r.status=$3', [owner_id,formid,status]);
       */
+     //let result = yield client.queryPromise('SELECT count(re.id) as "total" ' +
+     //                                       'FROM "forms" f, "responders" re ' +
+     //                                       'WHERE ' +
+     //                                         're.formid = $2 ' +
+     //                                         'AND f.id = $2 ' +
+     //                                         'AND f.owner_id = $1 ' +
+     //                                         'AND re.status=$3', [owner_id,formid,status]);
+     //
+     
      let result = yield client.queryPromise('SELECT count(re.id) as "total" ' +
                                             'FROM "forms" f, "responders" re ' +
                                             'WHERE ' +
-                                              're.formid = $2 ' +
-                                              'AND f.id = $2 ' +
-                                              'AND f.owner_id = $1 ' +
-                                              'AND re.status=$3', [owner_id,formid,status]);
-     
+                                              're.formid = $1 ' +
+                                              'AND f.id = $1 ' +
+                                              'AND re.status=$2', [formid,status]);
 
 
 
