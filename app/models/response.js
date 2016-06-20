@@ -170,9 +170,8 @@ const response = {
                                           INNER JOIN responses ON (responses.responderid = responders.id)
                                           INNER JOIN questions ON (responses.questionid = questions.id)
                                           WHERE forms.id = $1
-                                          AND responders.id = $2 
-                                          AND forms.owner_id = $3`, [form_id, response_id, owner_id]);
-    if(!data.rows.length || data.rows[0].owner_id != owner_id) {
+                                          AND responders.id = $2 `, [form_id, response_id]);
+    if(!data.rows.length) {
       throw new errors.UserNotAllowed();
       done();
     }
@@ -240,9 +239,9 @@ const response = {
                                           FROM forms
                                           INNER JOIN responders
                                           ON (forms.id = responders.formid)
-                                          WHERE forms.id = $1 AND forms.owner_id = $2 LIMIT 1`, [form_id, owner_id]);
+                                          WHERE forms.id = $1 LIMIT 1`, [form_id]);
     console.log(data.rows);
-    if(!data.rows.length || data.rows[0].owner_id != owner_id) {
+    if(!data.rows.length ) {
       throw new errors.UserNotAllowed();
       done();
     }

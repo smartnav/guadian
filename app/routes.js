@@ -146,7 +146,7 @@ function *dashboard(){
 function *groups(){
  yield this.render('groups', {
     session:this.session || {},
-    pageTitle: 'Dashboard',
+    pageTitle: 'Groups',
     url: URL
   });
 }
@@ -926,14 +926,15 @@ function *listBuild() {
 }
 
 function *removeQuestion() {
-
-if(this.request.body.owner_id!=this.session.id)
-    {
-    this.status = 400;
-    this.render('400');
-    }
-    else
+var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.formid);
+    if (ownerCheck == 0) {
+      if(this.session.id!=this.request.body.owner_id)
       {
+      this.status = 400;
+    this.render('400');
+      return;
+}
+}
             var formid  = this.request.body.formId;
             var orderid = this.request.body.orderid;       
             var param   = {formid:formid,orderid:orderid}; 
@@ -949,7 +950,7 @@ if(this.request.body.owner_id!=this.session.id)
             this.status = 400;
             this.render('400');
           }
-        }
+        
 
 }
 
