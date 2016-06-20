@@ -3,7 +3,7 @@ angular
 
 .controller('groupManage',function($scope, $uibModal, $confirm,$http,$timeout,$compile,toaster){
     
-    
+    $scope.groupData = {};
     $scope.get_group = function()
     {
     	$('#loadingdiv').addClass('loading')
@@ -11,16 +11,23 @@ angular
 	    //console.log(response);
 	    var a = response.data.val;
 	    var c={};
+	    var existValue = 0;
 	    for(var i in a)
 	    {
-	      c[a[i].id] = c[a[i].id] ? c[a[i].id] : {};
-	      c[a[i].id].group_name = a[i].group_name;
-	      c[a[i].id].creator_email = a[i].creator_email;
-	      c[a[i].id].users = c[a[i].id].users ? c[a[i].id].users  : [];
-	      var data = {'u_id' :a[i].u_id,'email' : a[i].email };
-	      c[a[i].id].users.push(data);
+	      if (a[i].group_name) {
+		existValue = 1;
+		c[a[i].id] = c[a[i].id] ? c[a[i].id] : {};
+		c[a[i].id].group_name = a[i].group_name;
+		c[a[i].id].creator_email = a[i].creator_email;
+		c[a[i].id].users = c[a[i].id].users ? c[a[i].id].users  : [];
+		var data = {'u_id' :a[i].u_id,'email' : a[i].email };
+		c[a[i].id].users.push(data);
+	      }
+	      
+	      
 	    }
 	    console.log(c);
+	    $scope.existValue = existValue;
 	    $scope.groupData = c;
 	    $('#loadingdiv').removeClass('loading')
 	},function(err){

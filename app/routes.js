@@ -144,6 +144,10 @@ function *dashboard(){
 
 /*created by smartdata(nav)*/
 function *groups(){
+ if(! (yield (user.isLoggedIn.bind(this)))) {
+    this.redirect('/login');
+    return;
+  }
  yield this.render('groups', {
     session:this.session || {},
     pageTitle: 'Groups',
