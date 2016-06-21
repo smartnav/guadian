@@ -983,6 +983,16 @@ function *getGeneratedEmailText(formid,responseid) {
   
       let val =  yield _response.getGeneratedEmail(formid,this.session.id,responseid);
       let data = yield _form.get(formid);
+
+      var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
+    if (ownerCheck == 0) {
+      if(this.session.id!=data.owner_id)
+      {
+      this.status = 400;
+        this.render('400');
+      return;
+    }
+  }
       console.log("val",val);
       console.log("data",data);
       if(val) {
