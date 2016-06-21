@@ -46,6 +46,7 @@ angular
     	$('#loadingdiv').addClass('loading')
 	//toaster.pop('error', "Error", $scope.group_name);
 	var group_name = $scope.group_name;
+
 	$http.post('/usergroup/add',{name:group_name}).then(function(response){
 	    //console.log(response);
 	    toaster.pop('success', "Success", 'Group successfully created.');
@@ -64,7 +65,7 @@ angular
     $scope.addUser = function(index, groupID)
     {
     	$('#loadingdiv').addClass('loading')
-	var userEmail = $scope.user_email[index];
+	var userEmail = $scope.user_email[index].toLowerCase();
 	$http.post('/groups/addUser', {userEmail:userEmail, groupID:groupID}).then(function(response){
 		if(response.data.value==0)
 		{
