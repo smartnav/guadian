@@ -69,7 +69,7 @@ angular
 	$http.post('/groups/addUser', {userEmail:userEmail, groupID:groupID}).then(function(response){
 		if(response.data.value==0)
 		{
-			toaster.pop('error',"Error", 'No User with the specified Email Id Found.');
+			toaster.pop('error',"Error", "This user doesn't appear to have registered yet.");
 			$('#loadingdiv').removeClass('loading')
 		}
 		else if(response.data.value==1)
