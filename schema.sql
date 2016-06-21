@@ -99,8 +99,7 @@ CREATE TABLE "user_groups" (
 "user_id" integer[] NULL,
 "creator_id" int NULL,
 "creator_email" varchar(100) NULL,
-"created" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
-
+"created" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 
