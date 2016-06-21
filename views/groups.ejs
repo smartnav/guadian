@@ -17,7 +17,12 @@ position: absolute;
   <div class="row row-eq-height" ng-controller="groupManage">
     <!-- GOOGLE INFORMATION -->
     <section id="blog-landing">
-  
+    <div ng-if="existValue == 0">
+      <div class="white-panel col-xs-12 col-sm-6 col-lg-6 steps">
+        <strong>No Group exist.</strong>
+      </div>
+      
+    </div>
     <div class="white-panel col-xs-12 col-sm-6 col-lg-6 steps " ng-repeat="(key, gdata) in groupData">
       <div class="panel steps">
         <div class="panel-heading h2 orange">{{gdata.group_name}} <i style="font-size:16px"> {{gdata.creator_email}}</i><button class="close" aria-label="Close" ng-click="delGroup(key)" style="font-size:36px" type="button">
@@ -40,6 +45,7 @@ position: absolute;
         </div>
       </div>
     </div>
+    
     </section>
     
 

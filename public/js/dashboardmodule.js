@@ -248,23 +248,27 @@ $scope.hover = function(data) {
 
     $scope.groupformsCount();
     
-     $scope.toggleStatus = function(model,id,status,AppRes,UnAppRes,formOwnerId) {
-        var coutRes = 0;
-    if (UnAppRes > 0 || AppRes > 0) {
-        coutRes = 1;
-        
+    $scope.toggleStatusConfirm = function(model,id,status,AppRes,UnAppRes,formOwnerId)
+    {
+	$confirm({text: 'Are you sure you want to delete?'})
+        .then(function() {
+		$scope.toggleStatus(model,id,status,AppRes,UnAppRes,formOwnerId);
+	});
     }
-        if(status=='trashed')
-        {
-	        $confirm({text: 'Are you sure you want to delete?'})
-            .then(function() {
-
-            });
-            var conf = confirm('Are You Sure Want to Delete This?');
-            if(conf===false)
-            return;
-        }
     
+    $scope.toggleStatus = function(model,id,status,AppRes,UnAppRes,formOwnerId) {
+        var coutRes = 0;
+	if (UnAppRes > 0 || AppRes > 0) {
+	    coutRes = 1;
+	    
+	}
+//        if(status=='trashed')
+//        {
+//	    var conf = confirm('Are You Sure Want to Delete This?');
+//            if(conf===false)
+//            return;
+//        }
+//    
 
         $http.post('/review/togglestatus',{model:model,id: id,status:status,coutRes:coutRes,owner_id:formOwnerId}).then(function(response){
 

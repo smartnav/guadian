@@ -139,7 +139,7 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
         var userID = result1.rows[0].id;
         let res = yield client.queryPromise(`SELECT * FROM "user_groups" WHERE ${userID} = any (user_id) AND id=$1`,[groupID]);
         done();
-            if(res.rowCount==0)
+        if(res.rowCount==0)
         {
           UserExist = 1;
           let result = yield client.queryPromise(`UPDATE "user_groups" SET user_id = ${userID} || user_id WHERE id = $1`,[groupID]);
@@ -147,16 +147,17 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
           if(result.rowCount===1) {
             let logging = yield _auditlog.writelog({model:"user_groups",operation:"ADD_USER",user_id:owner_id,pkey:uniuqeid,details:"'Add_USER'"});
             return yield Promise.resolve(UserExist);
- }
-}
+                                }
+        }
         else
         {
           UserExist = 2;
           return yield Promise.resolve(UserExist);
         }
-        return yield Promise.resolve(null);
+      }
+        return yield Promise.resolve(UserExist);
         console.log("in user doesnot exist");
-}
+
     }catch(err){
       return yield Promise.reject(err);
     }
@@ -170,18 +171,17 @@ delUser: co.wrap(function* (owner_id,userid,groupID) {
       let client = conxData[0];
       let done = conxData[1];
       let uniuqeid = uuid.v4();
+      let delFormid = yield client.queryPromise(`UPDATE forms SET owner_group_id=null WHERE owner_group_id=$1`,[groupID]);
+      done();
+      if(delFormid) {
               let delgroup = yield client.queryPromise(`DELETE FROM user_groups WHERE id=$1`,[groupID]);
+              done();
               if(delgroup.rowCount===1)
               {
-                console.log("group deleted successfully");
-                let delFormid = yield client.queryPromise(`UPDATE forms SET owner_group_id=null WHERE owner_group_id=$1`,[groupID]);
-                done();
-                if(delFormid) {
-                  console.log("form owner_group_id updated successfully");
-                  return yield Promise.resolve(delFormid);
-                }
+                return yield Promise.resolve(delgroup);
               }
-            return yield Promise.resolve(null);
+      }
+      return yield Promise.resolve(null);
      
     }catch(err){
       return yield Promise.reject(err);
