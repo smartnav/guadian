@@ -139,7 +139,7 @@
     </div>
         <%} %>
 <iframe name="hiddenFrame" class="hide"></iframe>
-<form  id="ratingsForm" class=container method=POST action="<%= postback %>" name="ratingsForm" onsubmit="return validate()" novalidate>
+<form  id="ratingsForm" class=container method=POST action="<%= postback %>" name="ratingsForm" target="hiddenFrame" onsubmit="return validate()" novalidate>
 
 
   <input type=hidden name=nonce value="<%= nonce %>">
