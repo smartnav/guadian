@@ -93,8 +93,8 @@
               <div class="response-body">
                 <div ng-repeat="rep in row.questions">
                   <div class="response-body-question">{{rep.text}}</div>
-                  <div  class="response-body-response">{{rep.response_text}}</div>
-                  <div class="response-body-response">{{rep.response_rating}}</div>
+                  <div  class="response-body-response">{{rep.response_text}}<span ng-if="rep.type=='text'" style="cursor:pointer;" ng-click="editFormResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
+                  <div class="response-body-response">{{rep.response_rating}}<span ng-if="rep.type=='range'" style="cursor:pointer;" ng-click="editFormResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
                 </div>
               </div>
               <div class="response-footer">
@@ -174,18 +174,17 @@
               <h4 class="modal-title" id="myModalLabel">Edit Response</h4>
             </div>
             <div class="modal-body">
-             <!-- {{textQuestions}}-->    
-              <div ng-repeat="rep in textQuestions">    
-                    <div class="response-body-question">{{rep.text}}</div>    
-                    <textarea  class="form-control" my-maxlength="5000" ng-model="rep.response_text" style="width:450px;height:50px" required></textarea><div id=char_limit style:""><i>Maximum limit 5000 characters.</i></div> <br />
+             <!-- {{textQuestions}}-->
+                    <div class="response-body-question">{{text.text}}</div>    
+                    <span ng-if="text.type=='text'"><textarea class="form-control" my-maxlength="5000" ng-model="text.response_text" style="width:450px;height:50px" required></textarea><div id=char_limit style:""><i>Maximum limit 5000 characters.</i></div></span>
+                    <span ng-if="text.type=='range'"><div class="star-rating" star-rating ng-model="text.response_rating" max="5" on-rating-select="text.response_rating=rating"></div></span>
                           
-              </div> 
-             Comments : <textarea id="rescomments" style="width:400px;height:100px" my-maxlength="2000" ng-model="textareaText" ></textarea>
-             <div id=char_limit style:""><i>Maximum limit 2000 characters.</i></div>
+             <!-- Comments : <textarea id="rescomments" style="width:400px;height:100px" my-maxlength="2000" ng-model="textareaText" ></textarea>
+             <div id=char_limit style:""><i>Maximum limit 2000 characters.</i></div> -->
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-<button type="button" class="btn btn-primary" ng-click="updateFormResponse(textQuestions)">Save changes</button>            </div>
+<button type="button" class="btn btn-primary" ng-click="updateFormResponse(text)">Save changes</button>            </div>
           </div>
         </div>
       </div>

@@ -189,6 +189,7 @@ $scope.hover = function(data) {
      $scope.getGroupData();
     $scope.SelectGroup = function(data) {
         $scope.showDiv=false;
+        $scope.showButton = false;
         $scope.gname="";
         $('#erModal').modal();
         $('#formid').val(data.id);
@@ -319,27 +320,19 @@ $scope.hover = function(data) {
             })
     }
     $scope.createGroup = function(data) {
-        $("#erModal").modal('hide');
-        $('#loadingdiv').addClass('loading')
        $http.post("/usergroup/add",{name:data}).then(function(resp){
         if(resp.data.message)
         {
-           toaster.pop('error', "Error", 'Group already exists. Please select a different group name.');
-           $('#loadingdiv').removeClass('loading')
-           $("#erModal").modal();
+           toaster.pop('error', "Error", resp.data.message);
         }
         else if(resp.data.success)
               {      
                     toaster.pop('success', "Success", 'Group Created Successfully.');
                      $scope.getGroupData();
-                     $('#loadingdiv').removeClass('loading')
-                     $("#erModal").modal();
               } 
           },function(err){
 
                 if(err) {
-                  $('#loadingdiv').removeClass('loading')
-                  $("#erModal").modal();
                     toaster.pop('error', "Error", 'Woops! There was an error creating the group.');
                 }
             })

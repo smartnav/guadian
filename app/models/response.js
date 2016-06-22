@@ -499,23 +499,19 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
 
   /* Rahul for Edit Response */
 /* Edited by Smartdata*/
-  updateResponse: co.wrap(function* (owner_id,id,comments,data) {
+  updateResponse: co.wrap(function* (data) {
     try {
 
 
       let conxData = yield coPg.connectPromise(connectionString);
       let client = conxData[0];
       let done = conxData[1];
-      let result;
-      for(var i in data)
-      {
-        result = yield client.queryPromise('UPDATE "responses" SET "textval" = $2 WHERE "questionid" = $1 AND "responderid" = $3 ', [data[i].id,data[i].response_text,id]);
-      }
+      let result =yield client.queryPromise('UPDATE "responses" SET "textval" = $2, "rateval" = $4 WHERE "questionid" = $1 AND "responderid" = $3 ', [data.id,data.response_text,data.responderid,data.response_rating]);
       //let result = yield client.queryPromise('UPDATE responses SET comments ='+comments+' WHERE "id" = $1', [id]); //There is no column named comments in db so we commented this line.
       done();
       if(result.rowCount===1) {
-        let logging = yield _auditlog.writelog({model:"responses",operation:"EDIT",user_id:owner_id,pkey:id,details:"'RESPONSE_UPDATED'"});
-        return yield Promise.resolve(id);
+        //let logging = yield _auditlog.writelog({model:"responses",operation:"EDIT",user_id:data.owner_id,pkey:data.responderid,details:"'RESPONSE_UPDATED'"});
+        return yield Promise.resolve(data.responderid);
       }
       return yield Promise.resolve(null);
     }catch(err){
@@ -592,7 +588,7 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
                                               FROM forms, responders_group
                                               INNER JOIN responses ON (responses.responderid = responders_group.id)
                                               INNER JOIN questions ON (questions.id = responses.questionid)
-                                              WHERE forms.id = $1`, [formid, status, limit, offset]);
+                                              WHERE forms.id = $1 `, [formid, status, limit, offset]);
       
       done();
       if(result.rows.length) {

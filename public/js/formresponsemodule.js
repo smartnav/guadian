@@ -8,7 +8,6 @@ angular
     $scope.formstatus = 'published';
     $emailSelectedResponseID = 0;
     $emailSelectedFormID = 0;
-    $scope.textareaText = "";
 
     $scope.changeFormStatus = function(status){
 
@@ -29,7 +28,7 @@ angular
     }
 
     $scope.getFormResponses  =  new NgTableParams({
-                count:5
+                count:15
             }, {
               
               counts:[],
@@ -37,7 +36,7 @@ angular
               getData: function(params) {
                
                     
-                return $http.post('/getFormResponses',{formid:$scope.formid,status:$scope.formstatus,offset:params.page(),limit:5}).then(function(response){
+                return $http.post('/getFormResponses',{formid:$scope.formid,status:$scope.formstatus,offset:params.page(),limit:15}).then(function(response){
 
                     if (response.data) {
 			$scope.responses = response.data;
@@ -208,25 +207,38 @@ $scope.SaveYG = function(data) {
         
     }
 
-    $scope.editFormResponse = function(id,comments,data) {
-        $scope.textQuestions = [];
-        $('#rescomments').val(comments);
-        $('#rescomments').attr('class',id);
-        $('#erModal').modal()
-        console.log(id,comments)
-        for(var i in data)      
-                        {       
-                            if(data[i].type=="text")        
-                            {       
-                             $scope.textQuestions.push({"id":data[i].id, "type":data[i].type, "text":data[i].text, "response_text":data[i].response_text, "response_rating":data[i].response_rating, "owner_id":data[i].owner_id, "formid":data[i].formid});     
-                            }       
-                        }
+    // $scope.editFormResponse = function(id,comments,data) {
+    //     $scope.textQuestions = [];
+    //     $('#rescomments').val(comments);
+    //     $('#rescomments').attr('class',id);
+    //     $('#erModal').modal()
+    //     console.log(id,comments)
+    //     for(var i in data)      
+    //                     {       
+    //                         if(data[i].type=="text")        
+    //                         {       
+    //                          $scope.textQuestions.push({"id":data[i].id, "type":data[i].type, "text":data[i].text, "response_text":data[i].response_text, "response_rating":data[i].response_rating, "owner_id":data[i].owner_id, "formid":data[i].formid});     
+    //                         }       
+    //                     }
+    // }
+
+    $scope.editFormResponse = function(id,data) {
+        $scope.text = data;
+        $scope.text.responderid = id;
+        // $('#rescomments').val(comments);
+        // $('#rescomments').attr('class',id);
+        $('#erModal').modal();
     }
 
-    $scope.updateFormResponse = function(data) {
-        var comments = $('#rescomments').val();
-        var id = $('#rescomments').attr('class');
-        $http.post('/review/updateResponse',{id: id,comments:comments,data:data}).then(function(response){
+    $scope.rateFunction = function(rating) {
+      
+}
+
+    $scope.updateFormResponse = function() {
+        
+        // var comments = $('#rescomments').val();
+        // var id = $('#rescomments').attr('class');
+         $http.post('/review/updateResponse',$scope.text).then(function(response){
 
                 if(response.data.updated)
                 {
@@ -247,10 +259,50 @@ $scope.SaveYG = function(data) {
                     toaster.pop('error', "Error", 'Oops! There was an error updating the response.');
                 }
             })
+    }}).directive('starRating', function() {
+        return {
+            restrict : 'EA',
+            template : '<ul class="star-rating">'
+                     + '<li ng-repeat="star in stars" class="star" ng-class="{filled: star.filled}" ng-click="toggle($index)">'
+                     + '<i class="fa fa-star"></i>'
+                     + '</li>'
+                     + '</ul>',
+            scope : {
+                ratingValue: '=ngModel',
+                max: '=?', 
+                onRatingSelect: '&?',
+                readonly: '=?'
+            },
+            link : function(scope, elem, attrs) {
+                if (scope.max == undefined) {
+          scope.max = 5;
+        }
+                var updateStars = function() {
+                    scope.stars = [];
+                    for ( var i = 0; i < scope.max; i++) {
+                        scope.stars.push({
+                            filled : i < scope.ratingValue
+                        });
+                    }
+                };
+                
+                scope.toggle = function(index) {
+                    scope.ratingValue = index + 1;
+                    scope.onRatingSelect({
+                        rating : index + 1
+                    });
+                };
+                
+                scope.$watch('ratingValue',
+                    function(oldVal, newVal) {
+                        if (newVal) {
+                            updateStars();
+                        }
+                    });
+            }
+        };
     }
-   
-    
-}).directive('myMaxlength', ['$compile', '$log', function($compile, $log) {
+).directive('myMaxlength', ['$compile', '$log', function($compile, $log) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -271,5 +323,4 @@ $scope.SaveYG = function(data) {
                 });
             }
         };
-    }]);
-
+    }])

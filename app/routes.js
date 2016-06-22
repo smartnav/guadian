@@ -663,33 +663,34 @@ var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.id);
 
 /* Rahul for Update Response  */
 function *updateResponse() {
-  var data = this.request.body.data;
-  var formid = data[0].formid;
-    console.log("data",data);
-    for(var i in data)
-    {
-      if(data[i].response_text.length>5000)
-      {
-        this.status = 400;
-      this.render('400');
-      return; 
-      }
-    }
-    var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
-    if (ownerCheck == 0) {
-      if(this.session.id!=data[0].owner_id)
-      {
-        this.status = 400;
-    this.render('400');
-      return;
-    }
-  }
-  var id = this.request.body.id;
-  var comments = "'"+this.request.body.comments+"'";
-let val =  yield _response.updateResponse(this.session.id,id,comments,data);
+  // var data = this.request.body.data;
+  // var formid = data[0].formid;
+  //   console.log("data",data);
+  //   for(var i in data)
+  //   {
+  //     if(data[i].response_text.length>5000)
+  //     {
+  //       this.status = 400;
+  //     this.render('400');
+  //     return; 
+  //     }
+  //   }
+  //   var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
+  //   if (ownerCheck == 0) {
+  //     if(this.session.id!=data[0].owner_id)
+  //     {
+  //       this.status = 400;
+  //   this.render('400');
+  //     return;
+  //   }
+  // }
+  // var id = this.request.body.id;
+  // var comments = "'"+this.request.body.comments+"'";
+console.log(this.request.body,"Body");
+let val =  yield _response.updateResponse(this.request.body);
   if(val) {
     this.status = 200;
-    this.body = JSON.stringify({updated:id});
+    this.body = JSON.stringify({updated:val});
     this.set({'Content-Type': 'application/json'});
   }
   else
@@ -1034,11 +1035,19 @@ function *sendGeneratedEmailText(formid,responseid) {
 }
 
 function *createGroup() {
-  console.log(this.request.body)
+  console.log("group name",this.request.body);
+
+  if(this.request.body.name=="")
+  {
+    this.body = JSON.stringify({message:"Please enter a group name."});
+    this.set({'Content-Type': 'application/json'});
+    return;
+  }
+
     let check = yield _usergroup.checkname(this.session.id,this.request.body.name);
   if(check)
   {
-    this.body = JSON.stringify({message:"name already exists"});
+    this.body = JSON.stringify({message:"Group already exists. Please select a different group name."});
     this.set({'Content-Type': 'application/json'});
     return;
   }

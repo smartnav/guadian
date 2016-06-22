@@ -502,3 +502,25 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
    height: 90px; 
    overflow-y: scroll;
 }
+.star-rating {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  }
+  .star {
+    padding: 1px;
+    color: #ddd;
+    font-size: 20px;
+    text-shadow: .05em .05em #aaa;
+    list-style-type: none;
+    display: inline-block;
+    cursor: pointer;
+}
+    .star.filled {
+      color: #fd0;
+    }
+  
+
+  .star.readonly .star.filled {
+    color: #666;
+  }

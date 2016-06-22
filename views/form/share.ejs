@@ -41,7 +41,7 @@
       <p>To use your site's custom styling, embed this code on your website.</p>
       <label for=custom>Custom Styling</label> - <a  class="primary clipboard-btn" data-clipboard-target="#custom" data-toggle="tooltip" title="Copied!">copy to clipboard</a>
     <textarea id=custom readonly onclick=this.select()><%= `<noscript id='guardianreview-form-container'>
-          <iframe src='{{link}}'></iframe>
+          <iframe name="submission.frame" src='{{link}}'></iframe>
         </noscript>
         <script src='{{jsurl}}'></script>
         <script>new window.ReviewForm('{{formid}}','guardianreview-form-container');</script>
