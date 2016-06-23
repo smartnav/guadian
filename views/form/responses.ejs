@@ -32,9 +32,10 @@
             <td><b>No responses have been approved yet.</b></td>
             </tr>
             </tbody>
+            {{$data}}
           <tbody ng-hide="total==0">
 
-           <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
+           <tr ng-repeat="row in $data | orderBy: '-date'" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
             <td>{{$index+1}}</td>
 
 
@@ -85,7 +86,7 @@
             </tr>
             </tbody>
             <tbody ng-hide="total==0">
-           <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
+           <tr ng-repeat="row in $data track by $index | orderBy: '-date'" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
             <td>{{$index+1}}</td>
 
 
@@ -137,7 +138,7 @@
             </tr>
             </tbody>
           <tbody ng-hide="total==0">
-           <tr ng-repeat="row in $data track by $index" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
+           <tr ng-repeat="row in $data track by $index | orderBy: '-date'" ng-if="row.hasOwnProperty('facility')" id="responses-{{row.responderid}}">
             <td>{{$index+1}}</td>
 
 
@@ -175,7 +176,7 @@
             <div class="modal-body">
              <!-- {{textQuestions}}-->
                     <div class="response-body-question">{{text.text}}</div>    
-                    <span ng-if="text.type=='text'"><textarea class="form-control" my-maxlength="5000" ng-model="text.response_text" style="width:450px;height:50px" required></textarea><div id=char_limit style:""><i>Maximum limit 5000 characters.</i></div></span>
+                    <span ng-if="text.type=='text'"><textarea class="form-control" my-maxlength="5000" ng-model="text.response_text" style="width:450px;height:100px" required></textarea><div id=char_limit style:""><i>Maximum limit 5000 characters.</i></div></span>
                     <span ng-if="text.type=='range'"><div class="star-rating" star-rating ng-model="text.response_rating" max="5" on-rating-select="text.response_rating=rating"></div></span>
                           
              <!-- Comments : <textarea id="rescomments" style="width:400px;height:100px" my-maxlength="2000" ng-model="textareaText" ></textarea>

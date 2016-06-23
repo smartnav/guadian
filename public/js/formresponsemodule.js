@@ -28,15 +28,14 @@ angular
         }
 
         $scope.getFormResponses = new NgTableParams({
-            count: 15
+            count: 5
         }, {
 
             counts: [],
             paginationMaxBlocks: 10,
             getData: function(params) {
-
-
-                return $http.post('/getFormResponses', { formid: $scope.formid, status: $scope.formstatus, offset: params.page(), limit: 15 }).then(function(response) {
+                
+                return $http.post('/getFormResponses', { formid: $scope.formid, status: $scope.formstatus, offset: params.page(), limit: 5 }).then(function(response) {
 
                     if (response.data) {
                         $scope.responses = response.data;
@@ -44,8 +43,11 @@ angular
                         $scope.facility = response.data[0].facility
                         window.d = response.data;
                         var r = $scope.separateResponses(response.data);
-                        window.r = r;
-                        return r;
+                        var arr = [];
+                        for(var i in r)
+                        {arr.push(r[i]);}
+                    console.log(arr);
+                        return arr;
                     }
 
                 })

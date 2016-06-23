@@ -663,30 +663,24 @@ var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.id);
 
 /* Rahul for Update Response  */
 function *updateResponse() {
-  // var data = this.request.body.data;
-  // var formid = data[0].formid;
-  //   console.log("data",data);
-  //   for(var i in data)
-  //   {
-  //     if(data[i].response_text.length>5000)
-  //     {
-  //       this.status = 400;
-  //     this.render('400');
-  //     return; 
-  //     }
-  //   }
-  //   var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
-  //   if (ownerCheck == 0) {
-  //     if(this.session.id!=data[0].owner_id)
-  //     {
-  //       this.status = 400;
-  //   this.render('400');
-  //     return;
-  //   }
-  // }
+
+      if(this.request.body.response_text.length>5000)
+      {
+        this.status = 400;
+      this.render('400');
+      return; 
+      }
+    var ownerCheck = yield _form.chkFromGroup(this.session.id,this.request.body.formid);
+    if (ownerCheck == 0) {
+      if(this.session.id!=this.request.body.owner_id)
+      {
+        this.status = 400;
+    this.render('400');
+      return;
+    }
+  }
   // var id = this.request.body.id;
   // var comments = "'"+this.request.body.comments+"'";
-console.log(this.request.body,"Body");
 let val =  yield _response.updateResponse(this.request.body);
   if(val) {
     this.status = 200;
@@ -1037,7 +1031,7 @@ function *sendGeneratedEmailText(formid,responseid) {
 function *createGroup() {
   console.log("group name",this.request.body);
 
-  if(this.request.body.name=="")
+  if(this.request.body.name=="" || !this.request.body.name)
   {
     this.body = JSON.stringify({message:"Please enter a group name."});
     this.set({'Content-Type': 'application/json'});

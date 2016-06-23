@@ -133,7 +133,7 @@ angular
     $scope.activeforms = {};
     $scope.total = 0;
     $scope.gradios = {};
-
+    $scope.isDisabled = false;
 $scope.hover = function(data) {
         // Shows/hides the delete button on hover
       return data.showDelete = ! data.showDelete;
@@ -320,20 +320,25 @@ $scope.hover = function(data) {
             })
     }
     $scope.createGroup = function(data) {
+        $scope.isDisabled = true;
        $http.post("/usergroup/add",{name:data}).then(function(resp){
         if(resp.data.message)
         {
            toaster.pop('error', "Error", resp.data.message);
+           $scope.isDisabled = false;
         }
         else if(resp.data.success)
               {      
                     toaster.pop('success', "Success", 'Group Created Successfully.');
                      $scope.getGroupData();
+                     $scope.isDisabled = false;
+                     $scope.gname="";
               } 
           },function(err){
 
                 if(err) {
                     toaster.pop('error', "Error", 'Woops! There was an error creating the group.');
+                $scope.isDisabled = false;
                 }
             })
     

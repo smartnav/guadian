@@ -40,26 +40,35 @@ angular
     
     $scope.get_group();
     
-    $scope.addGroup = function()
+    $scope.addGroup = function(data)
     {
     	$('#myModalNorm').modal('hide');
     	$('#loadingdiv').addClass('loading')
 	//toaster.pop('error', "Error", $scope.group_name);
-	var group_name = $scope.group_name;
-
-	$http.post('/usergroup/add',{name:group_name}).then(function(response){
-	    //console.log(response);
-	    toaster.pop('success', "Success", 'Group successfully created.');
-	    $scope.get_group();
-	    $('#loadingdiv').removeClass('loading')
-	},function(err){
-		    if(err) {
-			    toaster.pop('error', "Error", 'Woops! There was an error adding group.');
-			    $('#myModalNorm').modal();
+	$http.post('/usergroup/add',{name:data}).then(function(resp){
+	   if(resp.data.message)
+        {
+           toaster.pop('error', "Error", resp.data.message);
+           $('#myModalNorm').modal();
 			    $('#loadingdiv').removeClass('loading')
-		    }
-    		})
-    }
+        }
+        else if(resp.data.success)
+              {      
+                    toaster.pop('success', "Success", 'Group Created Successfully.');
+                    $scope.get_group();
+                    $('#myModalNorm').modal();
+			    $('#loadingdiv').removeClass('loading')
+              } 
+          },function(err){
+
+                if(err) {
+                    toaster.pop('error', "Error", 'Woops! There was an error creating the group.');
+                    $('#myModalNorm').modal();
+			    $('#loadingdiv').removeClass('loading')
+                }
+            })
+    
+ }
     
     $scope.user_email = {};
     $scope.addUser = function(index, groupID)

@@ -68,7 +68,7 @@ getCountByGroup: co.wrap(function* (ownerid) {
       let conxData = yield coPg.connectPromise(connectionString);
       let client = conxData[0];
       let done = conxData[1];
-      let result = yield client.queryPromise(`SELECT count(*) as total FROM "forms" f WHERE f.owner_group_id is not null AND f.owner_id!=$1 AND f.status!='trashed' `,[ownerid]);
+      let result = yield client.queryPromise(`SELECT count(*) as total FROM "forms" f INNER JOIN "user_groups" g ON f.owner_group_id = g.id WHERE f.owner_id!=$1 and f.status!='trashed' and $1 = any(g.user_id) `,[ownerid]);
       done();
       if(result.rows.length) {
         return yield Promise.resolve(result.rows[0]);
