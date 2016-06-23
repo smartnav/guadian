@@ -2,7 +2,7 @@ angular
 .module('groups',['toaster', 'ngAnimate', "ui.bootstrap" , "angular-confirm"])
 
 .controller('groupManage',function($scope, $uibModal, $confirm,$http,$timeout,$compile,toaster){
-    
+    $scope.isDisabled = false;
     $scope.groupData = {};
     $scope.get_group = function()
     {
@@ -42,29 +42,25 @@ angular
     
     $scope.addGroup = function(data)
     {
-    	$('#myModalNorm').modal('hide');
-    	$('#loadingdiv').addClass('loading')
+    	$scope.isDisabled = true;
 	//toaster.pop('error', "Error", $scope.group_name);
 	$http.post('/usergroup/add',{name:data}).then(function(resp){
 	   if(resp.data.message)
         {
            toaster.pop('error', "Error", resp.data.message);
-           $('#myModalNorm').modal();
-			    $('#loadingdiv').removeClass('loading')
+           $scope.isDisabled = false;
         }
         else if(resp.data.success)
               {      
                     toaster.pop('success', "Success", 'Group Created Successfully.');
                     $scope.get_group();
-                    $('#myModalNorm').modal();
-			    $('#loadingdiv').removeClass('loading')
+                    $scope.isDisabled = false;
               } 
           },function(err){
 
                 if(err) {
                     toaster.pop('error', "Error", 'Woops! There was an error creating the group.');
-                    $('#myModalNorm').modal();
-			    $('#loadingdiv').removeClass('loading')
+                $scope.isDisabled = false;
                 }
             })
     
