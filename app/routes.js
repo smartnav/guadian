@@ -404,6 +404,7 @@ function *form(id) {
 
 function *formSubmit(id) {
   let data = this.request.body;
+  console.log("Submitted Form",data);
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   var illegalChars = /^[a-zA-Z\s]+$/;
   var stripped = data.phone.replace(/[\(\)\.\-\ ]/g, '');
@@ -457,23 +458,28 @@ function *formSubmit(id) {
   }
   if(flag==1)
   {
-  	let data = yield _form.get(id);
-  	let  questions = yield _formbuilder.getQuestions(id);
-  	this.set('Access-Control-Allow-Origin','*');
-  	var template = this.request.query.hasOwnProperty('m') ? 'form' : 'form-full';
-  	yield this.render(template, {
-    type: data.type,
-    status: data.status,
-    questions : questions,
-    nonce: yield _form.nonce.create(data.id, false),
-    isPartial: this.request.query.hasOwnProperty('m'),
-    // TODO—doesn't account for non-SSL traffic and relies entirely on client
-    // to generate URL
-    url: URL,
-    postback: `${URL}/form/${id}`,
-    layout: false,
-    session: {},
-    error: message
+  // 	let data = yield _form.get(id);
+  // 	let  questions = yield _formbuilder.getQuestions(id);
+  // 	this.set('Access-Control-Allow-Origin','*');
+  // 	var template = this.request.query.hasOwnProperty('m') ? 'form' : 'form-full';
+  // 	yield this.render(template, {
+  //   type: data.type,
+  //   status: data.status,
+  //   questions : questions,
+  //   nonce: yield _form.nonce.create(data.id, false),
+  //   isPartial: this.request.query.hasOwnProperty('m'),
+  //   // TODO—doesn't account for non-SSL traffic and relies entirely on client
+  //   // to generate URL
+  //   url: URL,
+  //   postback: `${URL}/form/${id}`,
+  //   layout: false,
+  //   session: {},
+  //   error: message
+  // });
+  this.body = JSON.stringify({message:message})
+  this.status = 404;
+        this.set({
+    'Content-Type': 'application/javascript'
   });
   return;
   }
@@ -498,6 +504,7 @@ function *formSubmit(id) {
     if(fdata.status == 'published') {
       try {
         result = yield _form.receive(id, data.nonce, data);
+        console.log('result _________________',result);
       }catch(e) {
         if(e instanceof _form.nonce.InvalidNonce) {
           // silently fail.
@@ -518,22 +525,30 @@ function *formSubmit(id) {
       return;
     }
     if(!result) {
-      yield this.render('400', {layout:false});
-      this.status = 400;
+      yield this.body = JSON.stringify({message:"Failed"})
       return;
     }
     else
     {
     	 if(redirect=='/thanks'){
-  
-    	 	yield this.render(redirect, {
-  	    layout: false,
-  	    facility : fdata.facility,
-  	  });
+      this.body = JSON.stringify({message:"Success"})
+      this.set({
+    'Content-Type': 'application/javascript'
+  });
+      return;
+    	//  	yield this.render(redirect, {
+  	  //   layout: false,
+  	  //   facility : fdata.facility,
+  	  // });
   
     	 }
        else{
-       	this.redirect(redirect)
+        this.body = JSON.stringify({message:"Success"})
+        this.set({
+    'Content-Type': 'application/javascript'
+  });
+      return;
+       	// this.redirect(redirect)
        }
     }
 }

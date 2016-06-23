@@ -2,9 +2,10 @@
   window.console = window.console || {};
   window.console.log = window.console.log || function(){};
   window.console.warn = window.console.warn || function(){};
-  window.validate = function(){
-    console.log("in validate");
-    var name = document.getElementById("osrev-name").value;
+  window.checkjquery = function() {
+   $(document).ready(function(url){
+            var postback =  $('#postbacklink').val();
+ var name = document.getElementById("osrev-name").value;
     var email = document.getElementById("osrev-email").value;
     var phone = document.getElementById("osrev-tel").value;
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; 
@@ -65,12 +66,30 @@
     {
       document.getElementById('error_phone').innerHTML = "";
     }
-    document.forms['ratingsForm'].target = "hiddenFrame";
-    document.forms['ratingsForm'].submit()
-  document.forms['ratingsForm'].reset()
-   return false; 
-  }
+               
+            
+            $.ajax({
+                url: postback, // url where to submit the request
+                type : "POST", // type of action POST || GET
+                dataType : 'json', // data type
+                data : $("#ratingsForm").serialize(), // post data || get data
+                success : function(result) {
+                $('.alerterror').hide();
+                    // you can see the result from the console
+                    // tab of the developer tools
+                     $('#ratingsForm')[0].reset();
+                    $('.alertsuccess').show();
+                },
+                error: function(response) {
+                $('.alertsuccess').hide();
+                    $('#errmessage').text(response.responseJSON.message);
+                    $('.alerterror').show();
+                }
+            })
+    });
+  } 
   window.ReviewForm = function(form_id, element_id) {
+
     var el = document.getElementById(element_id);
 
     if(!el) {

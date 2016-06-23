@@ -1,6 +1,37 @@
 <style type="text/css">
+.alertsuccess {
+    padding: 20px;
+    background-color: #DFF2BF;
+    color: #4F8A10;
+    display:none;
+    margin-bottom: 40px;
+    border-radius: 5px;
+}
+#errmessage{
+  display:inline-block;
+}
+.alerterror {
+    padding: 20px;
+    background-color: #FFBABA;
+    color: #D8000C;
+    display:none;
+    margin-bottom: 40px;
+    border-radius: 5px;
+}
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-  .hide { position:absolute; top:-1px; left:-1px; width:1px; height:1px; }
+.closebtn:hover {
+    color: black;
+}
 
   .star-cb-group {
 
@@ -54,7 +85,7 @@
   }
 
 </style>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script type="text/javascript">
 <%if(isPartial) { %>
   window.console = window.console || {};
@@ -63,10 +94,12 @@
   console.log("The embedded form javascript ran just fine", window, document);
 <% } %>
 
-
-  window.validate = function(){
-    console.log("in validate");
-    var name = document.getElementById("osrev-name").value;
+checkjquery = function() {
+   $(document).ready(function(url){
+        // click on button submit
+            // send ajax
+            var postback =  $('#postbacklink').val();
+            var name = document.getElementById("osrev-name").value;
     var email = document.getElementById("osrev-email").value;
     var phone = document.getElementById("osrev-tel").value;
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; 
@@ -127,10 +160,29 @@
     {
       document.getElementById('error_phone').innerHTML = "";
     }
-    return true;
-  }
+    $.ajax({
+                url: postback, // url where to submit the request
+                type : "POST", // type of action POST || GET
+                dataType : 'json', // data type
+                data : $("#ratingsForm").serialize(), // post data || get data
+                success : function(result) {
+                $('.alerterror').hide();
+                    // you can see the result from the console
+                    // tab of the developer tools
+                     $('#ratingsForm')[0].reset();
+                    $('.alertsuccess').show();
+                },
+                error: function(response) {
+                $('.alertsuccess').hide();
+                    $('#errmessage').text(response.responseJSON.message);
+                    $('.alerterror').show();
+                }
+            })
+  })
+            
+            
+    }
 </script>
-
 <% if(error!="") { %>
         <div style="color:red">
         <ul>
@@ -138,12 +190,19 @@
         </ul>
     </div>
         <%} %>
-<iframe name="hiddenFrame" class="hide"></iframe>
-<form  id="ratingsForm" class=container method=POST action="<%= postback %>" name="ratingsForm" onsubmit="return validate()" novalidate>
+        <div class="alertsuccess">
+  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+  <strong>Success!</strong> Form Submitted Successfully.
+</div>
+<div class="alerterror">
+  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+  <strong>Error!</strong> <p id="errmessage"></p>
+</div>
+<form  id="ratingsForm" class=container action="" name="ratingsForm" onsubmit="return validate()" novalidate>
 
 
   <input type=hidden name=nonce value="<%= nonce %>">
-
+<input type=hidden name=postbacklink id=postbacklink value="<%= postback %>">
   <% var rows = questions == null ? 0 : questions.length;
   if(rows == 0) { //no forms %>
   <p>You Have not added any questions to this form</p>
@@ -206,12 +265,13 @@
 
 <%if(status=="unpublished") { %>
 <div class="form-group submit"> 
-  <input type=submit value="Submit" disabled class="btn btn-primary btn-lg">
+  <input  type=submit value="Submit" disabled class="btn btn-primary btn-lg">
 </div>
 <% } else { %>
 <div class="form-group submit">
-  <input type=submit value="Submit" class="btn btn-primary btn-lg">
+  <input id="submit" type=button value="Submit" onclick='checkjquery("<%= postback %>")' class="btn btn-primary btn-lg">
 </div>
   <% } %>
+  
 </form>
 <script>
