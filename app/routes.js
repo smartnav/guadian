@@ -448,10 +448,10 @@ function *formSubmit(id) {
   	flag=1;
   	message="Please enter a valid Phone Number.";
   }
-  else if( stripped.length != 10 )
+  else if( stripped.length < 6 || stripped.length > 20 )
   {
   	flag=1;
-  	message="Phone Number Length should be 10 numbers.";
+  	message="Please enter a valid Phone Number.";
   }
   else
   {
