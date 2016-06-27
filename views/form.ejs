@@ -148,12 +148,12 @@ checkjquery = function() {
     }
     if(phone=="" || isNaN(parseInt(stripped)))
     {
-      document.getElementById('error_phone').innerHTML = "Please enter a valid Phone Number.";
+      document.getElementById('error_phone').innerHTML = "Please enter a valid phone number.";
       return false;
     }
-    else if((stripped.length != 10))
+    else if((stripped.length < 6 ||stripped.length > 20))
     {
-      document.getElementById('error_phone').innerHTML = "Phone Number Length should be 10 numbers.";
+      document.getElementById('error_phone').innerHTML = "Please enter a valid phone number.";
       return false;
     }
     else
