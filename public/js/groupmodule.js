@@ -55,6 +55,7 @@ angular
                     toaster.pop('success', "Success", 'Group Created Successfully.');
                     $scope.get_group();
                     $scope.isDisabled = false;
+		    $('#myModalNorm').modal('hide');
               } 
           },function(err){
 
