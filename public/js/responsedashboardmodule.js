@@ -5,25 +5,25 @@ angular
     $scope.activeforms = {};
     $scope.total = 0;
 
-    $scope.getActiveForms =  new NgTableParams({
-        count:15
-    }, {
+    // $scope.getActiveForms =  new NgTableParams({
+    //     count:15
+    // }, {
       
-      counts:[],
-      paginationMaxBlocks: 10,   
-      getData: function(params) {
+    //   counts:[],
+    //   paginationMaxBlocks: 10,   
+    //   getData: function(params) {
        
             
-        return $http.post('/getActiveForms',{offset:params.page(),limit:15}).then(function(response){
+    //     return $http.post('/getActiveForms',{offset:params.page(),limit:15}).then(function(response){
 
-            $scope.activeforms = response.data;
-            params.total($scope.total);
+    //         $scope.activeforms = response.data;
+    //         params.total($scope.total);
             
-            return response.data;
-        })
+    //         return response.data;
+    //     })
         
-      }
-    });
+    //   }
+    // });
 
     $scope.generateEmailToResponder = function(model,id, responseid, status) {
         $scope.argu.model = model;
@@ -45,18 +45,18 @@ angular
         /* Get the email information */
         $http.get('/form/' + id + '/email/' + responseid).then(function(response){
                 console.log("We got a response:", response);
-                if(response.data)
-                {
-                    $scope.Yelp_Google = response.data.data;
-                    if(response.data.data.yelp=="" || response.data.data.google_plus==""){
-                        $('#YelpGoogle').show();
-                }
-                    else
-                        $('#YelpGoogle').hide();
-                    $('textarea#rescomments').val(response.data.email);
-                    $('#emailModal').modal() ///           /review/:id/email/:responseid
-
-                }
+               if (response.data) {
+                        $scope.Yelp_Google = response.data.data;
+                        if (response.data.data.yelp == "" || response.data.data.google_plus == "") {
+                            $('#YelpGoogle').show();
+                        } else
+                            {$('#YelpGoogle').hide();}
+                         //   var res = response.data.emailData.replace(/\n/g, ""); 
+                            $('#mailTo').attr("href", "mailto:"+response.data.res.email+"?subject=Thank You!&body="+encodeURIComponent(response.data.emailData));
+                            $('#toEmail').val(response.data.res.email);
+                        $('textarea#rescomments').val(response.data.emailData);
+                        $('#emailModal').modal() ///  
+                    }
             
             },function(err){
 
@@ -131,13 +131,16 @@ angular
                 return $http.post('/getApprovedResponses',{offset:params.page(),limit:5}).then(function(response){
                    if (response.data) {
                     $scope.responses = response.data;
-                    console.log($scope.responses);
+                    console.log($scope.total);
                     params.total($scope.total);
                     $scope.facility = response.data[0].facility
                     window.d = response.data;
                     var r = $scope.separateResponses(response.data);
-                    window.r = r;
-                    return r;
+                    console.log(r);
+                    var arr = [];
+                        for(var i in r)
+                        {arr.push(r[i]);}
+                    return arr;
                    }
                     
                 })
@@ -147,7 +150,6 @@ angular
 
 
     $scope.separateResponses = function(data) {
-        console.log(data);
         var newlyFormatedResponses = {};
         for(var i = 0; i < data.length;i++) {
             if(!newlyFormatedResponses.hasOwnProperty(data[i].responderid)) {
@@ -169,16 +171,16 @@ angular
         }
         return newlyFormatedResponses;
     }
-    $scope.activeformsCount = function() {
+    $scope.approvedResponsesCount = function() {
 
-            $http.get('/getActiveFormsCount').then(function(response){
+            $http.post('/getApprovedResponsesCount').then(function(response){
 
             $scope.total = response.data.total
             })
         
     }
 
-    $scope.activeformsCount();
+    $scope.approvedResponsesCount();
 
     
     $scope.toggleStatus = function(model,id,status) {

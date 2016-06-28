@@ -133,6 +133,7 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster,$window) {
     vm.findNextIndex        = findNextIndex;
     vm.isResponseReceived   = isResponseReceived;
     vm.saveAllQuestions     = saveAllQuestions;
+    vm.saveAllQuestionsPreview = saveAllQuestionsPreview;
 
     function init() {
         $timeout(function(){qss.isQuestionExist(vm.formId);},500)
@@ -329,6 +330,19 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster,$window) {
         }
         $window.location.href = '/form/share'
         
+    }
+
+    function saveAllQuestionsPreview(){
+        for(var i in vm.questions)
+        {
+            var showi = parseInt(i)+1;
+            if($("#"+i+" select").val()=='') {
+            //alertify.error('Type Should not be Empty');
+            toaster.pop('error', "Error", 'Question '+showi+' Type Should not be Empty');
+            return false;
+            }
+            vm.saveQuestion(i);
+        }        
     }
 
     function removeQuestion(id) {

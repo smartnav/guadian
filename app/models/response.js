@@ -398,14 +398,15 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
                                                )
                                               SELECT forms.id as formid, forms.owner_id, forms.facility, forms.status as form_status,
                                                      responders_group.name, responders_group.created, responders_group.contacted_status, responders_group.status as responder_status, 
-                                                     questions.type, questions.question,
+                                                     questions.type, questions.question,questions.is_hide,
                                                      responses.*
                                               FROM forms, responders_group
                                               INNER JOIN responses ON (responses.responderid = responders_group.id)
-                                              INNER JOIN questions ON (questions.id = responses.questionid AND questions.is_hide = false)
+                                              INNER JOIN questions ON (questions.id = responses.questionid)
                                               WHERE forms.id = $1`,  [form_id, limit]);
       done();
       if(result.rows.length) {
+        console.log(result.rows);
         return yield Promise.resolve(result.rows);
       }
       return yield Promise.resolve(null);
@@ -697,6 +698,7 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
                                               AND f.owner_id = $1 
                                               AND re.status='approved'`, [owner_id]);
       done();
+      console.log(result,"result")
       if(result.rows.length) {
         return yield Promise.resolve(result.rows[0]);
       }

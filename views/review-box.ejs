@@ -14,18 +14,25 @@
   <%  if(reviews && reviews.length) { %>
     <ul>
       <% reviews.forEach((r)=>{ 
-        if(r.type == "text") { %>
-          <li><q>
+        if(r.is_hide == "show_label") { %>
+          <li>
+          
+          <%= r.question %>
+         <% if(r.type=="text") { %> 
+          <ul><li>
           <%=
             r.textval.split(" ").splice(0,maxlength).join(" "); 
           %>
           <%if( r.textval.split(' ').length > maxlength) { %> 
               &hellip; 
             <% } 
-            %></q></li>
-      <% }
-      }); %>
-    </ul>
+            %></li></ul>
+      <% } else{%>
+        <ul><li>
+        <%= r.rateval %>
+        </li></ul>
+     <% }}}); %>
+   </li> </ul>
   <% } else { %>
   <p>No reviews yet!</p>
   <% } %>
