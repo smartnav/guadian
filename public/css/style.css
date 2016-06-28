@@ -496,6 +496,19 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
     position: relative;
     clear:both;
     margin-bottom: 100px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 18px;
+}
+
+.footer p {
+  color:#ccc;
+}
+
+.footer a {
+  color:#f1f1f3;
+  padding-right:10px;
+  padding-left:10px;
 }
 
 .radiob { 
@@ -524,3 +537,13 @@ i.plus,i.fa-floppy-o,i.fa-trash-o { cursor: pointer; cursor: hand; }
   .star.readonly .star.filled {
     color: #666;
   }
+
+
+/* Slider */
+div#slider .bgLayer {
+  background-position: center center !important;
+  background-size: cover !important;
+}
+div#slider, div#slider .sliderInner {
+  width:100%;
+}

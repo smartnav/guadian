@@ -197,6 +197,12 @@ function *googleAuthCallback() {
   var p2 = Promise.defer();
   plus.people.get({key:API_KEY, userId:'me'}, function(err, userReturned) {
     //console.log('Result: ' + (err ? err.message : userReturned.emails));
+    if(err) {
+      console.log("Error in Google Auth Callback " + err.message);
+      console.log(err);
+    }
+
+
     var primaryEmail = userReturned.emails[0].value;
     p2.resolve(primaryEmail);
   });
@@ -420,13 +426,13 @@ function *formSubmit(id) {
   }
   if((data.name == "" || data.email == "" || data.phone == "") && flag!=1)
   {
-  	flag=1;
-  	message="Please Fill in the Required Fields"; 
+    flag=1;
+    message="Please Fill in the Required Fields"; 
   }
   else if( data.name.length<4 )
   {
-  	flag=1;
-  	message="Please enter a longer name for the form.";
+    flag=1;
+    message="Please enter a longer name for the form.";
   }
   else if( data.name.length>50 )
   {
@@ -435,18 +441,18 @@ function *formSubmit(id) {
   }
   else if( !illegalChars.test(data.name) )
   {
-  	flag=1;
-  	message="Only letters are permitted here.";
+    flag=1;
+    message="Only letters are permitted here.";
   }
   else if( !re.test(data.email) )
   {
-  	flag=1;
-  	message="Please enter a Valid Email.";
+    flag=1;
+    message="Please enter a Valid Email.";
   }
   else if( isNaN(parseInt(stripped)) )
   {
-  	flag=1;
-  	message="Please enter a valid Phone Number.";
+    flag=1;
+    message="Please enter a valid Phone Number.";
   }
   else if( stripped.length < 6 || stripped.length > 20 )
   {
@@ -484,7 +490,7 @@ function *formSubmit(id) {
   return;
   }
   else{
-  	data.ip = this.request.ip;
+    data.ip = this.request.ip;
     let result;
     data.phone = stripped;
     let fdata = yield _form.get(id) || {};
@@ -497,7 +503,7 @@ function *formSubmit(id) {
     console.log("We got fdata", fdata);
     let redirect = fdata.redirect_url || '/thanks';
     this.session = {
-    	facilityName : fdata.facility
+      facilityName : fdata.facility
     }
   
   
@@ -541,7 +547,7 @@ function *formSubmit(id) {
   	  //   facility : fdata.facility,
   	  // });
   
-    	 }
+       }
        else{
         this.body = JSON.stringify({message:"Success"})
         this.set({
