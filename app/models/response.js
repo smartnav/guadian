@@ -583,7 +583,7 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
                                                )
                                               SELECT forms.id as formid, forms.owner_id, forms.facility, forms.status as form_status,
                                                      responders_group.name, responders_group.created, responders_group.contacted_status, responders_group.status as responder_status, 
-                                                     questions.type, questions.question, questions.is_hide,
+                                                     questions.type, questions.orderid, questions.question, questions.is_hide,
                                                      responses.*
                                               FROM forms, responders_group
                                               INNER JOIN responses ON (responses.responderid = responders_group.id)
@@ -704,9 +704,26 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
     }catch(err){
       return yield Promise.reject(err);
     }
+  }),
+
+  getEmailId: co.wrap(function* (formid,response_id){
+    try {
+
+
+      let conxData = yield coPg.connectPromise(connectionString);
+      let client = conxData[0];
+      let done = conxData[1];
+      let res = yield client.queryPromise(`SELECT responders.email FROM forms INNER JOIN responders ON (forms.id = responders.formid) WHERE forms.id = $1 and responders.id = $2`,[formid,response_id]);
+      if(res.rowCount)
+      {
+        return yield Promise.resolve(res.rows[0]);
+      }
+      return yield Promise.resolve(null);
+    }catch(err){
+      return yield Promise.reject(err);
+    }
+
   })
-
-
 
 
 

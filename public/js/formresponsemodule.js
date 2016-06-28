@@ -46,7 +46,6 @@ angular
                         var arr = [];
                         for(var i in r)
                         {arr.push(r[i]);}
-                    console.log(arr);
                         return arr;
                     }
 
@@ -74,7 +73,7 @@ angular
 
                 var obj = newlyFormatedResponses[data[i].responderid];
 
-                obj.questions.push({ "id": data[i].questionid, "type": data[i].type, "text": data[i].question, "response_text": data[i].textval, "response_rating": data[i].rateval, "owner_id": data[i].owner_id, "is_hide": data[i].is_hide, "formid": data[i].formid });
+                obj.questions.push({ "id": data[i].questionid, "type": data[i].type, "text": data[i].question, "response_text": data[i].textval, "response_rating": data[i].rateval, "owner_id": data[i].owner_id, "is_hide": data[i].is_hide, "formid": data[i].formid,"orderid": data[i].orderid });
 
             }
             return newlyFormatedResponses;
@@ -135,8 +134,11 @@ angular
                         if (response.data.data.yelp == "" || response.data.data.google_plus == "") {
                             $('#YelpGoogle').show();
                         } else
-                            $('#YelpGoogle').hide();
-                        $('textarea#rescomments').val(response.data.email);
+                            {$('#YelpGoogle').hide();}
+                         //   var res = response.data.emailData.replace(/\n/g, ""); 
+                            $('#mailTo').attr("href", "mailto:"+response.data.res.email+"?subject=Thank You!&body="+encodeURIComponent(response.data.emailData));
+                            $('#toEmail').val(response.data.res.email);
+                        $('textarea#rescomments').val(response.data.emailData);
                         $('#emailModal').modal() ///  
                     }
 

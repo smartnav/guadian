@@ -990,11 +990,7 @@ function *isResponseReceived() {
 
 
 function *getGeneratedEmailText(formid,responseid) {
-  
-      let val =  yield _response.getGeneratedEmail(formid,this.session.id,responseid);
-      let data = yield _form.get(formid);
-
-      var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
+  var ownerCheck = yield _form.chkFromGroup(this.session.id,formid);
     if (ownerCheck == 0) {
       if(this.session.id!=data.owner_id)
       {
@@ -1003,12 +999,16 @@ function *getGeneratedEmailText(formid,responseid) {
       return;
     }
   }
+      let val =  yield _response.getGeneratedEmail(formid,this.session.id,responseid);
+      let data = yield _form.get(formid);
+      let res = yield _response.getEmailId(formid,responseid);
+      console.log("res",res);
       console.log("val",val);
       console.log("data",data);
       if(val) {
 
         this.status = 200;
-        this.body = JSON.stringify({email:val,data:data});
+        this.body = JSON.stringify({emailData:val,data:data,res});
         this.set({'Content-Type': 'application/json'});
       }
       else {

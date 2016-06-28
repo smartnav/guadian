@@ -41,7 +41,7 @@
 
             <td  data-title="'comments'">
               <div class="response-body">
-                <div ng-repeat="rep in row.questions">
+                <div ng-repeat="rep in row.questions | orderBy: 'orderid'">
 <div class="response-body-question" ng-class="rep.is_hide == true? 'boldClass' : ''">{{rep.text}}</div>
                   <div  class="response-body-response">{{rep.response_text}}</div>
                   <div class="response-body-response">{{rep.response_rating}}</div>
@@ -92,7 +92,7 @@
 
             <td  data-title="'comments'">
               <div class="response-body">
-                <div ng-repeat="rep in row.questions">
+                <div ng-repeat="rep in row.questions | orderBy: 'orderid'">
                   <div class="response-body-question">{{rep.text}}</div>
                   <div  class="response-body-response">{{rep.response_text}}<span ng-if="rep.type=='text'" style="cursor:pointer;" ng-click="editQuestionResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
                   <div class="response-body-response">{{rep.response_rating}}<span ng-if="rep.type=='range'" style="cursor:pointer;" ng-click="editQuestionResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
@@ -144,7 +144,7 @@
 
             <td  data-title="'comments'">
               <div class="response-body">
-                <div ng-repeat="rep in row.questions">
+                <div ng-repeat="rep in row.questions | orderBy: 'orderid'">
                   <div class="response-body-question">{{rep.text}}</div>
                   <div  class="response-body-response">{{rep.response_text}}</div>
                   <div class="response-body-response">{{rep.response_rating}}</div>
@@ -224,12 +224,11 @@
               Google Plus:<input type="text" ng-model="Yelp_Google.google_plus">
               <button type="button" class="btn btn-primary" ng-click="SaveYG(Yelp_Google)">Save</button>
               </div>
-             To: <input type="text" value="xxx@gmail.com">
-             From: <input type="text" value="xxx@gmail.com">
+             To: <input type="text" id="toEmail">
              Body: <textarea id="rescomments" style="width:400px;height:400px"  ></textarea>
             </div>
             <div class="modal-footer">
-              <a href="#" class="pull-left">Rather do it from your own email? Click here</a>
+              <a href="#" id="mailTo" class="pull-left">Rather do it from your own email? Click here</a>
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary" ng-click="sendEmailToResponder()">Send</button>
             </div>
