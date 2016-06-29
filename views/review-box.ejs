@@ -17,21 +17,35 @@
         if(r.is_hide == "show_label") { %>
           <li>
           
-          <%= r.question %>
+          <q><%= r.question %></q>
          <% if(r.type=="text") { %> 
           <ul><li>
-          <%=
+          <q><%=
             r.textval.split(" ").splice(0,maxlength).join(" "); 
-          %>
+          %></q>
           <%if( r.textval.split(' ').length > maxlength) { %> 
               &hellip; 
             <% } 
             %></li></ul>
       <% } else{%>
         <ul><li>
-        <%= r.rateval %>
+       <q> <%= r.rateval %></q>
         </li></ul>
-     <% }}}); %>
+     <% }}else{ %>
+      <li>
+      <% if(r.type=="text") { %> 
+        <q>  <%=
+            r.textval.split(" ").splice(0,maxlength).join(" "); 
+          %></q>
+          <%if( r.textval.split(' ').length > maxlength) { %> 
+              &hellip; 
+            <% } 
+            %>
+      <% } else{%>
+      <q>  <%= r.rateval %></q>
+        
+     <% } %>
+     <%}}); %>
    </li> </ul>
   <% } else { %>
   <p>No reviews yet!</p>

@@ -14,11 +14,11 @@ angular
 function QuestionsListService($http) {
 
     var ref = this;
-    this.questions = [{'question':'In recommending this facility to your friends and family, how would you rate it overall?','qtype':'range','orderid':0,'is_hide':false},
-                      {'question':'Overall, how would you rate the staff?','qtype':'range','orderid':1,'is_hide':false},
-                      {'question':'How would you rate the care you received?','qtype':'range','orderid':2,'is_hide':false},
-                      {'question':'How would you rate how well your discharge needs were met?','qtype':'range','orderid':3,'is_hide':false},
-                      {'question':'Do you have any other comments you would like to share?','qtype':'text','orderid':4,'is_hide':false}]
+    this.questions = [{'question':'In recommending this facility to your friends and family, how would you rate it overall?','qtype':'range','orderid':0,'is_hide':'show'},
+                      {'question':'Overall, how would you rate the staff?','qtype':'range','orderid':1,'is_hide':'show'},
+                      {'question':'How would you rate the care you received?','qtype':'range','orderid':2,'is_hide':'show'},
+                      {'question':'How would you rate how well your discharge needs were met?','qtype':'range','orderid':3,'is_hide':'show'},
+                      {'question':'Do you have any other comments you would like to share?','qtype':'text','orderid':4,'is_hide':'show'}]
     this.getQuestionsList = function(formId) {
         
        return $http.post('/formbuilder/list',{formId:formId},{timeout: 5000});
@@ -240,7 +240,7 @@ function FormBuilderController($timeout,qls,qss,qrs,alertify,toaster,$window) {
     }
 
     function addQuestion() {
-        vm.questions.push({'question':'','qtype':'','orderid':vm.findNextIndex(),'is_hide':false});
+        vm.questions.push({'question':'','qtype':'','orderid':vm.findNextIndex(),'is_hide':'show'});
     }
 
     function validateQuestions(id) {

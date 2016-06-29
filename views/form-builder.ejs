@@ -40,9 +40,9 @@
      </select></td>
      <td style="padding:15px" class="align-center" width="12%">
      <select class="form-control" ng-change="fb.saveQuestion($index)" name="is_hide" ng-disabled = "types == 'range'" ng-model="is_hide.val">
-     <option value="show" ng-selected="quest.is_hide==show" >Show</option>
-     <option value="hide" ng-selected="quest.is_hide==hide" >Hide</option>
-     <option value="show_label" ng-selected="quest.is_hide==show_label">Show with label</option>
+     <option value="show" ng-selected="quest.is_hide=='show'" >Show</option>
+     <option value="hide" ng-selected="quest.is_hide=='hide'" >Hide</option>
+     <option value="show_label" ng-selected="quest.is_hide=='show_label'">Show with label</option>
      </select>
      </td>
      <td style="padding:15px" class="align-center" width="12%">

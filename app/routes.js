@@ -906,10 +906,7 @@ function *saveBuild() {
       param.question = this.request.body.question;
       param.orderid = this.request.body.orderid;
       param.qtype = this.request.body.qtype;
-      if(this.request.body.is_hide=="true")   
-      param.is_hide=true;     
-      else    
-        param.is_hide=false;    
+      param.is_hide = this.request.body.is_hide;
       let  val = yield _formbuilder.saveQuestion(param);
 
       if(val) {

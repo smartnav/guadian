@@ -402,7 +402,7 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
                                                      responses.*
                                               FROM forms, responders_group
                                               INNER JOIN responses ON (responses.responderid = responders_group.id)
-                                              INNER JOIN questions ON (questions.id = responses.questionid)
+                                              INNER JOIN questions ON (questions.id = responses.questionid AND questions.is_hide != 'hide')
                                               WHERE forms.id = $1`,  [form_id, limit]);
       done();
       if(result.rows.length) {
