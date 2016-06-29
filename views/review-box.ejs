@@ -29,7 +29,14 @@
             %></li></ul>
       <% } else{%>
         <ul><li>
-       <q> <%= r.rateval %></q>
+        <% 
+        for(var i=0; i<r.rateval; i++){
+
+        %>
+        <span class="star">&#9733;</span>
+        <%
+      }
+     %> 
         </li></ul>
      <% }}else{ %>
       <li>
@@ -42,7 +49,14 @@
             <% } 
             %>
       <% } else{%>
-      <q>  <%= r.rateval %></q>
+      <% 
+        for(var i=0; i<r.rateval; i++){
+
+        %>
+       <span class="star"> &#9733;</span>
+        <%
+      }
+     %> 
         
      <% } %>
      <%}}); %>
