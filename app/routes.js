@@ -153,10 +153,6 @@ function *dashboard(){
 
 /*created by smartdata(nav)*/
 function *groups(){
- if(! (yield (user.isLoggedIn.bind(this)))) {
-    this.redirect('/login');
-    return;
-  }
  yield this.render('groups', {
     session:this.session || {},
     pageTitle: 'Groups',
@@ -165,8 +161,29 @@ function *groups(){
 }
 /*end of this function*/
 
+function *contact(){
+ yield this.render('contact', {
+    session:this.session || {},
+    pageTitle: 'Contact Us',
+    url: URL
+  });
+}
 
+function *terms(){
+ yield this.render('terms', {
+    session:this.session || {},
+    pageTitle: 'Terms',
+    url: URL
+  });
+}
 
+function *faq(){
+ yield this.render('faq', {
+    session:this.session || {},
+    pageTitle: 'FAQ',
+    url: URL
+  });
+}
 
 function *logout() {
   //nullify the session
@@ -1302,7 +1319,9 @@ module.exports = function(app) {
   app.use(route.get('/dashboard', dashboard));
   
   app.use(route.get('/groups', groups));
-  
+  app.use(route.get('/contact', contact));
+  app.use(route.get('/faq',faq));
+  app.use(route.get('/terms',terms));
   app.use(route.get('/admin', adminDashboard));
   
   app.use(route.get('/users', getUsers)); //TODO: remove this.
