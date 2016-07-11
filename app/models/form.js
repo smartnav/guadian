@@ -129,7 +129,7 @@ const form = {
        let conxData = yield coPg.connectPromise(connectionString);
        let client = conxData[0];
        let done = conxData[1];
-       let expected = 'type,facility,yelp,google_plus,allowed_origins,redirect_url';
+       let expected = 'type,facility,yelp,google_plus,caring,allowed_origins,redirect_url';
 
        let vars = expected.split(',')
          .reduce((a, b, index)=>{return `${a},$${index+2}`},'');
@@ -202,14 +202,16 @@ const form = {
                                         facility=$3,
                                         yelp=$4,
                                         google_plus=$5,
-                                        redirect_url=$6
-                                    WHERE id=$1, [${form_id}, ${data.type}, ${data.facility}, ${data.yelp}, ${data.google_plus}, ${data.redirect_url}]`);
+                                        caring=$6,
+                                        redirect_url=$7
+                                    WHERE id=$1, [${form_id}, ${data.type}, ${data.facility}, ${data.yelp}, ${data.google_plus}, ${data.caring}, ${data.redirect_url}]`);
        let result = yield client.queryPromise(`UPDATE "forms" SET type=$2,
                                         facility=$3,
                                         yelp=$4,
                                         google_plus=$5,
-                                        redirect_url=$6
-                                    WHERE id=$1`, [form_id, data.type, data.facility, data.yelp, data.google_plus, data.redirect_url]);
+                                        caring=$6,
+                                        redirect_url=$7
+                                    WHERE id=$1`, [form_id, data.type, data.facility, data.yelp, data.google_plus, data.caring, data.redirect_url]);
        let logging = yield _auditlog.writelog({model:"forms",operation:"UPDATE",user_id:owner_id,pkey:form_id,details:"'FORM_EDIT'"});
        done();
        return Promise.resolve(result);

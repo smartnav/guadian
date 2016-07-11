@@ -1,1 +1,1 @@
-web: $(npm bin)/forever node-basic.js
+web: $(npm bin)/forever main.js

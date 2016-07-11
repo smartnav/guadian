@@ -12,7 +12,28 @@ pm2.connect(function() {
     max_memory_restart : maxMemory + 'M',   // Auto restart if process taking more than XXmo
     env: {                            // If needed declare some environment variables
       "NODE_ENV": "production",
-      "AWESOME_SERVICE_API_TOKEN": "xxx"
+      "PGPASSWORD": process.env.PGPASSWORD,
+      "PGHOST": process.env.PGHOST,
+      "PGUSER": process.env.PGUSER,
+      "PGDATABASE": process.env.PGDATABASE,
+      "PGPORT": process.env.PGPORT,
+      "PGPOOLSIZE": process.env.PGPOOLSIZE,
+      "PGPASS": process.env.PGPASS,
+      "SECRET": process.env.SECRET,
+      "GOOGLE_CLIENT_ID": process.env.GOOGLE_CLIENT_ID,
+      "GOOGLE_CLIENT_SECRET": process.env.GOOGLE_CLIENT_SECRET,
+      "GOOGLE_CALLBACK_URI": process.env.GOOGLE_CALLBACK_URI,
+      "GOOGLE_API_KEY": process.env.GOOGLE_API_KEY,
+      "PROTOCOL": process.env.PROTOCOL,
+      "DOMAIN": process.env.DOMAIN,
+      "HIDE_PORT": process.env.HIDE_PORT,
+      "PORT": process.env.PORT,
+      "CDN": process.env.CDN,
+      "GMAIL_PASSWORD": process.env.GMAIL_PASSWORD,
+      "GMAIL_USER": process.env.GMAIL_USER,
+      "TWILIO_AUTH_TOKEN": process.env.TWILIO_AUTH_TOKEN,
+      "TWILIO_PHONE_NUMBER": process.env.TWILIO_PHONE_NUMBER,
+      "TWILIO_SID": process.env.TWILIO_SID
     },
   }, function(err) {
     if (err) return console.error('Error while launching applications', err.stack || err);

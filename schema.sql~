@@ -34,7 +34,6 @@ CREATE TABLE "forms" (
   "facility" varchar(255) NULL,
   "yelp" varchar(255) NULL,
   "google_plus" varchar(255) NULL,
-  "caring" varchar(255) NULL,
   "allowed_origins" TEXT[] NULL DEFAULT NULL,
   "redirect_url" TEXT NULL DEFAULT NULL,
   "owner_id" INTEGER NOT NULL REFERENCES "users"("id"),
@@ -49,7 +48,7 @@ CREATE TABLE "questions" (
   "orderid" int NULL,
   "type" E_TYPE NULL DEFAULT 'text',
   "question" TEXT NULL DEFAULT 'question',
-  "is_hide" varchar(100) NULL
+  "is_hide" BOOLEAN NULL DEFAULT false
 );
 
 CREATE TABLE "responders" (

@@ -60,11 +60,20 @@ function *signupNewUser() {
     return;
   }
 
-   if(this.request.body.name.length<4) {
+   if(this.request.body.name.length<3) {
 
    yield this.render('signup', {message: "Please enter a longer name.", pageTitle: "Sign Up",session:this.session || {},});
     return;
    }
+   var inviteCodes = ["5d4f7c", "a886e8", "e5264e", "6dccfd", "8ffec5", "704177", "143772", "f3125c", "972e1c", "f6049e", "e551fd", "ed5c4b", "a1338d", "79aeb4", "ca3d6d", "85fae5", "30ccd2", "93c32f", "48c5a7", "7aa6a7"];
+   if(inviteCodes.indexOf(this.request.body.invite_code) == -1) {
+    yield this.render('signup', {message: "Invalid Invite Code", pageTitle: "Sign Up",session:this.session || {},});
+    return;
+   }
+
+
+
+
    var check = user.checkUser.bind(this);
    var result = yield check(this.request.body.name);
    console.log(result.length);
@@ -236,6 +245,7 @@ function *googleAuthCallback() {
     }
     else {
       //TODO: Announce something went wrong.
+      console.log("Something went wrong with signed up user");
       this.redirect('/signup');
     }
   }
@@ -282,6 +292,11 @@ function *saveForm(){
   if(data.google_plus!="" && !re.test(data.google_plus))
   {
     yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,message:"Please enter a valid Google Plus Url"});
+   return;
+  }
+  if(data.caring!="" && !re.test(data.caring))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'New Form', newForm:true,message:"Please enter a valid Caring.com Url"});
    return;
   }
   if(data.redirect_url!="" && !re.test(data.redirect_url))
@@ -340,6 +355,7 @@ function *saveFacilityEdits(id) {
   }
   datas.yelp = data.yelp;
   datas.google_plus = data.google_plus;
+  datas.caring = data.caring;
   var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
 
   if(data.facility == "")
@@ -355,6 +371,11 @@ function *saveFacilityEdits(id) {
   if(data.google_plus!="" && !re.test(data.google_plus))
   {
     yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please enter a valid Google Plus Url"});
+   return;
+  }
+  if(data.caring !="" && !re.test(data.caring))
+  {
+    yield this.render('./form/new',{session:this.session || {}, pageTitle: 'Edit Form', newForm:false, existingForm:datas, message:"Please enter a valid Caring.com Url"});
    return;
   }
   if(data.redirect_url!="" && !re.test(data.redirect_url))
@@ -424,12 +445,12 @@ function *formSubmit(id) {
       console.log("in here");
     }
   }
-  if((data.name == "" || data.email == "" || data.phone == "") && flag!=1)
+  if((data.name == "" || data.email == "") && flag!=1)
   {
     flag=1;
     message="Please Fill in the Required Fields"; 
   }
-  else if( data.name.length<4 )
+  else if( data.name.length<3 )
   {
     flag=1;
     message="Please enter a longer name for the form.";
@@ -449,12 +470,12 @@ function *formSubmit(id) {
     flag=1;
     message="Please enter a Valid Email.";
   }
-  else if( isNaN(parseInt(stripped)) )
+  else if( data.phone != "" && isNaN(parseInt(stripped)) )
   {
     flag=1;
     message="Please enter a valid Phone Number.";
   }
-  else if( stripped.length < 6 || stripped.length > 20 )
+  else if( data.phone != "" &&  (stripped.length < 6 || stripped.length > 20 ))
   {
   	flag=1;
   	message="Please enter a valid Phone Number.";

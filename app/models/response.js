@@ -198,6 +198,7 @@ const response = {
         ejs.renderFile(path, {
             yelp: f.yelp,
             google_plus: f.google_plus,
+            caring: f.caring,
             facility: f.facility,
             reviewer_name: f.name,
             owner_name: f.facility,

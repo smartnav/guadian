@@ -4,12 +4,13 @@
   </div>
 
 <toaster-container></toaster-container>
+<%- include('./../steps.ejs', {detailed:false, step:4}) %>
   <div class="row row-eq-height">
 
     <!-- GOOGLE INFORMATION -->
     <div class="col-xs-12 col-sm-3 col-lg-3 steps">
       <div class="panel steps">
-        <div class="panel-heading h2 blue text-center">Step 1:</div>
+        <div class="panel-heading h2 blue text-center">First:</div>
         <div class="panel-body">
           <h3 class="text-center">Approve a Response</h3>
           <p>Approve responses that you like so you can send the reviewer an email. Only approved responders are able to be contacted.</p>
@@ -21,7 +22,7 @@
     </div>
     <div class="col-xs-12 col-sm-3 col-lg-3 steps">
       <div class="panel steps">
-        <div class="panel-heading h2 blue text-center">Step 2:</div>
+        <div class="panel-heading h2 blue text-center">Then:</div>
         <div class="panel-body">
           <h3 class="text-center">Double Check!</h3>
           <p>Verify that your information is correct and add any personal touches to the email!</p>
@@ -33,7 +34,7 @@
     </div>
     <div class="col-xs-12 col-sm-3 col-lg-3 steps">
       <div class="panel steps">
-        <div class="panel-heading h2 blue text-center">Step 3:</div>
+        <div class="panel-heading h2 blue text-center">Finish:</div>
         <div class="panel-body">
           <h3 class="text-center">Send the Email</h3>
           <p>Ask the reviewer to do the same on services like Yelp! and Google Plus.</p>
@@ -45,7 +46,7 @@
     </div>
     <div class="col-xs-12 col-sm-3 col-lg-3 steps">
       <div class="panel steps">
-        <div class="panel-heading h2 blue text-center">Step 4:</div>
+        <div class="panel-heading h2 blue text-center">Return:</div>
         <div class="panel-body">
           <h3 class="text-center">Return frequently</h3>
           <p>If you receive many reviews, check back often and approve more so you can increase your exposure and improve your reputation.</p>
@@ -128,6 +129,7 @@
             <div id="YelpGoogle" style="display:none">
               Yelp:<input type="text" ng-model="Yelp_Google.yelp">
               Google Plus:<input type="text" ng-model="Yelp_Google.google_plus">
+              Caring.com:<input type="text" ng-model="Yelp_Google.caring">
               <button type="button" class="btn btn-primary" ng-click="SaveYG(Yelp_Google)">Save</button>
               </div>
              To: <input type="text" id="toEmail">

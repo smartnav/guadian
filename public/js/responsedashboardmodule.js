@@ -44,10 +44,11 @@ angular
 
         /* Get the email information */
         $http.get('/form/' + id + '/email/' + responseid).then(function(response){
-                console.log("We got a response:", response);
+                console.log("YYYYYYYYYYYYWe got a response:", response);
                if (response.data) {
                         $scope.Yelp_Google = response.data.data;
-                        if (response.data.data.yelp == "" || response.data.data.google_plus == "") {
+                        console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXThis is the data we are looking for", response.data.data);
+                        if (response.data.data.yelp == "" || response.data.data.google_plus == "" || response.data.data.caring == null) {
                             $('#YelpGoogle').show();
                         } else
                             {$('#YelpGoogle').hide();}

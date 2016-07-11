@@ -547,3 +547,17 @@ div#slider .bgLayer {
 div#slider, div#slider .sliderInner {
   width:100%;
 }
+
+
+/* Response viewing page */
+.response-body-response span.glyphicon.glyphicon-pencil {
+    padding-left: 10px;
+}
+
+.contact-edit-message #rescomments {
+  margin-top:15px;
+}
+
+#emailModal .input-group {
+  padding-left:0px;
+}

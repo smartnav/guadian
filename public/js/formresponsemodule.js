@@ -131,7 +131,7 @@ angular
                     console.log("We got a response:", response);
                     if (response.data) {
                         $scope.Yelp_Google = response.data.data;
-                        if (response.data.data.yelp == "" || response.data.data.google_plus == "") {
+                        if (response.data.data.yelp == "" || response.data.data.google_plus == "" || response.data.data.caring == "") {
                             $('#YelpGoogle').show();
                         } else
                             {$('#YelpGoogle').hide();}
@@ -225,11 +225,6 @@ angular
             // $('#rescomments').val(comments);
             // $('#rescomments').attr('class',id);
             $('#editModal').modal();
-        }
-        $scope.editFormResponse = function(id, comments) {
-            $('#rescomments').val(comments);
-            $('#rescomments').attr('class', id);
-            $('#erModal').modal();
         }
         $scope.rateFunction = function(rating) {
 

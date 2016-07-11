@@ -1,5 +1,6 @@
 <div ng-app="formbuilder">
      <toaster-container></toaster-container>
+     <%- include('./steps.ejs', {detailed:false, step:1}) %>
     <div class="row"  ng-controller="FormBuilderController as fb">
       
      <div class="container" id="tab-body" ng-init="fb.formId='<%= formid %>'">

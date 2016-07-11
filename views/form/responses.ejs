@@ -43,8 +43,8 @@
               <div class="response-body">
                 <div ng-repeat="rep in row.questions | orderBy: 'orderid'">
 <div class="response-body-question" ng-class="rep.is_hide == true? 'boldClass' : ''">{{rep.text}}</div>
-                  <div  class="response-body-response">{{rep.response_text}}</div>
-                  <div class="response-body-response">{{rep.response_rating}}</div>
+                  <div  class="response-body-response" ng-if="rep.type=='text'">{{rep.response_text}}<span  style="cursor:pointer;" ng-click="editQuestionResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
+                  <div class="response-body-response" ng-if="rep.type=='range'">{{rep.response_rating}}<span style="cursor:pointer;" ng-click="editQuestionResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
                 </div>
               </div>
               <div class="response-footer">
@@ -59,7 +59,6 @@
             <td ng-if="row.status=='unapproved'" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved',row.owners_id)"  class="approve btn btn-small btn-primary">Approve</button></td>
             <td ng-if="row.status===null" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved',row.owners_id)"  class="approve btn btn-small btn-primary">Approve</button></td>
             <td ng-if="row.status!='trashed'">
-            <span ng-click="editFormResponse(row.responderid,row.comments)" class="glyphicon glyphicon-pencil"></span>
             <a href="#" ng-click="formResponseToggleStatus('responses',row.responderid,'trashed',row.owners_id)"><i class="fa fa-trash-o"></i> Trash</a></td>
           </tr>
           </tbody>
@@ -94,8 +93,8 @@
               <div class="response-body">
                 <div ng-repeat="rep in row.questions | orderBy: 'orderid'">
                   <div class="response-body-question">{{rep.text}}</div>
-                  <div  class="response-body-response">{{rep.response_text}}<span ng-if="rep.type=='text'" style="cursor:pointer;" ng-click="editQuestionResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
-                  <div class="response-body-response">{{rep.response_rating}}<span ng-if="rep.type=='range'" style="cursor:pointer;" ng-click="editQuestionResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
+                  <div  class="response-body-response" ng-if="rep.type=='text'">{{rep.response_text}}<span  style="cursor:pointer;" ng-click="editQuestionResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
+                  <div class="response-body-response" ng-if="rep.type=='range'">{{rep.response_rating}}<span style="cursor:pointer;" ng-click="editQuestionResponse(row.responderid,rep)" class="glyphicon glyphicon-pencil"></span></div>
                 </div>
               </div>
               <div class="response-footer">
@@ -111,7 +110,6 @@
             <td ng-if="row.status=='unapproved'" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved',row.owners_id)"  class="approve btn btn-small btn-primary">Approve</button></td>
             <td ng-if="row.status===null" id="{{row.responderid}}"><button ng-click="formResponseToggleStatus('responses',row.responderid,'approved',row.owners_id)"  class="approve btn btn-small btn-primary">Approve</button></td>
             <td ng-if="row.status!='trashed'">
-<span style="cursor:pointer;" ng-click="editFormResponse(row.responderid,row.comments)" class="glyphicon glyphicon-pencil"></span>
             <a href="#" ng-click="formResponseToggleStatus('responses',row.responderid,'trashed',row.owners_id)"><i class="fa fa-trash-o"></i> Trash</a></td>
           </tr>
           </tbody>
@@ -156,7 +154,6 @@
               </div>
             </td>
               <td ng-if="row.status=='trashed'" id="{{row.responderid}}"><button class="btn btn-cancel" ng-click="formResponseToggleStatus('responses',row.responderid,'unapproved',row.owners_id)">Unapprove</button></td>
-              <td ng-if="row.status=='trashed'"><span ng-click="editFormResponse(row.responderid,row.comments)" class="glyphicon glyphicon-pencil"></span></td>
           </tr>
           </tbody>
           </table>
@@ -189,7 +186,7 @@
         </div>
       </div>
 
-        <!-- Modal for editing -->
+        <!-- Modal for editing 
         <div class="modal fade" id="erModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -206,7 +203,7 @@
 <button type="button" class="btn btn-primary" >Save changes</button>            </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
 
 
@@ -220,12 +217,61 @@
             </div>
             <div class="modal-body">
             <div id="YelpGoogle" style="display:none">
-              Yelp:<input type="text" ng-model="Yelp_Google.yelp">
+              <!--Yelp:<input type="text" ng-model="Yelp_Google.yelp">
               Google Plus:<input type="text" ng-model="Yelp_Google.google_plus">
-              <button type="button" class="btn btn-primary" ng-click="SaveYG(Yelp_Google)">Save</button>
+              Caring.com:<input type="text" ng-model="Yelp_Google.caring">-->
+              <div class="form-group">
+                <div class="input-group col-sm-12">
+                  <span class="input-group-addon">Yelp</span>
+                  <input type="text" class="form-control" placeholder="Yelp URL" ng-model="Yelp_Google.yelp">
+                </div>
               </div>
-             To: <input type="text" id="toEmail">
-             Body: <textarea id="rescomments" style="width:400px;height:400px"  ></textarea>
+              <div class="form-group">
+                <div class="input-group col-sm-12">
+                  <span class="input-group-addon">Google Plus</span>
+                  <input type="text" class="form-control" placeholder="Google Plus URL" ng-model="Yelp_Google.google_plus">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group col-sm-12">
+                  <span class="input-group-addon">Caring.com</span>
+                  <input type="text" class="form-control" placeholder="Caring.com URL" ng-model="Yelp_Google.caring" >
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" ng-click="SaveYG(Yelp_Google)">Save</button>
+              <hr />
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div class="form-group">
+                <div class="input-group col-sm-10 contact-edit-message-name">
+                  <span class="input-group-addon">To: </span>
+                  <input type="text" class="form-control" id="toEmail" name="to">
+                </div>
+                
+              </div>
+              <div class="form-group contact-edit-message">
+                <textarea id="rescomments" style="width:100%;height:400px"  ></textarea>
+             </div>
             </div>
             <div class="modal-footer">
               <a href="#" id="mailTo" class="pull-left">Rather do it from your own email? Click here</a>

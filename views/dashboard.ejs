@@ -3,60 +3,15 @@
     <h1>Dashboard</h1>
   </div>
   <toaster-container></toaster-container>
-  <div class="row row-eq-height">
-
-    <!-- GOOGLE INFORMATION -->
-    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
-      <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">Step 1:</div>
-        <div class="panel-body">
-          <h3 class="text-center">Create new Form</h3>
-          <p>Fill in information about your facility and create a form that customers can fill out.</p>
-          <a href="/form/new">
-            <span class="link-spanner"></span>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
-      <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">Step 2:</div>
-        <div class="panel-body">
-          <h3 class="text-center">Form to your website</h3>
-          <p>Share a link to the form with your customers or embed the form on your website.</p>
-          <a href="/form/share">
-            <span class="link-spanner"></span>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
-      <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">Step 3:</div>
-        <div class="panel-body">
-          <h3 class="text-center">Approve and Display</h3>
-          <p>Approve the reviews as they roll in and display them in a widget on your website.</p>
-          <a href="/responses/share">
-            <span class="link-spanner"></span>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-12 col-sm-3 col-lg-3 steps">
-      <div class="panel steps">
-        <div class="panel-heading h2 orange text-center">Step 4:</div>
-        <div class="panel-body">
-          <h3 class="text-center">Contact Responders</h3>
-          <p>Ask those who reviewed your service to do the same on services like Yelp! and Google Plus.</p>
-          <a href="/responses/all">
-            <span class="link-spanner"></span>
-          </a>
-        </div>
-      </div>
-    </div>
+  
 
 
-  </div>
+
+
+    <%- include('./steps.ejs', {detailed:true}) %>
+
+
+  
   <div class="row">
   <div class="col-xs-12 col-sm-12 col-lg-12">
       <div class="panel">

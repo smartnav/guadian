@@ -10,10 +10,15 @@ function validate()
 
             return false;
          }
-         if( document.myForm.name.value.length < 4)
+         if( document.myForm.name.value.length < 3)
          {
-          document.getElementById('error_name').innerHTML = "Name Should be 4 Characters Long";
+          document.getElementById('error_name').innerHTML = "Name Should be 3 Characters Long";
           document.myForm.name.focus();
+          return false;
+         }
+         if(document.myForm.invite.value == "" || document.myForm.invite.value.length < 4 ) {
+          document.getElementById('error_name').innerHTML = "Invalid Invite Code";
+          document.myForm.invite_code.focus();
           return false;
          }
          return true;
@@ -40,7 +45,12 @@ function validate()
               <label>Name</label>
               <input type="text" required class="form-control" name="name" placeholder="John Doe">
                <div id=error_name name=error style="color:red"></div>
-                          </div>
+            </div>
+            <div class="form-group">
+              <label>Invitation Code</label>
+              <input type="text" required class="form-control" name="invite_code" placeholder="1234...">
+               <div id=error_invite name=error style="color:red"></div>
+            </div>
             <button type="submit" class="btn btn-primary btn-lg"><span class="fa fa-google-plus"></span> Signup using Google</button>
           </form>
 

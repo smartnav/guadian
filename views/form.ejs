@@ -106,6 +106,7 @@ checkjquery = function() {
     var illegalChars = /^[a-zA-Z\s]+$/;
     var stripped = phone.replace(/[\(\)\.\-\ ]/g, '');
     console.log("Stripped Value",stripped);
+    console.log("Phone Value",phone);
     if(name=='' && email=='' && phone=='') {
       document.getElementById('error_name').innerHTML = "Please enter Name.";
       document.getElementById('error_email').innerHTML = "Please enter Email Address.";
@@ -117,7 +118,7 @@ checkjquery = function() {
       document.getElementById('error_name').innerHTML = "Please enter Name.";
       return false;
     }
-    else if(name.length<4)
+    else if(name.length<3)
     {
     document.getElementById('error_name').innerHTML = "Please enter a longer name.";
       return false;
@@ -146,12 +147,12 @@ checkjquery = function() {
     {
       document.getElementById('error_email').innerHTML = "";
     }
-    if(phone=="" || isNaN(parseInt(stripped)))
+    if(phone!= "" && isNaN(parseInt(stripped)))
     {
       document.getElementById('error_phone').innerHTML = "Please enter a valid phone number.";
       return false;
     }
-    else if((stripped.length < 6 ||stripped.length > 20))
+    else if(phone != "" && (stripped.length < 6 || stripped.length > 20))
     {
       document.getElementById('error_phone').innerHTML = "Please enter a valid phone number.";
       return false;
@@ -259,7 +260,7 @@ checkjquery = function() {
 
 <div class=form-group>
   <label class=osrev-tel-label for=osrev-tel>Phone Number *</label>
-  <input type=tel id=osrev-tel class=form-control placeholder="Phone Number" name=phone required>
+  <input type=tel id=osrev-tel class=form-control placeholder="Phone Number" name=phone>
   <div id=error_phone name=error style="color:red"></div>
 </div>
 

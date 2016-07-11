@@ -3,6 +3,7 @@ if(newForm == false) {
   facilityName = existingForm.facility;
   yelpURL = existingForm.yelp;
   googleURL = existingForm.google_plus;
+  caringURL = existingForm.caring;
   allowed_origins = existingForm.allowed_origins;
   locations = existingForm.locations;
   redirect_url = existingForm.redirect_url;
@@ -24,6 +25,7 @@ if(newForm == false) {
   facilityName = "";
   yelpURL = "";
   googleURL = "";
+  caringURL = "";
   allowed_origins = "";;
   redirect_url = "";
   type = "";
@@ -37,6 +39,7 @@ if(newForm == false) {
         var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
           var yelp = document.getElementById('inputYelp').value;
           var google = document.getElementById('inputGooglePlus').value;
+          var caring = document.getElementById('inputCaring').value;
           var page_form = document.getElementById('inputPageWithForm').value;
           var redirect = document.getElementById('inputRedirectURL').value;
          if( document.myForm.facility.value == "" )
@@ -67,6 +70,15 @@ if(newForm == false) {
          {
           document.getElementById('error_google').innerHTML = "";
          }
+         if(caring != "" && !re.test(caring))
+         {
+          document.getElementById('error_caring').innerHTML = "Please enter a valid Url.";
+          return false;
+         }
+         else
+         {
+          document.getElementById('error_caring').innerHTML = "";
+         }
          if(page_form != "" && !re.test(page_form))
          {
           document.getElementById('error_form').innerHTML = "Please enter a valid Url.";
@@ -92,10 +104,11 @@ if(newForm == false) {
 <div class="page-header">
   <h1>Create a New Form</h1>
 </div>
-
+<%- include('./../steps.ejs', {detailed:false, step:1}) %>
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-lg-12">
     <div class="panel">
+
       <div class="panel-heading h2 blue">New Form</div>
       <div class="panel-body">
       <% if(button == "proceed") { %>
@@ -129,6 +142,14 @@ if(newForm == false) {
             <div class="input-group col-sm-10">
               <span class="input-group-addon"><i class="fa fa-google-plus"></i></span>
               <input type="text" class="form-control" id="inputGooglePlus" name="google_plus" placeholder="Google Plus URL" value="<%= googleURL %>">
+            </div>
+            <label class="col-sm-2 control-label"></label><div class="input-group col-sm-10">  <div id=error_google name=error style="color:red"></div></div>
+          </div>
+          <div class="form-group">
+            <label for="inputCaring" class="col-sm-2 control-label">Caring.com</label>
+            <div class="input-group col-sm-10">
+              <span class="input-group-addon"><i class="fa fa-cat"></i></span>
+              <input type="text" class="form-control" id="inputCaring" name="caring" placeholder="Caring.com URL" value="<%= caringURL %>">
             </div>
             <label class="col-sm-2 control-label"></label><div class="input-group col-sm-10">  <div id=error_google name=error style="color:red"></div></div>
           </div>
