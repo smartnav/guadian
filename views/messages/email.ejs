@@ -2,13 +2,14 @@ Dear <%= reviewer_name %>,
 <% console.log("HIHIHII", reviewer_name); %>
 Thank you very much for your kind review of <%= facility %>. We appreciate it
 very much and are happy that you found our service to be satisfactory! 
-
+<% if (yelp != "" || google_plus != "" || caring != "") { %>
 Our organization depends on reviews like yours, and I was wondering if you 
-would be willing to post your review on Yelp and Google Plus? Our pages are:
-
-Yelp: <%= yelp %> 
-Google Plus: <%= google_plus %>
+would be willing to post your review on Yelp and Google Plus? Our pages are: <% } %>
+<% if (yelp) { %>
+Yelp: <%= yelp %><% } if (google_plus) { %>
+Google Plus: <%= google_plus %><% } if (caring) { %>
 Caring.com: <%= caring %>
+<% } %>
 
 For your reference, a copy of your review is below.
 

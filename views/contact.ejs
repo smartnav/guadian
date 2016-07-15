@@ -1,1 +1,84 @@
-Hello in contact page
+<style type="text/css">
+input[name="contactEmail"]{
+    display: none;
+}
+</style>
+
+ <script type="text/javascript">
+ function validate()
+      {
+        
+         if( document.myForm.contactName.value == "" )
+         {
+            document.getElementById('error_name').innerHTML = "Please enter Name.";
+            document.myForm.contactName.focus() ;
+            return false;
+         }
+         else
+         {
+          document.getElementById('error_name').innerHTML = "";
+         }
+         if( document.myForm.contactMessage.value == "" )
+         {
+            document.getElementById('error_message').innerHTML = "Please enter Message.";
+            document.myForm.contactMessage.focus() ;
+            return false;
+         }
+         else
+         {
+          document.getElementById('error_message').innerHTML = "";
+         }
+         return( true );
+       }
+</script>
+<div class="page-header">
+  <h1>Contact Us</h1>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-lg-12">
+    <div class="panel">
+    
+      <div class="panel-heading h2 blue">Contact Form</div>
+      <div class="panel-body">
+       <form class="form-horizontal" action="/contact" name="myForm" method="post" onsubmit="return validate()" novalidate>
+        <% if (message == 'EmailSuccess') { %>
+        <div class="alert alert-success">
+          Thanks for contacting us.
+        </div>
+        <% } %>
+        <% if (message.length > 0 && message != 'EmailSuccess') { %>
+        <div class="alert alert-danger">
+          <%= message %>
+        </div>
+        <% } %>
+          <div class="form-group">
+            <label for="inputFacility" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="contactName" name="contactName" placeholder="Enter your full name">
+              <div id=error_name name=error style="color:red"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputYelp" class="col-sm-2 control-label">Message</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="contactMessage" name="contactMessage" placeholder="Message"></textarea>
+            </div>
+           <label class="col-sm-2 control-label"></label><div class="input-group col-sm-10">  <div id=error_message name=error style="color:red"></div></div>
+          </div>
+          
+          <input type="text" name="contactEmail" value="">
+          <div class="form-group">
+            <label for="inputYelp" class="col-sm-2 control-label">&nbsp;</label>
+            <div class="col-sm-10">
+             
+                <button type="submit" class="btn btn-primary btn-lg">Send</button>
+                <a type="button" href="/dashboard" class="btn btn-cancel btn-lg">Cancel</a>
+              
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

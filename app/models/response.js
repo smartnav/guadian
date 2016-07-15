@@ -656,11 +656,31 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
       let done = conxData[1];
       /* Sorry. I am truely sorry for this query. */
       //TODO optimize query by selecting forms first.
-      let result = yield client.queryPromise( `WITH responders_group AS(
+      
+      /*console.log(`WITH responders_group AS(
                                                  SELECT *
                                                  FROM responders
                                                  WHERE responders.status = 'approved'
                                                  LIMIT $2
+                                                 OFFSET $3
+                                               )
+                                              SELECT forms.id as formid, forms.owner_id, forms.facility, forms.status as form_status,
+                                                     responders_group.name, responders_group.created, responders_group.contacted_status, responders_group.status as responder_status, 
+                                                     questions.type, questions.question,
+                                                     responses.*
+                                              FROM forms, responders_group
+                                              INNER JOIN responses ON (responses.responderid = responders_group.id)
+                                              INNER JOIN questions ON (questions.id = responses.questionid)
+                                              WHERE forms.id = responders_group.formid 
+                                              AND forms.owner_id = $1`, [owner_id, limit, offset]);*/
+      
+
+	let result = yield client.queryPromise( `WITH responders_group AS(
+                                                 SELECT *
+                                                 FROM responders
+                                                 WHERE responders.status = 'approved'
+                                                 AND formid = any(select f.id from forms "f", "responders" re  WHERE f.id = re.formid and owner_id = $1 AND re.status='approved')
+						 LIMIT $2
                                                  OFFSET $3
                                                )
                                               SELECT forms.id as formid, forms.owner_id, forms.facility, forms.status as form_status,
@@ -726,7 +746,34 @@ updateContactedStatus: co.wrap(function* (owner_id,response_id,status) {
       return yield Promise.reject(err);
     }
 
-  })
+  }),
+  
+  
+  contactus: co.wrap(function* (data) {
+    try {
+	var p = Promise.defer();
+	transporter.sendMail({
+            from: `"${data.contactName}" <{process.env.GMAIL_USER}>`,
+            to: 'mattp@osmondmarketing.com',
+            subject: 'Thank You!',
+            text: data.contactMessage
+          }, function(error, info) {
+            if(error) {
+              return console.error(error);
+	      p.resolve('EmailError');
+            }
+	    else
+	    {
+            console.log('Email sent', info);
+            p.resolve('EmailSuccess');
+	    }
+          });
+          return yield p.promise;
+      }catch(e) {
+        console.error(e);
+        return Promise.resolve(null);
+      }
+   }),
 
 
 

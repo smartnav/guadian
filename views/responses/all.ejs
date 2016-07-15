@@ -115,10 +115,85 @@
 
 
 
+<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Contact Responder</h4>
+            </div>
+            <div class="modal-body">
+            <div id="YelpGoogle" style="display:none">
+              <!--Yelp:<input type="text" ng-model="Yelp_Google.yelp">
+              Google Plus:<input type="text" ng-model="Yelp_Google.google_plus">
+              Caring.com:<input type="text" ng-model="Yelp_Google.caring">-->
+              <div class="form-group">
+                <div class="input-group col-sm-12">
+                  <span class="input-group-addon">Yelp</span>
+                  <input type="text" class="form-control" placeholder="Yelp URL" ng-model="Yelp_Google.yelp">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group col-sm-12">
+                  <span class="input-group-addon">Google Plus</span>
+                  <input type="text" class="form-control" placeholder="Google Plus URL" ng-model="Yelp_Google.google_plus">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group col-sm-12">
+                  <span class="input-group-addon">Caring.com</span>
+                  <input type="text" class="form-control" placeholder="Caring.com URL" ng-model="Yelp_Google.caring" >
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" ng-click="SaveYG(Yelp_Google)">Save</button>
+              <hr />
+              </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div class="form-group">
+                <div class="input-group col-sm-10 contact-edit-message-name">
+                  <span class="input-group-addon">To: </span>
+                  <input type="text" class="form-control" id="toEmail" name="to">
+                </div>
+                
+              </div>
+              <div class="form-group contact-edit-message">
+                <textarea id="rescomments" style="width:100%;height:400px"  ></textarea>
+             </div>
+            </div>
+            <div class="modal-footer">
+              <a href="#" id="mailTo" class="pull-left">Rather do it from your own email? Click here</a>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" ng-click="sendEmailToResponder()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    
 
      <!-- Modal for emailing -->
-    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
+    <!--<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -142,7 +217,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
 
 
 

@@ -165,7 +165,9 @@ function *contact(){
  yield this.render('contact', {
     session:this.session || {},
     pageTitle: 'Contact Us',
-    url: URL
+    url: URL,
+    message:"",
+    resmessage:""
   });
 }
 
@@ -454,6 +456,7 @@ function *formSubmit(id) {
   var stripped = data.phone.replace(/[\(\)\.\-\ ]/g, '');
   var flag=0;
   var message = "";
+  var resmessage = "";
   for(var i in data){
     if(data[i].length > 5000)
     {
@@ -1282,6 +1285,36 @@ function *leaveGroup() {
 /* Rahul Response Toggle Status */
 
 
+function *contactUsForm(){
+ var data = this.request.body;
+ console.log(data);
+ if (data.contactEmail == "") {
+    if(data.contactName == "")
+      {
+       yield this.render('./contact',{session:this.session || {}, pageTitle: 'Contact Form', message:"Please Fill both field."});
+       return;
+      }
+      if(data.contactMessage == "")
+      {
+       yield this.render('./contact',{session:this.session || {}, pageTitle: 'Contact Form', message:"Please Fill both field."     });
+       return;
+      }
+      else{
+        var messagedata = yield _response.contactus(this.request.body);
+        console.log('mess : ' + JSON.stringify(messagedata));
+        if (messagedata == 'EmailSuccess') {
+          yield this.render('./contact',{session:this.session || {}, pageTitle: 'Contact Form', message :"EmailSuccess"});
+        }
+        else
+        {
+          yield this.render('./contact',{session:this.session || {}, pageTitle: 'Contact Form', message :"There is a problem to submit the contact."});
+        }
+       return;
+      }
+ }
+ 
+}
+
 
 
 
@@ -1388,7 +1421,10 @@ module.exports = function(app) {
   app.use(route.post('/usergroup/Leavegroup',leaveGroup));
   app.use(route.post('/usergroup/getgroups',getShareForms));
   /* smartData for user groups */
-
+  
+  /*Contact us page*/
+  app.use(route.post('/contact', contactUsForm));
+  /*End*/
 
  app.use(route.post('/groups/add_group', add_group));
   app.use(route.post('/groups/get_group', get_group));

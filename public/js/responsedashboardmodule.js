@@ -48,7 +48,7 @@ angular
                if (response.data) {
                         $scope.Yelp_Google = response.data.data;
                         console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXThis is the data we are looking for", response.data.data);
-                        if (response.data.data.yelp == "" || response.data.data.google_plus == "" || response.data.data.caring == null) {
+                        if (response.data.data.yelp == "" || response.data.data.google_plus == "" || response.data.data.caring == "") {
                             $('#YelpGoogle').show();
                         } else
                             {$('#YelpGoogle').hide();}

@@ -42,6 +42,29 @@ img.logo-giant {
   padding: 10px 22px;
   margin:10px;
 }
+/*13-07-2016*/
+.wht-bg {
+  background: #fff none repeat scroll 0 0;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  padding: 15px 0; margin: 0px 15px 40px;
+}
+.wht-bg label {
+  float: left;
+  font-size: 15px;
+  font-weight: normal;
+  margin: 0;
+  
+}
+.wht-bg input[type="checkbox"] {
+  margin-left: 5px;
+}
+.lnks{margin-top:10px;}
+.row.row-eq-height {
+  margin: 0;
+}
+/*13-07-2016*/
 @media (min-width: 768px) {
   h2.featured {
     font-size:3em;
@@ -52,7 +75,11 @@ img.logo-giant {
       margin-top: 120px;
   }
 }
-
+@media (max-width: 350px)
+{
+ .wht-bg label{font-size: 13px;} 
+  
+}
 .steps {
   overflow:hidden;
 }

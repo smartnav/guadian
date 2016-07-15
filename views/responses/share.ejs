@@ -6,17 +6,19 @@
 <div class="row hight-cal" ng-app="share" ng-controller="ShareLink">
 <toaster-container></toaster-container>
 <%- include('./../steps.ejs', {detailed:false, step:3}) %>
+<div class="wht-bg">
   <div class="col-xs-12 col-sm-12 col-lg-12">
-    <h3>Select a Form</h3>
+    <label>Select a Form</label>
   </div>
-  <div class="col-xs-4 col-sm-4 col-lg-4" > 
+    <div class="clearfix"></div>
+  <div class="col-xs-12 col-sm-4 col-lg-4" > 
     <select class="form-control" ng-change="makeLink()" ng-model="formid" ng-options="form.id as form.facility for form in forms">
     </select>
   </div>
-  <br>
+    <div class="clearfix"></div>
   
-  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable">
-    <h3>Embed Response Code <input type="checkbox" ng-model="embedshow" ng-show="formid!=0"></h3>
+  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable lnks">
+    <label>Embed Response Code</label> <input type="checkbox" ng-model="embedshow" ng-show="formid!=0">
     <div ng-show="embedshow" ng-show="formid!=0">
       <p>Use this code if you want to embed the form on your website but don't want to hassle with styling it yourself.</p>
       <label for=iframe>Pre-Styled Form</label> - <a  class="primary clipboard-btn" data-clipboard-target="#iframe" ngclipboard ngclipboard-success="onSuccess(e);" ngclipboard-error="onError(e);" >copy to clipboard</a>
@@ -29,8 +31,8 @@
     </div>
   </div>
 
-  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable">
-    <h3>Embed Response Code with Custom Styling <input type="checkbox" ng-model="embedCustomshow" ng-show="formid!=0"></h3>
+  <div class="col-xs-12 col-sm-12 col-lg-12 embeddable lnks">
+    <label>Embed Response Code with Custom Styling </label><input type="checkbox" ng-model="embedCustomshow" ng-show="formid!=0">
     <div ng-show="embedCustomshow" ng-show="formid!=0">
       <p>To use your site's custom styling, embed this code on your website.</p>
       <label for=custom>Custom Styling</label> - <a  class="primary clipboard-btn" data-clipboard-target="#custom" ngclipboard ngclipboard-success="onSuccess(e);" ngclipboard-error="onError(e);" >copy to clipboard</a>
@@ -43,7 +45,7 @@
       </textarea>
     </div>
   </div>
-
+</div>
 </div>
 <script src="/js/angular.min.js"></script>
 <script src="https://cdn.rawgit.com/zenorocha/clipboard.js/master/dist/clipboard.min.js"></script>
