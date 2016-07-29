@@ -19,7 +19,7 @@
           <% } %>
       </ul>
       <% if(typeof session.user !== 'undefined') {%>
-      <p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link"><%= session.email %></a> | <a href="/logout" class="navbar-link">Logout</a></p>
+      <p class="navbar-text navbar-right">Signed in as: <a href="#" class="navbar-link"><%= session.email %></a> <a href="/logout" class="navbar-link logout">Logout</a></p>
       <% } else { %>
         <div class="navbar-right">
           <a href="/signup"><button type="button" class="btn-primary btn btn-default navbar-btn">Signup</button><a/>

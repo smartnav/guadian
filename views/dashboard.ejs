@@ -1,17 +1,20 @@
 <div ng-app="dashboard" ng-controller="ActiveForms">
+  <div class="container">
   <div class="page-header">
     <h1>Dashboard</h1>
   </div>
   <toaster-container></toaster-container>
-  
+  </div>
 
 
-
-
+<div class="bg">
+    <div class="container">
     <%- include('./steps.ejs', {detailed:true}) %>
-
-
+    </div>
+</div>
   
+  
+  <div class="container">
   <div class="row">
   <div class="col-xs-12 col-sm-12 col-lg-12">
       <div class="panel">
@@ -21,14 +24,14 @@
             <thead>
               <tr>
                 <th class="">ID</th>
-                <th class="col-md-1">Facility</th>
+                <th class="">Facility</th>
                 <th class="col-md-2">Groups</th>
-                <th class="col-md-1 text-center">Edit Form</th>
-                <th class="col-md-1">Responses</th>
-                <th class="col-md-2 text-center">Responses Received</th>
-                <th class="col-md-2 text-center">Responses Awaiting Approval</th>
-                <th class="col-md-2">Actions</th>
-                <th class="col-md-1"></th>
+                <th class="text-center">Edit Form</th>
+                <th class="">Responses</th>
+                <th class="text-center">Responses Received</th>
+                <th class="text-center">Responses Awaiting Approval</th>
+                <th class="">Actions</th>
+                <th class=""></th>
               </tr>
             </thead>
             <tbody>
@@ -55,6 +58,7 @@
       </div>
 
     </div>
+  </div>
   </div>
 <div class="modal fade" id="erModal" tabindex="-1" role="dialog" aria-labelledby="erModalLabel">
       <div class="modal-dialog" role="document">
@@ -88,6 +92,7 @@
     </div>
   </div>
   </div>
+<div class="container">
   <div class="row" ng-if="total1!=0">
     <div class="col-xs-12 col-sm-12 col-lg-12">
     <div class="panel">
@@ -97,14 +102,14 @@
             <thead>
               <tr>
                 <th class="">ID</th>
-                <th class="col-md-1">Facility</th>
+                <th class="">Facility</th>
                 <th class="col-md-2">Groups</th>
-                <th class="col-md-1 text-center">Edit Form</th>
-                <th class="col-md-1">Responses</th>
-                <th class="col-md-2 text-center">Responses Received</th>
-                <th class="col-md-2 text-center">Responses Awaiting Approval</th>
-                <th class="col-md-2">Actions</th>
-                <th class="col-md-1"></th>
+                <th class="text-center">Edit Form</th>
+                <th class="">Responses</th>
+                <th class="text-center">Responses Received</th>
+                <th class="text-center">Responses Awaiting Approval</th>
+                <th class="">Actions</th>
+                <th class=""></th> 
               </tr>
             </thead>
             <tbody>
@@ -132,6 +137,7 @@
 
 </div>
 
+</div>
 </div>
   <script src="<%= process.env.CDN %>/css/ng-table.min.css"></script>
   <script src="<%= process.env.CDN %>/js/angular.min.js"></script>
